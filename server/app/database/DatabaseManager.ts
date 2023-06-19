@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-// Singleton
 export default class DatabaseManager {
   private static instance: DatabaseManager
 
