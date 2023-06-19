@@ -1,8 +1,10 @@
 import { Schema, model } from 'mongoose';
 
 enum Role {
-    ADMIN = "admin",
-    EMPLOYEE = "employee"
+    WHEELCHAIR = "wheelchair",
+    WAREHOUSEMAN = "warehouseman",
+    SALESMAN = "salesman",
+    MANAGER = "manager",
 }
 
 interface IEmployee {
@@ -19,7 +21,6 @@ interface IEmployee {
     postalCode: string;
     phoneNumber: string;
     birthDate: Date;
-    isAdmin: boolean;
     passwordResetToken: string | null;
     tokenForEmailVerification: string | null;
     refreshToken: string | null;
@@ -82,11 +83,6 @@ export const employeeSchema = new Schema<IEmployee>({
     birthDate: {
         type: Date,
         required: true
-    },
-    isAdmin: {
-        type: Boolean,
-        required: true,
-        default: false
     },
     passwordResetToken: {
         type: String,
