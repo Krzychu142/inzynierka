@@ -2,6 +2,7 @@ import DatabaseManager from './database/DatabaseManager'
 import dotenv from 'dotenv'
 import express, { Express } from 'express'
 import cors from 'cors'
+import routes from './routes/routes'
 dotenv.config()
 
 export default class App {
@@ -13,6 +14,7 @@ export default class App {
   private constructor() {
     this.databaseManager = DatabaseManager.getInstance()
     this.app = express()
+    this.app.use(routes)
   }
 
   public static getInstance(): App {
