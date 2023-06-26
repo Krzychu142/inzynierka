@@ -1,7 +1,7 @@
-import Product from '../models/product.model'
+import Product, { IProduct } from '../models/product.model'
 
 class ProductService {
-  static async getAllProducts() {
+  static async getAllProducts(): Promise<IProduct[]> {
     return Product.find()
   }
 }

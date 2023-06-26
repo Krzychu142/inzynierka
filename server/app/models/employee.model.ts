@@ -1,13 +1,7 @@
 import { Schema, model } from 'mongoose'
+import { Role } from '../types/role.enum'
 
-enum Role {
-  WHEELCHAIR = 'wheelchair',
-  WAREHOUSEMAN = 'warehouseman',
-  SALESMAN = 'salesman',
-  MANAGER = 'manager',
-}
-
-interface IEmployee {
+export interface IEmployee {
   name: string
   surname: string
   employedAt: Date
@@ -49,7 +43,7 @@ export const employeeSchema = new Schema<IEmployee>({
   password: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 6,
     maxlength: 1024,
   },
   role: {
