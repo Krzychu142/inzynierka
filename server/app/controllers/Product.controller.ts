@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import ProductService from '../services/Product.service'
-import ErrorsHandlers from '../helpers/ErrorsHandlers'
+import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 
 class ProductController {
   static async getAllProduct(req: Request, res: Response): Promise<void> {

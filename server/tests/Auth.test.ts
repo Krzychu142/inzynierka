@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import AuthController from '../app/controllers/Auth.controller'
 import AuthService from '../app/services/Auth.service'
-import Crypt from '../app/helpers/Crypt'
+import Crypt from '../app/utils/helpers/Crypt'
 import TokenService from '../app/services/Token.service'
 import Employee from '../app/models/employee.model'
-import ErrorsHandlers from '../app/helpers/ErrorsHandlers'
+import ErrorsHandlers from '../app/utils/helpers/ErrorsHandlers'
 
 jest.mock('../app/services/Auth.service')
 jest.mock('../app/helpers/Crypt')
@@ -40,11 +40,11 @@ describe('AuthController', () => {
         status: jest.fn().mockReturnThis(),
       } as unknown as Response
 
-      ;(Crypt.hashPassword as jest.Mock).mockResolvedValue('hashedPassword')
-      ;(
-        TokenService.generateTokenForEmailVerification as jest.Mock
-      ).mockReturnValue('token')
-      ;(Employee.prototype.save as jest.Mock).mockResolvedValue(mockUser)
+        ; (Crypt.hashPassword as jest.Mock).mockResolvedValue('hashedPassword')
+        ; (
+          TokenService.generateTokenForEmailVerification as jest.Mock
+        ).mockReturnValue('token')
+        ; (Employee.prototype.save as jest.Mock).mockResolvedValue(mockUser)
 
       await AuthController.register(req, res)
 
@@ -68,12 +68,12 @@ describe('AuthController', () => {
         status: jest.fn().mockReturnThis(),
       } as unknown as Response
 
-      ;(AuthService.register as jest.Mock).mockRejectedValue(
-        new Error('Validation failed'),
-      )
-      ;(ErrorsHandlers.errorMessageHandler as jest.Mock).mockReturnValue({
-        message: 'Validation failed',
-      })
+        ; (AuthService.register as jest.Mock).mockRejectedValue(
+          new Error('Validation failed'),
+        )
+        ; (ErrorsHandlers.errorMessageHandler as jest.Mock).mockReturnValue({
+          message: 'Validation failed',
+        })
 
       await AuthController.register(req, res)
 

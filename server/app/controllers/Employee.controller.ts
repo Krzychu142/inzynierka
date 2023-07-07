@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import EmployeeService from '../services/Employee.service'
-import ErrorsHandlers from '../helpers/ErrorsHandlers'
+import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 
 class EmployeeController {
   static async getAllEmployees(req: Request, res: Response): Promise<void> {
