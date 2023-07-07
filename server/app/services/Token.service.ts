@@ -1,12 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { Role } from '../types/role.enum'
-
-interface User {
-  _id: string
-  email: string
-  role: Role
-  tokenVersion: number
-}
+import User from '../types/user.interface'
 
 class TokenService {
   static generateToken(user: User): string {
@@ -52,23 +45,24 @@ class TokenService {
   }
 
   static verifyToken(token: string, isAccessToken: boolean) {
-    try {
-      if (
-        !process.env.ACCESS_TOKEN_SECRET ||
-        !process.env.REFRESH_TOKEN_SECRET
-      ) {
-        throw new Error(
-          'ACCESS_TOKEN_SECRET or REFRESH_TOKEN_SECRET is not defined',
-        )
-      }
-
-      const secret = isAccessToken
-        ? process.env.ACCESS_TOKEN_SECRET
-        : process.env.REFRESH_TOKEN_SECRET
-      return jwt.verify(token, secret)
-    } catch (error) {
-      throw error
+    if (!process.env.ACCESS_TOKEN_SECRET || !process.env.REFRESH_TOKEN_SECRET) {
+      throw new Error(
+        'ACCESS_TOKEN_SECRET or REFRESH_TOKEN_SECRET is not defined',
+      )
     }
+
+    const secret = isAccessToken
+      ? process.env.ACCESS_TOKEN_SECRET
+      : process.env.REFRESH_TOKEN_SECRET
+    return jwt.verify(token, secret)
+  }
+
+  static verifyTokenForEmailVerification(token: string) {
+    if (!process.env.JWT_SECRET_KEY) {
+      throw new Error('JWT_SECRET_KEY is not defined')
+    }
+
+    return jwt.verify(token, process.env.JWT_SECRET_KEY)
   }
 }
 
