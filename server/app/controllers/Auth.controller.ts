@@ -43,6 +43,40 @@ class AuthController {
             return res.status(400).json({ errorMessages })
         }
     }
+
+    static async login(req: Request, res: Response): Promise<Response> {
+        const { email, password } = req.body
+        try {
+            const token = await AuthService.login(email, password)
+            return res.json({ token })
+        } catch (error: unknown) {
+            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
+            return res.status(400).json({ errorMessages })
+        }
+    }
+
+    static async forgotPassword(req: Request, res: Response): Promise<Response> {
+        const { email } = req.body
+        try {
+            await AuthService.forgotPassword(email)
+            return res.json({ message: 'Email sent' })
+        } catch (error: unknown) {
+            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
+            return res.status(400).json({ errorMessages })
+        }
+    }
+
+    static async resetPassword(req: Request, res: Response): Promise<Response> {
+        const { token } = req.params
+        const { password } = req.body
+        try {
+            await AuthService.resetPassword(token, password)
+            return res.json({ message: 'Password changed' })
+        } catch (error: unknown) {
+            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
+            return res.status(400).json({ errorMessages })
+        }
+    }
 }
 
 export default AuthController

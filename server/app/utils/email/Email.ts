@@ -43,6 +43,15 @@ class Email {
       throw new Error(error as string)
     }
   }
+
+  public emailOptions(from: string, to: string, subject: string, text: string): SendMailOptions {
+    return {
+      from: from,
+      to: to,
+      subject: subject,
+      text: text
+    }
+  }
 }
 
 export default Email

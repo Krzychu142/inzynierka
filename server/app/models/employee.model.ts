@@ -18,8 +18,6 @@ export interface IEmployee {
   passwordResetToken: string | null
   tokenForEmailVerification: string | null
   isVerified: boolean
-  refreshToken: string | null
-  tokenVersion: number
 }
 
 export const employeeSchema = new Schema<IEmployee>({
@@ -90,16 +88,7 @@ export const employeeSchema = new Schema<IEmployee>({
   isVerified: {
     type: Boolean,
     default: false,
-  },
-  refreshToken: {
-    type: String,
-    default: null,
-  },
-  tokenVersion: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+  }
 })
 
 export default model<IEmployee>('Employee', employeeSchema)

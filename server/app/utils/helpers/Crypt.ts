@@ -6,11 +6,18 @@ class Crypt {
     return await bcrypt.hash(password, salt)
   }
 
-  static async unhashPassword(
+  private static async unhashPassword(
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
     return await bcrypt.compare(password, hashedPassword)
+  }
+
+  static async comparePassword(
+    password: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    return await this.unhashPassword(password, hashedPassword)
   }
 }
 

@@ -3,7 +3,7 @@ import User from '../types/user.interface'
 
 class TokenService {
   static generateToken(user: User): string {
-    const expiresIn = '15m'
+    const expiresIn = '3h'
     const payload = {
       id: user._id,
       email: user.email,
@@ -17,7 +17,7 @@ class TokenService {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn })
   }
 
-  static generateTokenForEmailVerification(email: string): string {
+  static generateTokenForEmailVerificationOrPasswordReset(email: string): string {
     const expiresIn = process.env.JWT_EXPIRES_IN || '7d'
     const payload = {
       email: email,
@@ -28,20 +28,6 @@ class TokenService {
     }
 
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn })
-  }
-
-  static generateRefreshToken(user: User) {
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d'
-    const payload = {
-      id: user._id,
-      tokenVersion: user.tokenVersion,
-    }
-
-    if (!process.env.JWT_SECRET_KEY_REFRESH) {
-      throw new Error('JWT_SECRET_KEY_REFRESH is not defined')
-    }
-
-    return jwt.sign(payload, process.env.JWT_SECRET_KEY_REFRESH, { expiresIn })
   }
 
   static verifyToken(token: string, isAccessToken: boolean) {
@@ -57,7 +43,7 @@ class TokenService {
     return jwt.verify(token, secret)
   }
 
-  static verifyTokenForEmailVerification(token: string) {
+  static verifyTokenForEmailVerificationOrPasswordReset(token: string) {
     if (!process.env.JWT_SECRET_KEY) {
       throw new Error('JWT_SECRET_KEY is not defined')
     }

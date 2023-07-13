@@ -42,7 +42,7 @@ describe('AuthController', () => {
 
         ; (Crypt.hashPassword as jest.Mock).mockResolvedValue('hashedPassword')
         ; (
-          TokenService.generateTokenForEmailVerification as jest.Mock
+          TokenService.generateTokenForEmailVerificationOrPasswordReset as jest.Mock
         ).mockReturnValue('token')
         ; (Employee.prototype.save as jest.Mock).mockResolvedValue(mockUser)
 

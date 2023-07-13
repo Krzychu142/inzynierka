@@ -1,10 +1,10 @@
 import { Role } from '../types/role.enum'
+import { ObjectId } from 'mongodb'
 
 interface User {
-  _id: string
+  _id: ObjectId
   email: string
   role: Role
-  tokenVersion: number
 }
 
 export default User
