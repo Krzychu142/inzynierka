@@ -1,8 +1,12 @@
-function App() {
+import React from 'react';
+import Register from './components/auth/Register';
+import Login from './components/auth/Login';
+import Home from './components/Home';; 
 
+const App: React.FC = () => {
   return (
     <>
-      <h1>App</h1>
+      <Home />
     </>
   )
 }
