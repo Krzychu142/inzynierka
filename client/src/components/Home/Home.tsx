@@ -12,14 +12,14 @@ const Home: React.FC = () => {
             <span className="home__title--color">YourWarehousePage</span>
             <img
               className="home__title__icon"
-              src="../../../public/warehouse.png"
+              src="/warehouse.png"
               alt="Icon of your warhouse."
             />
           </h1>
           <section className="home__navigation">
             <p>
               If You are one of our team please
-              <Link className="link home__navigation--spacing" to="/">
+              <Link className="link home__navigation--spacing" to="/login">
                 LogIn
               </Link>
             </p>

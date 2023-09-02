@@ -5,7 +5,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
 }
 
 .home__container {
@@ -17,10 +16,9 @@
 
 .home__background {
     width: 50%;
-    background-image: url("../../../public/home-background.jpg");
+    background-image: url("/home-background.jpg");
     background-size: cover;
     background-position: top center;
-    filter: blur(0.5px);
     height: 100vh;
 }
 .home__title {
@@ -32,10 +30,10 @@
 
 .home__title--color {
     color: var(--main-color-dark);
-    padding: 5px;
 }
 
 .home__title__icon {
+    margin: 0 4px;
     vertical-align: middle;
 }
 
@@ -53,12 +51,8 @@
 }
 
 @media (max-width: 767px) {
-    .home {
-        width: 100%;
-    }
-
-    .home__title { 
-        font-size: 0.6rem;
+    .home__title {
+        width: 90%;
         margin-bottom: 35%;
     }
 
