@@ -39,6 +39,11 @@
     position: absolute;
     bottom: 16px;
     right: 16px;
+    transition: var(--default-transition);
+}
+
+.login__home-icon:hover {
+    color: var(--main-color);
 }
 
 @media (max-width: 1024px) {

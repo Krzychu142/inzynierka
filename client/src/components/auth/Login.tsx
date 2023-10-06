@@ -1,12 +1,16 @@
 import React, { useState, useRef } from "react";
 import "./login.css";
-import LoginData from "./interface";
 import { Form, FormInstance, Input, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
+interface LoginDataType {
+  email: string;
+  password: string;
+}
+
 const Login: React.FC = () => {
-  const [loginData, setLoginData] = useState<LoginData>({
+  const [loginData, setLoginData] = useState<LoginDataType>({
     email: "",
     password: "",
   });
@@ -17,6 +21,7 @@ const Login: React.FC = () => {
     formRef.current
       ?.validateFields()
       .then((values) => {
+        // Tutaj wywołujemy naszą thunk funkcję login
         console.log(values);
       })
       .catch((errorInfo) => {

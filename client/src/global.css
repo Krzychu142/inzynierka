@@ -20,6 +20,7 @@ body {
     --border-radius: 16px;
     --padding: 16px;
     --box-shadow: 0 0 6px var(--secondary-color);
+    --default-transition: 0.2s ease-in-out;
 }
 
 @media (max-width: 1024px) {
