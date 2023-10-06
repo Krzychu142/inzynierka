@@ -1,8 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./login.css";
 import { Form, FormInstance, Input, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../hooks";
+import { login } from "../../features/authSlice";
 
 interface LoginDataType {
   email: string;
@@ -10,6 +12,9 @@ interface LoginDataType {
 }
 
 const Login: React.FC = () => {
+  const authState = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const [loginData, setLoginData] = useState<LoginDataType>({
     email: "",
     password: "",
@@ -21,7 +26,7 @@ const Login: React.FC = () => {
     formRef.current
       ?.validateFields()
       .then((values) => {
-        // Tutaj wywołujemy naszą thunk funkcję login
+        dispatch(login({ email: values.email, password: values.password }));
         console.log(values);
       })
       .catch((errorInfo) => {
