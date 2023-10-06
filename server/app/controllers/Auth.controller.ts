@@ -29,7 +29,7 @@ class AuthController {
             return res.json(employee)
         } catch (error: unknown) {
             const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json({ errorMessages })
+            return res.status(400).json( errorMessages)
         }
     }
 
@@ -40,7 +40,7 @@ class AuthController {
             return res.json({ message: 'Email verified' })
         } catch (error: unknown) {
             const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json({ errorMessages })
+            return res.status(400).json( errorMessages)
         }
     }
 
@@ -51,7 +51,7 @@ class AuthController {
             return res.json({ token })
         } catch (error: unknown) {
             const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json({ errorMessages })
+            return res.status(400).json(errorMessages)
         }
     }
 
@@ -62,7 +62,7 @@ class AuthController {
             return res.json({ message: 'Email sent' })
         } catch (error: unknown) {
             const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json({ errorMessages })
+            return res.status(400).json( errorMessages)
         }
     }
 
@@ -74,7 +74,7 @@ class AuthController {
             return res.json({ message: 'Password changed' })
         } catch (error: unknown) {
             const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json({ errorMessages })
+            return res.status(400).json( errorMessages)
         }
     }
 }
