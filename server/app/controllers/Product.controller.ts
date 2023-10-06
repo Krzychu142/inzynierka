@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import ProductService from '../services/Product.service'
-import errorHandler from '../helpers/errorHandler'
+import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 
 class ProductController {
   static async getAllProduct(req: Request, res: Response): Promise<void> {
@@ -8,7 +8,7 @@ class ProductController {
       const products = await ProductService.getAllProducts()
       res.json(products)
     } catch (error: unknown) {
-      const errorMessages = errorHandler(error)
+      const errorMessages = ErrorsHandlers.errorMessageHandler(error)
       res.status(500).json(errorMessages)
     }
   }

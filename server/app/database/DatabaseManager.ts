@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export default class DatabaseManager {
+class DatabaseManager {
   private static instance: DatabaseManager
 
   public static getInstance(): DatabaseManager {
@@ -26,3 +26,5 @@ export default class DatabaseManager {
     }
   }
 }
+
+export default DatabaseManager

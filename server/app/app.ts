@@ -14,6 +14,8 @@ export default class App {
   private constructor() {
     this.databaseManager = DatabaseManager.getInstance()
     this.app = express()
+    this.app.use(cors())
+    this.app.use(express.json())
     this.app.use(routes)
   }
 
@@ -27,8 +29,6 @@ export default class App {
   public async start(): Promise<void> {
     try {
       await this.databaseManager.connect()
-      this.app.use(cors())
-      this.app.use(express.json())
       this.app.listen(this.port, () => {
         console.log(`App listening on the port ${this.port}`)
       })

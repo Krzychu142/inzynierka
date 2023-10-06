@@ -1,13 +1,7 @@
 import { Schema, model } from 'mongoose'
+import { Role } from '../types/role.enum'
 
-enum Role {
-  WHEELCHAIR = 'wheelchair',
-  WAREHOUSEMAN = 'warehouseman',
-  SALESMAN = 'salesman',
-  MANAGER = 'manager',
-}
-
-interface IEmployee {
+export interface IEmployee {
   name: string
   surname: string
   employedAt: Date
@@ -24,8 +18,6 @@ interface IEmployee {
   passwordResetToken: string | null
   tokenForEmailVerification: string | null
   isVerified: boolean
-  refreshToken: string | null
-  tokenVersion: number
 }
 
 export const employeeSchema = new Schema<IEmployee>({
@@ -49,7 +41,7 @@ export const employeeSchema = new Schema<IEmployee>({
   password: {
     type: String,
     required: true,
-    minlength: 3,
+    minlength: 6,
     maxlength: 1024,
   },
   role: {
@@ -96,16 +88,7 @@ export const employeeSchema = new Schema<IEmployee>({
   isVerified: {
     type: Boolean,
     default: false,
-  },
-  refreshToken: {
-    type: String,
-    default: null,
-  },
-  tokenVersion: {
-    type: Number,
-    required: true,
-    default: 0,
-  },
+  }
 })
 
 export default model<IEmployee>('Employee', employeeSchema)

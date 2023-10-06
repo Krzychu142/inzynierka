@@ -1,0 +1,74 @@
+@import "../../global.css";
+
+.login { 
+    height: 100vh;
+    display: flex;
+}
+
+.login__background {
+    width: 50vw;
+    background-image: url("/home-background.jpg");
+    background-size: cover;
+    background-position: top center;
+}
+
+.login__form {
+    width: 50vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login__form--border {
+    width: 50%;
+    border: var(--border-size) solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+}
+
+.login__form__button--center {
+    display: flex;
+    justify-content: center;
+}
+
+.login__home-icon {
+    font-size: 36px;
+    color: var(--main-color-dark);
+    cursor: pointer;
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    transition: var(--default-transition);
+}
+
+.login__home-icon:hover {
+    color: var(--main-color);
+}
+
+@media (max-width: 1024px) {
+    .login__background {
+        display: none;
+    }
+
+    .login__form {
+        width: 100vw;
+    }
+}
+
+@media (max-width: 767px) {
+    .login {
+        width: 100%;
+    }
+
+    .login__form--border {
+        width: 90%;
+        margin-bottom: 35%;
+    }
+
+    .login__home-icon {
+        right: 50%;
+        bottom: 16px;
+        transform: translateX(50%);
+    }
+}

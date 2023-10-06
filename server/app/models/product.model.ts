@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-interface IProduct {
+export interface IProduct {
   sku: string
   name: string
   description: string

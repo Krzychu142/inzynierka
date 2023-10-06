@@ -1,0 +1,63 @@
+@import "../../global.css";
+
+.home {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home__container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home__background {
+    width: 50%;
+    background-image: url("/home-background.jpg");
+    background-size: cover;
+    background-position: top center;
+    height: 100vh;
+}
+.home__title {
+    border: var(--border-size) solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+}
+
+.home__title--color {
+    color: var(--main-color-dark);
+}
+
+.home__title__icon {
+    margin: 0 4px;
+    vertical-align: middle;
+}
+
+.home__navigation--spacing {
+    margin: 0 4px;
+}
+
+@media (max-width: 1024px) {
+    .home__container {
+        width: 100%;
+    }
+    .home__background {
+        display: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .home__title {
+        width: 90%;
+        margin-bottom: 35%;
+    }
+
+    .home__title__icon {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}

@@ -1,7 +1,7 @@
-import Employee from '../models/employee.model'
+import Employee, { IEmployee } from '../models/employee.model'
 
 class EmployeeService {
-  static async getAllEmployees() {
+  static getAllEmployees(): Promise<IEmployee[]> {
     return Employee.find()
   }
 }
