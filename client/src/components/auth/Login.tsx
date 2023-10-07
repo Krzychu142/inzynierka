@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import "./login.css";
 import { Form, FormInstance, Input, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { login } from "../../features/authSlice";
+import ErrorDisplayer from "../error/ErrorDisplayer";
 
 interface LoginDataType {
   email: string;
@@ -23,16 +24,9 @@ const Login: React.FC = () => {
   const formRef = useRef<FormInstance>(null);
 
   const loginHandler = (): void => {
-    formRef.current
-      ?.validateFields()
-      .then((values) => {
-        dispatch(login({ email: values.email, password: values.password }));
-        console.log(values);
-      })
-      .catch((errorInfo) => {
-        // Obsługuje błędy
-        console.log(errorInfo);
-      });
+    formRef.current?.validateFields().then((values) => {
+      dispatch(login({ email: values.email, password: values.password }));
+    });
   };
 
   return (
@@ -80,6 +74,7 @@ const Login: React.FC = () => {
               LogIn
             </Button>
           </Form.Item>
+          <ErrorDisplayer message={authState?.error} />
         </Form>
       </section>
       <Link to="/">

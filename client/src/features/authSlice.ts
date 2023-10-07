@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
 export const initialState = {
-    token: null as string | null,
+    token: null as string | null | undefined,
     error: null as string | null,
 };
 
@@ -18,7 +18,7 @@ export const login = createAsyncThunk< { token: string }, { email: string, passw
             if (error instanceof AxiosError && error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             }
-            rejectWithValue (errorMessage);
+            return rejectWithValue(errorMessage);
         }
     }
 );
@@ -34,11 +34,11 @@ const authSlice = createSlice({
         });
         builder.addCase(login.fulfilled, (state, action) => {
             state.token = action.payload.token;
-        });
+        });        
         builder.addCase(login.rejected, (state, action) => {
             state.token = null;
             state.error = action.payload || null;
-        });
+        });   
     },
 });
 
