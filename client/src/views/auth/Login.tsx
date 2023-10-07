@@ -5,7 +5,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { login } from "../../features/authSlice";
-import ErrorDisplayer from "../error/ErrorDisplayer";
+import ErrorDisplayer from "../../components/error/ErrorDisplayer";
 
 interface LoginDataType {
   email: string;

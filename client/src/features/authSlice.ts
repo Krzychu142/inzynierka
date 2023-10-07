@@ -2,8 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
 export const initialState = {
-    token: null as string | null | undefined,
+    token: localStorage.getItem('token') || null,
     error: null as string | null,
+    isAuthenticated: localStorage.getItem('token') ? true : false
 };
 
 export const login = createAsyncThunk< { token: string }, { email: string, password: string }, { rejectValue: string }>(
@@ -34,6 +35,8 @@ const authSlice = createSlice({
         });
         builder.addCase(login.fulfilled, (state, action) => {
             state.token = action.payload.token;
+            state.isAuthenticated = true;
+            localStorage.setItem('token', state.token)
         });        
         builder.addCase(login.rejected, (state, action) => {
             state.token = null;

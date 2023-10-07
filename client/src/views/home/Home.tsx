@@ -2,7 +2,11 @@ import React from "react";
 import "./home.css";
 import { Link } from "react-router-dom";
 
-const Home: React.FC = () => {
+interface HomeProps {
+  isAuthenticated: boolean;
+}
+
+const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
   return (
     <main className="home">
       <div className="home__container">
@@ -17,12 +21,24 @@ const Home: React.FC = () => {
             />
           </h1>
           <section className="home__navigation">
-            <p>
-              If You are one of our team please
-              <Link className="link home__navigation--spacing" to="/login">
-                LogIn
-              </Link>
-            </p>
+            {isAuthenticated ? (
+              <p>
+                Welcome! Go to dashboard
+                <Link
+                  className="link home__navigation--spacing"
+                  to="/dashboard"
+                >
+                  Dashboard
+                </Link>
+              </p>
+            ) : (
+              <p>
+                If You are one of our team please
+                <Link className="link home__navigation--spacing" to="/login">
+                  LogIn
+                </Link>
+              </p>
+            )}
           </section>
         </section>
       </div>

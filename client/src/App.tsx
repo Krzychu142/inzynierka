@@ -1,10 +1,14 @@
 import React from "react";
 import { ConfigProvider } from "antd";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./components/home/Home";
-import Login from "./components/auth/Login";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./views/home/Home";
+import Login from "./views/auth/Login";
+import Dashboard from "./views/dashboard/Dashboard";
+import { useAppSelector } from "./hooks";
 
 const App: React.FC = () => {
+  const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
+
   return (
     <>
       <ConfigProvider
@@ -24,8 +28,22 @@ const App: React.FC = () => {
       >
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />}></Route>
+            {isAuthenticated ? (
+              // only for authenticated
+              <Route path="/dashboard" element={<Dashboard />}></Route>
+            ) : (
+              <Route path="*" element={<Navigate to="/login" />} />
+            )}
+            {!isAuthenticated ? (
+              // only for guests
+              <Route path="/login" element={<Login />}></Route>
+            ) : (
+              <Route path="*" element={<Navigate to="/" />} />
+            )}
+            <Route
+              path="/"
+              element={<Home isAuthenticated={isAuthenticated} />}
+            />
           </Routes>
         </BrowserRouter>
       </ConfigProvider>

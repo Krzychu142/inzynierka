@@ -8,7 +8,7 @@ const ErrorDisplayer: React.FC<ErrorDisplayerProps> = ({ message }) => {
   return (
     message && (
       <Alert
-        style={{ color: "black" }}
+        style={{ color: "#ff4d4f" }}
         message={message}
         type="error"
         showIcon
