@@ -33,7 +33,7 @@ const App: React.FC = () => {
               // only for guests
               <Route path="/login" element={<Login />}></Route>
             ) : (
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="*" element={<Navigate to="/dashboard" />} />
             )}
             <Route
               path="/"
