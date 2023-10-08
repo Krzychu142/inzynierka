@@ -30,6 +30,7 @@
 .login__form__button--center {
     display: flex;
     justify-content: center;
+    margin-bottom: 0px;
 }
 
 .login__home-icon {
@@ -44,6 +45,10 @@
 
 .login__home-icon:hover {
     color: var(--main-color);
+}
+
+#form__link-reset {
+    color: var(--main-color-dark);
 }
 
 @media (max-width: 1024px) {

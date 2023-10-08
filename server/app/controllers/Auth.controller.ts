@@ -21,6 +21,11 @@ class AuthController {
         birthDate: Joi.date().required(),
     })
 
+    private static handleError(error: unknown, res: Response): Response {
+        const errorMessages = ErrorsHandlers.errorMessageHandler(error);
+        return res.status(400).json(errorMessages);
+    }
+
     static async register(req: Request, res: Response): Promise<Response> {
         const userData: IEmployee = req.body
         try {
@@ -28,8 +33,7 @@ class AuthController {
             const employee = await AuthService.register(userData)
             return res.json(employee)
         } catch (error: unknown) {
-            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json( errorMessages)
+            return this.handleError(error, res);
         }
     }
 
@@ -39,8 +43,7 @@ class AuthController {
             await AuthService.verifyEmail(token)
             return res.json({ message: 'Email verified' })
         } catch (error: unknown) {
-            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json( errorMessages)
+            return this.handleError(error, res);
         }
     }
 
@@ -50,8 +53,7 @@ class AuthController {
             const token = await AuthService.login(email, password)
             return res.json({ token })
         } catch (error: unknown) {
-            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json(errorMessages)
+            return this.handleError(error, res);
         }
     }
 
@@ -61,8 +63,7 @@ class AuthController {
             await AuthService.forgotPassword(email)
             return res.json({ message: 'Email sent' })
         } catch (error: unknown) {
-            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json( errorMessages)
+            return this.handleError(error, res);
         }
     }
 
@@ -73,8 +74,7 @@ class AuthController {
             await AuthService.resetPassword(token, password)
             return res.json({ message: 'Password changed' })
         } catch (error: unknown) {
-            const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-            return res.status(400).json( errorMessages)
+            return this.handleError(error, res);
         }
     }
 }

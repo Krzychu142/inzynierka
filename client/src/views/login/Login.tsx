@@ -3,6 +3,9 @@ import "./login.css";
 import { Form, FormInstance, Input, Button } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from "../../hooks";
+import { login } from "../../features/authSlice";
+import ErrorDisplayer from "../../components/error/ErrorDisplayer";
 
 interface LoginDataType {
   email: string;
@@ -10,6 +13,9 @@ interface LoginDataType {
 }
 
 const Login: React.FC = () => {
+  const authState = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
+
   const [loginData, setLoginData] = useState<LoginDataType>({
     email: "",
     password: "",
@@ -18,16 +24,9 @@ const Login: React.FC = () => {
   const formRef = useRef<FormInstance>(null);
 
   const loginHandler = (): void => {
-    formRef.current
-      ?.validateFields()
-      .then((values) => {
-        // Tutaj wywołujemy naszą thunk funkcję login
-        console.log(values);
-      })
-      .catch((errorInfo) => {
-        // Obsługuje błędy
-        console.log(errorInfo);
-      });
+    formRef.current?.validateFields().then((values) => {
+      dispatch(login({ email: values.email, password: values.password }));
+    });
   };
 
   return (
@@ -75,6 +74,12 @@ const Login: React.FC = () => {
               LogIn
             </Button>
           </Form.Item>
+          <Form.Item className="login__form__button--center">
+            <Link to="/" id="form__link-reset" className="link">
+              Reset password
+            </Link>
+          </Form.Item>
+          <ErrorDisplayer message={authState?.error} />
         </Form>
       </section>
       <Link to="/">

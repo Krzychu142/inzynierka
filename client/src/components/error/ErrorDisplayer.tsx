@@ -1,9 +1,20 @@
+import { Alert } from "antd";
+
 interface ErrorDisplayerProps {
-  message: string;
+  message: string | null;
 }
 
 const ErrorDisplayer: React.FC<ErrorDisplayerProps> = ({ message }) => {
-  return <span style={{ display: message ? "block" : "none" }}>{message}</span>;
+  return (
+    message && (
+      <Alert
+        style={{ color: "#ff4d4f" }}
+        message={message}
+        type="error"
+        showIcon
+      />
+    )
+  );
 };
 
 export default ErrorDisplayer;

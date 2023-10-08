@@ -8,14 +8,15 @@ body {
 
 :root {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(90deg, rgb(63, 63, 63) 0%, var(--secondary-color) 100%);
+    background-color: #777777;
     color: white;
     font-size: 16px;
-    --main-color: #514AA8;
+    --main-color: #6960db;
     --main-color-light: #A8A4D4;
     --main-color-dark: #2D2A4A;
-    --secondary-color: #DBB59E;
+    --secondary-color: #b1aca8;
     --contrast-color: #5A8F51;
+    --backgroud-color: #777777;
     --border-size: 2px;
     --border-radius: 16px;
     --padding: 16px;
@@ -23,18 +24,12 @@ body {
     --default-transition: 0.2s ease-in-out;
 }
 
-@media (max-width: 1024px) {
-    :root {
-        background: linear-gradient(180deg, rgb(63, 63, 63) 20%, var(--secondary-color) 90%);
-    }
-}
-
 .link {
-    color: var(--main-color-dark);
+    color: var(--main-color);
     text-decoration: none;
     transition: 0.2s ease-in-out;
 }
 
 .link:hover {
-    color: var(--main-color-light);
+    color: var(--main-color-light) !important;
 }
