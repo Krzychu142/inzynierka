@@ -30,15 +30,16 @@
 
 .home__title--color {
     color: var(--main-color-dark);
+    padding-left: 7px;
 }
 
 .home__title__icon {
-    margin: 0 4px;
+    padding: 2px 4px;
     vertical-align: middle;
 }
 
 .home__navigation--spacing {
-    margin: 0 4px;
+    padding: 0 7px;
 }
 
 @media (max-width: 1024px) {

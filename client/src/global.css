@@ -36,5 +36,5 @@ body {
 }
 
 .link:hover {
-    color: var(--main-color-light);
+    color: var(--main-color-light) !important;
 }
