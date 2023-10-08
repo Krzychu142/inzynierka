@@ -74,6 +74,11 @@ const Login: React.FC = () => {
               LogIn
             </Button>
           </Form.Item>
+          <Form.Item className="login__form__button--center">
+            <Link to="/" id="form__link-reset" className="link">
+              Reset password
+            </Link>
+          </Form.Item>
           <ErrorDisplayer message={authState?.error} />
         </Form>
       </section>
