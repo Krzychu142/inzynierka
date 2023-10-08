@@ -11,7 +11,7 @@ export interface IProduct {
   isAvailable: boolean
   images: string[]
   initialStockQuantity: number
-  addedAt: Date
+  addedAt?: Date
   soldAt?: Date
 }
 
@@ -59,7 +59,6 @@ export const productSchema = new Schema<IProduct>({
   },
   addedAt: {
     type: Date,
-    required: true,
     default: Date.now,
   },
   soldAt: {
