@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken'
-import User from '../types/user.interface'
+import IUser from '../types/user.interface'
 
 class TokenService {
-  static generateToken(user: User): string {
+  static generateToken(user: IUser): string {
     const expiresIn = '3h'
     const payload = {
       id: user._id,
