@@ -1,10 +1,10 @@
-import { Role } from '../types/role.enum'
+import { Role } from './role.enum'
 import { ObjectId } from 'mongodb'
 
-interface IUser {
+interface IEmployee {
   _id: ObjectId
   email: string
   role: Role
 }
 
-export default IUser
+export default IEmployee

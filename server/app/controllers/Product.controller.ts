@@ -8,8 +8,7 @@ class ProductController {
       const products = await ProductService.getAllProducts()
       res.json(products)
     } catch (error: unknown) {
-      const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-      res.status(500).json(errorMessages)
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 
@@ -20,8 +19,7 @@ class ProductController {
         res.status(201).json({ message: 'Product created successfully' })
       }
     } catch (error: unknown) {
-      const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-      res.status(500).json(errorMessages)
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 }
