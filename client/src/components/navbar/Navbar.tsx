@@ -66,6 +66,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
+            {/* TODO: add function to logout */}
             <Button
               style={{ padding: "0px" }}
               type="link"
