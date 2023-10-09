@@ -33,3 +33,13 @@ body {
 .link:hover {
     color: var(--main-color-light) !important;
 }
+
+.darker {
+    color: var(--main-color-dark);
+}
+
+@media screen and (max-width: 699px) {
+    .listing-logo {
+        display: none;
+    }
+}

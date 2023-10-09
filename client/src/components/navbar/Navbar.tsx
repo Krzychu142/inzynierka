@@ -10,10 +10,10 @@ import {
   SolutionOutlined,
   TeamOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { useAppDispatch } from "../../hooks";
 import { logout } from "../../features/authSlice";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -39,30 +39,35 @@ const Navbar = () => {
       icon: <TeamOutlined />,
       titleToDisplay: "Employees",
       to: "/",
+      key: "employees",
     },
     {
       title: "Go to orders module.",
       icon: <AuditOutlined />,
       titleToDisplay: "Orders",
       to: "/",
+      key: "orders",
     },
     {
       title: "Go to clietns module.",
       icon: <SolutionOutlined />,
       titleToDisplay: "Clients",
       to: "/",
+      key: "clients",
     },
     {
       title: "Go to warhouse module.",
       icon: <DatabaseOutlined />,
       titleToDisplay: "Warhouse",
-      to: "/",
+      to: "/warhouse",
+      key: "warhouse",
     },
     {
       title: "Back to home page.",
       icon: <HomeOutlined />,
       titleToDisplay: "Home",
-      to: "/",
+      to: "/dashboard",
+      key: "home",
     },
   ];
 
@@ -74,9 +79,13 @@ const Navbar = () => {
             return (
               <li
                 className={`navbar__nav__ul--li ${!isShown ? "none" : ""}`}
-                key={item.title}
+                key={item.key}
               >
-                <Link to={item.to} className="link" title={item.title}>
+                <Link
+                  to={item.to}
+                  className="link link--button"
+                  title={item.title}
+                >
                   {item.icon}
                   <span>{item.titleToDisplay}</span>
                 </Link>
