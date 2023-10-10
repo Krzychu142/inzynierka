@@ -4,7 +4,7 @@
 }
 
 .navbar__nav {
-    height: 200px;
+    height: 160px;
     border-bottom: var(--border-size) solid var(--main-color-dark);
     padding: 0px 80px;
     background-color: var(--main-color-dark);

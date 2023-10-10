@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Space } from "antd";
+import { Button, List, Result, Space, Spin } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
+import { useGetAllProductsQuery } from "../../features/productsApi";
 
-const data = Array.from({ length: 23 }).map((_, i) => ({
+const testData = Array.from({ length: 23 }).map((_, i) => ({
   href: "https://ant.design",
   title: `ant design part ${i}`,
   avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
@@ -23,8 +24,12 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarhouseListing = () => {
+  const { data: products, isLoading, isError } = useGetAllProductsQuery("");
+
+  console.log(products);
+
   const [searchValue, setSearchValue] = useState("");
-  const filteredData = data.filter((item) =>
+  const filteredData = testData.filter((item) =>
     item.title.toLowerCase().includes(searchValue.toLowerCase())
   );
 
@@ -40,6 +45,18 @@ const WarhouseListing = () => {
           Add new
         </Link>
       </section>
+      {isLoading && (
+        <Spin tip="Loading" size="large">
+          <div />
+        </Spin>
+      )}
+      {isError && (
+        <Result
+          status="error"
+          title="Somthing goes wrong"
+          subTitle="Please try later"
+        ></Result>
+      )}
       <List
         itemLayout="vertical"
         size="large"
