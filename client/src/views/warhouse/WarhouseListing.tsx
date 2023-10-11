@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Space, Spin } from "antd";
+import { Button, List, Result, Skeleton, Space, Spin } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
+import { IProduct } from "../../types/product.interface";
 
 const testData = Array.from({ length: 23 }).map((_, i) => ({
   href: "https://ant.design",
@@ -57,53 +58,94 @@ const WarhouseListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
-      <List
-        itemLayout="vertical"
-        size="large"
-        pagination={{
-          align: "center",
-          onChange: (page) => {
-            console.log(page);
-          },
-          pageSize: 3,
-        }}
-        dataSource={filteredData}
-        // footer={
-        //   <footer className="listing__footer">
-        //     <Link to="/" className="link darker listing__footer--add-new">
-        //       Add new
-        //     </Link>
-        //   </footer>
-        // }
-        renderItem={(item) => (
-          <List.Item
-            key={item.title}
-            actions={[
-              <Link to="/" className="link darker">
-                <IconText icon={EditOutlined} text="Edit" key="id-list-iteam" />
-              </Link>,
-              <Button type="link" className="link darker">
-                <IconText
-                  icon={DeleteOutlined}
-                  text="Delete"
-                  key="id-list-iteam"
-                />
-              </Button>,
-            ]}
-            extra={
-              <img
-                className="listing-logo"
-                width={272}
-                alt="logo"
-                src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
+      {products && (
+        <List
+          itemLayout="vertical"
+          size="large"
+          pagination={{
+            align: "center",
+            onChange: (page) => {
+              console.log(page);
+            },
+            pageSize: 3,
+          }}
+          dataSource={products}
+          renderItem={(item: IProduct) => (
+            <List.Item
+              key={item.name}
+              id={item._id}
+              actions={[
+                <Link to="/" className="link darker">
+                  <IconText
+                    icon={EditOutlined}
+                    text="Edit"
+                    key="id-list-iteam"
+                  />
+                </Link>,
+                <Button type="link" className="link darker">
+                  <IconText
+                    icon={DeleteOutlined}
+                    text="Delete"
+                    key="id-list-iteam"
+                  />
+                </Button>,
+              ]}
+              extra={
+                item.images.length > 0 ? (
+                  <img
+                    className="listing-logo"
+                    alt="logo"
+                    src={item.images[0]}
+                  />
+                ) : (
+                  <Skeleton.Image />
+                )
+              }
+            >
+              <List.Item.Meta
+                title={item.name}
+                description={item.description}
               />
-            }
-          >
-            <List.Item.Meta title={item.title} description={item.description} />
-            {item.content}
-          </List.Item>
-        )}
-      />
+              <ul>
+                <li>
+                  <b>Stock quantity:</b> {item.stockQuantity}
+                </li>
+                <li>Initial stock quantiti: {item.initialStockQuantity}</li>
+                {!item.isOnSale ? (
+                  <li>
+                    <b>Price:</b> ${item.price}PLN
+                  </li>
+                ) : (
+                  <li>
+                    <s>Price: ${item.price}PLN</s>
+                    <br />
+                    <b>Promotional price:</b> ${item.promotionalPrice}PLN
+                  </li>
+                )}
+                {/* <li>Basic price: {item.price}PLN</li>
+                {item.isOnSale && (
+                  <li>
+                    {item.promotionalPrice &&
+                      `Promotional price: ${item.promotionalPrice}`}
+                    PLN
+                  </li>
+                )} */}
+                <li>SKU: {item.sku}</li>
+                {item.isAvailable ? (
+                  <li className="success">
+                    <b>Available</b>
+                  </li>
+                ) : (
+                  <li className="danger">
+                    Temporary not available
+                    {item.soldAt && ` since ${item.soldAt}`}
+                  </li>
+                )}
+              </ul>
+            </List.Item>
+          )}
+        />
+      )}
     </>
   );
 };

@@ -38,6 +38,14 @@ body {
     color: var(--main-color-dark);
 }
 
+.danger {
+    color: #d32029;
+}
+
+.success {
+    color: #49aa19;
+}
+
 @media screen and (max-width: 699px) {
     .listing-logo {
         display: none;
