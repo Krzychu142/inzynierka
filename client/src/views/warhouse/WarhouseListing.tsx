@@ -7,16 +7,6 @@ import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 
-const testData = Array.from({ length: 23 }).map((_, i) => ({
-  href: "https://ant.design",
-  title: `ant design part ${i}`,
-  avatar: `https://xsgames.co/randomusers/avatar.php?g=pixel&key=${i}`,
-  description:
-    "Ant Design, a design language for background applications, is refined by Ant UED Team.",
-  content:
-    "We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.",
-}));
-
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
     {React.createElement(icon)}
@@ -27,11 +17,12 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 const WarhouseListing = () => {
   const { data: products, isLoading, isError } = useGetAllProductsQuery("");
 
-  console.log(products);
-
   const [searchValue, setSearchValue] = useState("");
-  const filteredData = testData.filter((item) =>
-    item.title.toLowerCase().includes(searchValue.toLowerCase())
+  const filteredData = products?.filter(
+    (item: IProduct) =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.sku.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchValue.toLowerCase())
   );
 
   return (
@@ -64,12 +55,13 @@ const WarhouseListing = () => {
           size="large"
           pagination={{
             align: "center",
-            onChange: (page) => {
-              console.log(page);
-            },
+            // can be usefull later
+            // onChange: (page) => {
+            //   console.log(page);
+            // },
             pageSize: 3,
           }}
-          dataSource={products}
+          dataSource={filteredData}
           renderItem={(item: IProduct) => (
             <List.Item
               key={item.name}
@@ -94,7 +86,7 @@ const WarhouseListing = () => {
                 item.images.length > 0 ? (
                   <img
                     className="listing-logo"
-                    alt="logo"
+                    alt={item.description}
                     src={item.images[0]}
                   />
                 ) : (
@@ -122,14 +114,6 @@ const WarhouseListing = () => {
                     <b>Promotional price:</b> ${item.promotionalPrice}PLN
                   </li>
                 )}
-                {/* <li>Basic price: {item.price}PLN</li>
-                {item.isOnSale && (
-                  <li>
-                    {item.promotionalPrice &&
-                      `Promotional price: ${item.promotionalPrice}`}
-                    PLN
-                  </li>
-                )} */}
                 <li>SKU: {item.sku}</li>
                 {item.isAvailable ? (
                   <li className="success">
