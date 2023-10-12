@@ -7,6 +7,7 @@ import Login from "./views/login/Login";
 import Dashboard from "./views/dashboard/Dashboard";
 import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
+import AddNew from "./views/warhouse/addNew";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -43,6 +44,15 @@ const App: React.FC = () => {
                     <>
                       <Navbar />
                       <WarhouseListing />
+                    </>
+                  }
+                ></Route>
+                <Route
+                  path="/warhouse/addNew"
+                  element={
+                    <>
+                      <Navbar />
+                      <AddNew />
                     </>
                   }
                 ></Route>

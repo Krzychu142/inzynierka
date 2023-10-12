@@ -8,6 +8,7 @@
     border-bottom: var(--border-size) solid var(--main-color-dark);
     padding: 0px 80px;
     background-color: var(--main-color-dark);
+    margin-bottom: 2rem;
 }
 
 .navbar__nav__ul {

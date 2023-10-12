@@ -3,11 +3,13 @@ import IEmployee from '../types/employee.interface'
 
 class TokenService {
   static generateToken(user: IEmployee): string {
-    const expiresIn = '3h'
+    // 1 day of work
+    const expiresIn = '8h'
     const payload = {
       id: user._id,
       email: user.email,
       role: user.role,
+      name: user.name
     }
 
     if (!process.env.JWT_SECRET_KEY) {

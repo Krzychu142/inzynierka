@@ -11,7 +11,7 @@ body {
     background-color: #777777;
     color: white;
     font-size: 16px;
-    --main-color: #6960db;
+    --main-color: #5f59bb;
     --main-color-light: #A8A4D4;
     --main-color-dark: #2D2A4A;
     --secondary-color: #b1aca8;
@@ -44,6 +44,18 @@ body {
 
 .success {
     color: #49aa19;
+}
+
+.main {
+    color: var(--main-color)
+}
+
+.bold {
+    font-weight: 600;
+}
+
+.secondary {
+    color: var(--secondary-color);
 }
 
 @media screen and (max-width: 699px) {

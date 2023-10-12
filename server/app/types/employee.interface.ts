@@ -4,7 +4,8 @@ import { ObjectId } from 'mongodb'
 interface IEmployee {
   _id: ObjectId
   email: string
-  role: Role
+  role: Role,
+  name: string
 }
 
 export default IEmployee

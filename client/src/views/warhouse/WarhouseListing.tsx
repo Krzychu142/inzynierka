@@ -33,7 +33,10 @@ const WarhouseListing = () => {
           enterButton
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <Link to="/" className="link darker search-section--add-new">
+        <Link
+          to="/warhouse/addNew"
+          className="link darker search-section--add-new"
+        >
           Add new
         </Link>
       </section>
