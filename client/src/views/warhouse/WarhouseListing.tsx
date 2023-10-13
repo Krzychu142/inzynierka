@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Skeleton, Space, Spin } from "antd";
+import { Button, List, Result, Skeleton, Space, Spin, message } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
+import axios from "axios";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -16,8 +17,25 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarhouseListing = () => {
+  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
+
+  if (!baseUrl) {
+    baseUrl = "http://localhost:3001/";
+  }
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const {
+    data: products,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAllProductsQuery("");
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const decodedToken = useAppSelector((state) => state.auth.decodedToken);
-  const { data: products, isLoading, isError } = useGetAllProductsQuery("");
 
   const [searchValue, setSearchValue] = useState("");
   const filteredData = products?.filter(
@@ -27,8 +45,35 @@ const WarhouseListing = () => {
       item.description.toLowerCase().includes(searchValue.toLowerCase())
   );
 
+  const token = useAppSelector((state) => state.auth.token);
+
+  const deleteProduct = (id: string) => {
+    axios
+      .delete(`${baseUrl}products/delete`, {
+        data: { id },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.status) {
+          refetch();
+        }
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
+  };
+
   return (
     <>
+      {contextHolder}
       <section className="search-section">
         <Search
           placeholder="input search text"
@@ -74,31 +119,41 @@ const WarhouseListing = () => {
               key={item.name}
               id={item._id}
               actions={[
-                <Link to="/" className="link darker">
-                  <IconText
-                    icon={EditOutlined}
-                    text="Edit"
-                    key="id-list-iteam"
-                  />
-                </Link>,
-                <Button type="link" className="link darker">
-                  <IconText
-                    icon={DeleteOutlined}
-                    text="Delete"
-                    key="id-list-iteam"
-                  />
-                </Button>,
+                ...(decodedToken?.role !== "cart operator"
+                  ? [
+                      <Link to="/" className="link darker">
+                        <IconText
+                          icon={EditOutlined}
+                          text="Edit"
+                          key="id-list-iteam"
+                        />
+                      </Link>,
+                      <Button
+                        type="link"
+                        className="link darker"
+                        onClick={() => deleteProduct(item._id)}
+                      >
+                        <IconText
+                          icon={DeleteOutlined}
+                          text="Delete"
+                          key="id-list-iteam"
+                        />
+                      </Button>,
+                    ]
+                  : []),
               ]}
               extra={
-                item.images.length > 0 ? (
-                  <img
-                    className="listing-logo"
-                    alt={item.description}
-                    src={item.images[0]}
-                  />
-                ) : (
-                  <Skeleton.Image />
-                )
+                <section className="section__logo">
+                  {item.images.length > 0 ? (
+                    <img
+                      className="listing-logo"
+                      alt={item.description}
+                      src={item.images[0]}
+                    />
+                  ) : (
+                    <Skeleton.Image className="listing-logo" />
+                  )}
+                </section>
               }
             >
               <List.Item.Meta
@@ -110,15 +165,21 @@ const WarhouseListing = () => {
                   <b>Stock quantity:</b> {item.stockQuantity}
                 </li>
                 <li>Initial stock quantiti: {item.initialStockQuantity}</li>
+                <li>Added at: {new Date(item.addedAt).toLocaleString()}</li>
+                {item.soldAt && (
+                  <li>
+                    Last time sold at: {new Date(item.soldAt).toLocaleString()}
+                  </li>
+                )}
                 {!item.isOnSale ? (
                   <li>
-                    <b>Price:</b> ${item.price}PLN
+                    <b>Price:</b> {item.price}PLN
                   </li>
                 ) : (
                   <li>
-                    <s>Price: ${item.price}PLN</s>
+                    <s>Price: {item.price}PLN</s>
                     <br />
-                    <b>Promotional price:</b> ${item.promotionalPrice}PLN
+                    <b>Promotional price:</b> {item.promotionalPrice}PLN
                   </li>
                 )}
                 <li>SKU: {item.sku}</li>
@@ -127,10 +188,7 @@ const WarhouseListing = () => {
                     <b>Available</b>
                   </li>
                 ) : (
-                  <li className="danger">
-                    Temporary not available
-                    {item.soldAt && ` since ${item.soldAt}`}
-                  </li>
+                  <li className="danger">Temporary not available</li>
                 )}
               </ul>
             </List.Item>

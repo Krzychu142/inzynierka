@@ -13,7 +13,7 @@ export const productsApi = createApi({
 	}),
     endpoints: (builder) => ({
         getAllProducts: builder.query({
-            query: () => ("getAllProducts"),
+            query: () => ("get"),
         })
     })
 })
