@@ -15,7 +15,7 @@ const Footer = () => {
         <span className="darker">
           <RollbackOutlined />
         </span>
-        <span className="secondary">Go back</span>
+        Go back
       </Button>
     </footer>
   );
