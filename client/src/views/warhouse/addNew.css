@@ -1,12 +1,7 @@
-.dashboard {
-    margin: 5%;
+.add-new-product {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-}
-
-.dashboard__user {
-    margin-bottom: 1rem;
-    text-align: center;
+    padding: 0px 15px;
 }

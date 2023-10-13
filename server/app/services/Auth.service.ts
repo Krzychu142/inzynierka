@@ -13,7 +13,7 @@ class AuthService {
 
     private static emailAdress = process.env.EMAIL_ADRESS || 'krzysztofradzieta@outlook.com'
 
-    static async register(userData: IEmployee): Promise<IEmployee> {
+    static async register(userData: IEmployee): Promise<IEmployee | string> {
         try {
             userData.password = await Crypt.hashPassword(userData.password)
 
@@ -75,10 +75,6 @@ class AuthService {
 
             if (!isPasswordCorrect) {
                 throw new Error('Invalid email or password')
-            }
-
-            if (!user.isVerified) {
-                throw new Error('Please verify your email')
             }
 
             const token = TokenService.generateToken(user)

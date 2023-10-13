@@ -21,60 +21,55 @@ class AuthController {
         birthDate: Joi.date().required(),
     })
 
-    private static handleError(error: unknown, res: Response): Response {
-        const errorMessages = ErrorsHandlers.errorMessageHandler(error);
-        return res.status(400).json(errorMessages);
-    }
-
-    static async register(req: Request, res: Response): Promise<Response> {
+    static async register(req: Request, res: Response): Promise<void> {
         const userData: IEmployee = req.body
         try {
             await AuthController.employeeValidator.validateAsync(userData)
             const employee = await AuthService.register(userData)
-            return res.json(employee)
+            res.json(employee)
         } catch (error: unknown) {
-            return this.handleError(error, res);
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
-    static async verifyEmail(req: Request, res: Response): Promise<Response> {
+    static async verifyEmail(req: Request, res: Response): Promise<void> {
         const token = req.params.token
         try {
             await AuthService.verifyEmail(token)
-            return res.json({ message: 'Email verified' })
+            res.json({ message: 'Email verified' })
         } catch (error: unknown) {
-            return this.handleError(error, res);
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
-    static async login(req: Request, res: Response): Promise<Response> {
+    static async login(req: Request, res: Response): Promise<void> {
         const { email, password } = req.body
         try {
             const token = await AuthService.login(email, password)
-            return res.json({ token })
+            res.json({ token })
         } catch (error: unknown) {
-            return this.handleError(error, res);
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
-    static async forgotPassword(req: Request, res: Response): Promise<Response> {
+    static async forgotPassword(req: Request, res: Response): Promise<void> {
         const { email } = req.body
         try {
             await AuthService.forgotPassword(email)
-            return res.json({ message: 'Email sent' })
+            res.json({ message: 'Email sent' })
         } catch (error: unknown) {
-            return this.handleError(error, res);
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
-    static async resetPassword(req: Request, res: Response): Promise<Response> {
+    static async resetPassword(req: Request, res: Response): Promise<void> {
         const { token } = req.params
         const { password } = req.body
         try {
             await AuthService.resetPassword(token, password)
-            return res.json({ message: 'Password changed' })
+            res.json({ message: 'Password changed' })
         } catch (error: unknown) {
-            return this.handleError(error, res);
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 }

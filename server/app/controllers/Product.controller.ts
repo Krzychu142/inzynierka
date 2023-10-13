@@ -8,8 +8,18 @@ class ProductController {
       const products = await ProductService.getAllProducts()
       res.json(products)
     } catch (error: unknown) {
-      const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-      res.status(500).json(errorMessages)
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+    }
+  }
+
+  static async createProduct(req: Request, res: Response): Promise<void> {
+    try {
+      const product = await ProductService.createProduct(req.body)
+      if (product) {
+        res.status(201).json({ message: 'Product created successfully' })
+      }
+    } catch (error: unknown) {
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 }
