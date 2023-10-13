@@ -60,6 +60,6 @@ body {
 
 @media screen and (max-width: 699px) {
     .listing-logo {
-        display: none;
+        display: none !important;
     }
 }
