@@ -5,7 +5,8 @@ import { Role } from '../types/role.enum'
 
 const router = express.Router()
 
-router.get('/getAllProducts', ProductController.getAllProduct)
-router.post('/createProduct', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), ProductController.createProduct)
+router.get('/get', ProductController.getAllProduct)
+router.post('/create', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), ProductController.createProduct)
+router.delete('/delete', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), ProductController.deleteProduct)
 
 export default router

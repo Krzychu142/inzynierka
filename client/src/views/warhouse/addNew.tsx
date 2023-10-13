@@ -20,7 +20,6 @@ const addNew = () => {
 
   const [form] = Form.useForm();
   const [isOnSale, setIsOnSale] = useState(false);
-  const [isAvailable, setIsAvailable] = useState(true);
 
   const onFinish = (values: Store) => {
     const config = {
@@ -30,10 +29,10 @@ const addNew = () => {
     };
 
     axios
-      .post(`${baseUrl}products/createProduct`, values, config)
+      .post(`${baseUrl}products/create`, values, config)
       .then((res) => {
         if (res.status == 201) {
-          navigate("/warehouse");
+          navigate("/warhouse");
         }
       })
       .catch((err) => {
@@ -124,14 +123,12 @@ const addNew = () => {
             name="isAvailable"
             valuePropName="checked"
           >
-            <Switch onChange={(checked) => setIsAvailable(checked)} />
+            <Switch />
           </Form.Item>
 
-          {!isAvailable && (
-            <Form.Item label="Sold At" name="soldAt">
-              <DatePicker showTime />
-            </Form.Item>
-          )}
+          <Form.Item label="Sold At" name="soldAt">
+            <DatePicker showTime />
+          </Form.Item>
 
           <Form.Item label="Images (comma separated URLs)" name="images">
             <Input placeholder="e.g., http://example.com/image1.jpg, http://example.com/image2.jpg" />

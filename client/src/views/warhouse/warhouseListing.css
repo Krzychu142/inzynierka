@@ -10,3 +10,21 @@
     width: 10%;
     padding-left: 20px;
 }
+
+.section__logo {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listing-logo {
+    max-height: 400px;
+    max-width: 400px;
+}
+
+@media screen and (max-width: 699px) {
+    .listing-logo {
+        display: none !important;
+    }
+}
