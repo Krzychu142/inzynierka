@@ -11,6 +11,8 @@ import AddNew from "./views/warhouse/addNew";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
+  const decodedToken = useAppSelector((store) => store.auth.decodedToken);
+  const role = decodedToken?.role;
 
   return (
     <>
@@ -47,15 +49,19 @@ const App: React.FC = () => {
                     </>
                   }
                 ></Route>
-                <Route
-                  path="/warhouse/addNew"
-                  element={
-                    <>
-                      <Navbar />
-                      <AddNew />
-                    </>
-                  }
-                ></Route>
+                {role != "cart operator" ? (
+                  <Route
+                    path="/warhouse/addNew"
+                    element={
+                      <>
+                        <Navbar />
+                        <AddNew />
+                      </>
+                    }
+                  ></Route>
+                ) : (
+                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                )}
               </>
             ) : (
               <Route path="*" element={<Navigate to="/login" />} />

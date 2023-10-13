@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
+import { useAppSelector } from "../../hooks";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -15,6 +16,7 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarhouseListing = () => {
+  const decodedToken = useAppSelector((state) => state.auth.decodedToken);
   const { data: products, isLoading, isError } = useGetAllProductsQuery("");
 
   const [searchValue, setSearchValue] = useState("");
@@ -33,12 +35,14 @@ const WarhouseListing = () => {
           enterButton
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        <Link
-          to="/warhouse/addNew"
-          className="link darker search-section--add-new"
-        >
-          Add new
-        </Link>
+        {decodedToken?.role != "cart operator" && (
+          <Link
+            to="/warhouse/addNew"
+            className="link darker search-section--add-new"
+          >
+            Add new
+          </Link>
+        )}
       </section>
       {isLoading && (
         <Spin tip="Loading" size="large">
