@@ -1,16 +1,49 @@
 import { useState } from "react";
-import Footer from "../../components/footer/Footer";
 import { Button, DatePicker, Form, Input, InputNumber, Switch } from "antd";
 import "./addNew.css";
 import { Store } from "antd/lib/form/interface";
+import axios from "axios";
+import { useAppSelector } from "../../hooks";
+import { useNavigate } from "react-router-dom";
+import ErrorDisplayer from "../../components/error/ErrorDisplayer";
 
 const addNew = () => {
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
+  const token = useAppSelector((state) => state.auth.token);
+  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
+
+  if (!baseUrl) {
+    baseUrl = "http://localhost:3001/";
+  }
+
   const [form] = Form.useForm();
   const [isOnSale, setIsOnSale] = useState(false);
   const [isAvailable, setIsAvailable] = useState(true);
 
   const onFinish = (values: Store) => {
-    console.log(values);
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios
+      .post(`${baseUrl}products/createProduct`, values, config)
+      .then((res) => {
+        if (res.status == 201) {
+          navigate("/warehouse");
+        }
+      })
+      .catch((err) => {
+        setIsError(true);
+        if (err.response.data.message) {
+          setErrorMessage(err.response.data.message);
+        } else {
+          setErrorMessage("Something went wrong!");
+        }
+      });
   };
 
   return (
@@ -118,8 +151,8 @@ const addNew = () => {
             </Button>
           </Form.Item>
         </Form>
+        {isError && <ErrorDisplayer message={errorMessage} />}
       </section>
-      <Footer />
     </>
   );
 };

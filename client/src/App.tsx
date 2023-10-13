@@ -8,6 +8,7 @@ import Dashboard from "./views/dashboard/Dashboard";
 import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
 import AddNew from "./views/warhouse/addNew";
+import Footer from "./components/footer/Footer";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -56,6 +57,7 @@ const App: React.FC = () => {
                       <>
                         <Navbar />
                         <AddNew />
+                        <Footer />
                       </>
                     }
                   ></Route>
