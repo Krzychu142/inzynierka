@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Skeleton, Space, Spin } from "antd";
+import { Button, List, Result, Skeleton, Space, Spin, message } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
-import ErrorDisplayer from "../../components/error/ErrorDisplayer";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -23,8 +22,7 @@ const WarhouseListing = () => {
   if (!baseUrl) {
     baseUrl = "http://localhost:3001/";
   }
-
-  const [isErrorAfterDelete, setIsErrorAfterDelete] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const {
     data: products,
@@ -63,14 +61,19 @@ const WarhouseListing = () => {
         }
       })
       .catch((err) => {
-        if (err.response && err.response.data.message) {
-          setIsErrorAfterDelete(true);
-        }
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
       });
   };
 
   return (
     <>
+      {contextHolder}
       <section className="search-section">
         <Search
           placeholder="input search text"
@@ -85,7 +88,6 @@ const WarhouseListing = () => {
             Add new
           </Link>
         )}
-        {isErrorAfterDelete && <ErrorDisplayer message="Somthing goes wrong" />}
       </section>
       {isLoading && (
         <Spin tip="Loading" size="large">
@@ -117,35 +119,41 @@ const WarhouseListing = () => {
               key={item.name}
               id={item._id}
               actions={[
-                <Link to="/" className="link darker">
-                  <IconText
-                    icon={EditOutlined}
-                    text="Edit"
-                    key="id-list-iteam"
-                  />
-                </Link>,
-                <Button
-                  type="link"
-                  className="link darker"
-                  onClick={() => deleteProduct(item._id)}
-                >
-                  <IconText
-                    icon={DeleteOutlined}
-                    text="Delete"
-                    key="id-list-iteam"
-                  />
-                </Button>,
+                ...(decodedToken?.role !== "cart operator"
+                  ? [
+                      <Link to="/" className="link darker">
+                        <IconText
+                          icon={EditOutlined}
+                          text="Edit"
+                          key="id-list-iteam"
+                        />
+                      </Link>,
+                      <Button
+                        type="link"
+                        className="link darker"
+                        onClick={() => deleteProduct(item._id)}
+                      >
+                        <IconText
+                          icon={DeleteOutlined}
+                          text="Delete"
+                          key="id-list-iteam"
+                        />
+                      </Button>,
+                    ]
+                  : []),
               ]}
               extra={
-                item.images.length > 0 ? (
-                  <img
-                    className="listing-logo"
-                    alt={item.description}
-                    src={item.images[0]}
-                  />
-                ) : (
-                  <Skeleton.Image className="listing-logo" />
-                )
+                <section className="section__logo">
+                  {item.images.length > 0 ? (
+                    <img
+                      className="listing-logo"
+                      alt={item.description}
+                      src={item.images[0]}
+                    />
+                  ) : (
+                    <Skeleton.Image className="listing-logo" />
+                  )}
+                </section>
               }
             >
               <List.Item.Meta
@@ -157,6 +165,12 @@ const WarhouseListing = () => {
                   <b>Stock quantity:</b> {item.stockQuantity}
                 </li>
                 <li>Initial stock quantiti: {item.initialStockQuantity}</li>
+                <li>Added at: {new Date(item.addedAt).toLocaleString()}</li>
+                {item.soldAt && (
+                  <li>
+                    Last time sold at: {new Date(item.soldAt).toLocaleString()}
+                  </li>
+                )}
                 {!item.isOnSale ? (
                   <li>
                     <b>Price:</b> {item.price}PLN
@@ -174,10 +188,7 @@ const WarhouseListing = () => {
                     <b>Available</b>
                   </li>
                 ) : (
-                  <li className="danger">
-                    Temporary not available
-                    {item.soldAt && ` since ${item.soldAt}`}
-                  </li>
+                  <li className="danger">Temporary not available</li>
                 )}
               </ul>
             </List.Item>

@@ -28,13 +28,16 @@ class ProductController {
     try {
       const id = req.body.id;
       if(!id) {
-        res.status(400).send({ message: 'The id parameter is missingClick to apply' }) 
+        res.status(400).json({ message: 'The id parameter is missingClick to apply' }) 
       }
       const result = await ProductService.deleteProduct(id);
-      if (result.deletedCount === 0) {
-          res.status(404).send({ message: 'The product with the specified id was not found' });
+      if (result.deletedCount !== 0) {
+        res.status(201).json({ message: 'The product has been removed' });
+      } else {
+        res.status(404).json({
+          message: "The product was not found"
+        })
       }
-      res.status(201).send({ message: 'The product has been removed' });
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }

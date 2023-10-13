@@ -57,9 +57,3 @@ body {
 .secondary {
     color: var(--secondary-color);
 }
-
-@media screen and (max-width: 699px) {
-    .listing-logo {
-        display: none !important;
-    }
-}
