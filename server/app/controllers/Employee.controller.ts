@@ -8,8 +8,7 @@ class EmployeeController {
       const employees = await EmployeeService.getAllEmployees()
       res.json(employees)
     } catch (error: unknown) {
-      const errorMessages = ErrorsHandlers.errorMessageHandler(error)
-      res.status(500).json(errorMessages)
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 }

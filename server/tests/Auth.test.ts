@@ -7,10 +7,10 @@ import Employee from '../app/models/employee.model'
 import ErrorsHandlers from '../app/utils/helpers/ErrorsHandlers'
 
 jest.mock('../app/services/Auth.service')
-jest.mock('../app/helpers/Crypt')
+jest.mock('../app/utils/helpers/Crypt')
 jest.mock('../app/services/Token.service')
 jest.mock('../app/models/Employee.model')
-jest.mock('../app/helpers/ErrorsHandlers')
+jest.mock('../app/utils/helpers/ErrorsHandlers')
 
 describe('AuthController', () => {
   describe('register', () => {

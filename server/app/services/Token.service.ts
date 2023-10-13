@@ -1,13 +1,15 @@
 import jwt from 'jsonwebtoken'
-import User from '../types/user.interface'
+import IEmployee from '../types/employee.interface'
 
 class TokenService {
-  static generateToken(user: User): string {
-    const expiresIn = '3h'
+  static generateToken(user: IEmployee): string {
+    // 1 day of work
+    const expiresIn = '8h'
     const payload = {
       id: user._id,
       email: user.email,
       role: user.role,
+      name: user.name
     }
 
     if (!process.env.JWT_SECRET_KEY) {

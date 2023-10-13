@@ -1,10 +1,19 @@
 import { createAsyncThunk, createSlice, createAction  } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
+import jwt_decode from "jwt-decode";
+import { IDecodedToken } from "../types/decodedToken.interace";
+
+const isTokenExpired = (decodedToken: IDecodedToken): boolean => {
+    if (!decodedToken.exp) return true;
+    const currentTime = Date.now() / 1000; 
+    return decodedToken.exp < currentTime; 
+}
 
 export const initialState = {
     token: localStorage.getItem('token') || null,
-    error: null as string | null,
-    isAuthenticated: localStorage.getItem('token') ? true : false
+    error: null as string | null,    
+    decodedToken: localStorage.getItem('token') ? jwt_decode(localStorage.getItem('token') || "") as IDecodedToken : null,
+    isAuthenticated: localStorage.getItem('token') && !isTokenExpired(jwt_decode(localStorage.getItem('token') || "")) ? true : false,
 };
 
 export const login = createAsyncThunk< { token: string }, { email: string, password: string }, { rejectValue: string }>(
@@ -40,6 +49,7 @@ const authSlice = createSlice({
             state.token = action.payload.token;
             state.isAuthenticated = true;
             localStorage.setItem('token', state.token)
+            state.decodedToken = jwt_decode(state.token)
         });        
         builder.addCase(login.rejected, (state, action) => {
             state.token = null;
