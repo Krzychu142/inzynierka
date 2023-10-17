@@ -38,7 +38,7 @@ body {
     color: var(--main-color-dark);
 }
 
-.danger {
+.error {
     color: #d32029;
 }
 

@@ -121,7 +121,10 @@ const WarhouseListing = () => {
               actions={[
                 ...(decodedToken?.role !== "cart operator"
                   ? [
-                      <Link to="/" className="link darker">
+                      <Link
+                        to={`/warhouse/${item._id}`}
+                        className="link darker"
+                      >
                         <IconText
                           icon={EditOutlined}
                           text="Edit"
