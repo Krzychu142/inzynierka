@@ -47,7 +47,7 @@ const EmployeesListing = () => {
                 <>
                   <List.Item.Meta
                     avatar={<Avatar icon={<UserOutlined />} />}
-                    title={<a href="https://ant.design"></a>} // załóżmy, że item ma pole 'name'
+                    title={<a href="https://ant.design"></a>}
                     description="Ant Design, a design language for background applications, is refined by Ant UED Team"
                   />
                   <div>content</div>
