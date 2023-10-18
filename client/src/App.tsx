@@ -9,6 +9,7 @@ import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
 import AddNew from "./views/warhouse/addNew";
 import Footer from "./components/footer/Footer";
+import EmployeesListing from "./views/employees/EmployeesListing";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -30,7 +31,6 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Routes>
             {isAuthenticated ? (
-              // only for authenticated
               <>
                 <Route
                   path="/dashboard"
@@ -50,7 +50,7 @@ const App: React.FC = () => {
                     </>
                   }
                 ></Route>
-                {role != "cart operator" ? (
+                {role !== "cart operator" && (
                   <>
                     <Route
                       path="/warhouse/addNew"
@@ -73,8 +73,18 @@ const App: React.FC = () => {
                       }
                     ></Route>
                   </>
-                ) : (
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
+                )}
+                {role !== "cart operator" && role !== "warehouseman" && (
+                  <Route
+                    path="/employees"
+                    element={
+                      <>
+                        <Navbar />
+                        <EmployeesListing />
+                        <Footer />
+                      </>
+                    }
+                  ></Route>
                 )}
               </>
             ) : (
