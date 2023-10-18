@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Result, Spin } from "antd";
+import { Avatar, List, Result, Skeleton, Spin } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 
 const EmployeesListing = () => {
   const {
@@ -16,11 +17,6 @@ const EmployeesListing = () => {
 
   return (
     <div>
-      {isLoading && (
-        <Spin tip="Loading" size="large">
-          <div />
-        </Spin>
-      )}
       {isError && (
         <Result
           status="error"
@@ -28,10 +24,39 @@ const EmployeesListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
-      {employees &&
-        employees.map((employee: any) => {
-          return <h1>{employee.name}</h1>;
-        })}
+      {isLoading && (
+        <Spin tip="Loading" size="large">
+          <div />
+        </Spin>
+      )}
+      {employees && (
+        <List
+          itemLayout="horizontal"
+          loading={isLoading}
+          dataSource={employees}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <a key="list-loadmore-edit">edit</a>,
+                <a key="list-loadmore-more">more</a>,
+              ]}
+            >
+              {isLoading ? (
+                <Skeleton avatar title={false} active />
+              ) : (
+                <>
+                  <List.Item.Meta
+                    avatar={<Avatar icon={<UserOutlined />} />}
+                    title={<a href="https://ant.design"></a>} // załóżmy, że item ma pole 'name'
+                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                  />
+                  <div>content</div>
+                </>
+              )}
+            </List.Item>
+          )}
+        />
+      )}
     </div>
   );
 };
