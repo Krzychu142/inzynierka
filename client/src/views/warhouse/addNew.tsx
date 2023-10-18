@@ -10,10 +10,7 @@ import dayjs from "dayjs";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 
 const addNew = () => {
-  // const [isItEditForm, setIsItEditForm] = useState(false);
-  const [initialProduct, setInitialProduct] = useState<Store | null>(null);
   const [form] = Form.useForm();
-  const [formValues, setFormValues] = useState({});
   const { id } = useParams();
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,7 +48,6 @@ const addNew = () => {
             images: product.images,
             addedAt: product.addedAt ? dayjs(product.addedAt) : null,
           });
-          setInitialProduct(product);
         })
         .catch((err) => {
           if (err.response.data.message) {
@@ -62,13 +58,6 @@ const addNew = () => {
         });
     }
   }, [id]);
-
-  useEffect(() => {
-    if (id) {
-      console.log(formValues, "form.getFieldsValue()");
-    }
-    console.log(initialProduct, "initialProduct");
-  }, [formValues]);
 
   const [isOnSale, setIsOnSale] = useState(false);
 
@@ -105,9 +94,6 @@ const addNew = () => {
           onFinish={onFinish}
           initialValues={{
             isAvailable: true,
-          }}
-          onValuesChange={(changedValues, allValues) => {
-            setFormValues(allValues);
           }}
         >
           <Form.Item

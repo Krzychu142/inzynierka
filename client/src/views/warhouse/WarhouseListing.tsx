@@ -191,7 +191,7 @@ const WarhouseListing = () => {
                     <b>Available</b>
                   </li>
                 ) : (
-                  <li className="danger">Temporary not available</li>
+                  <li className="error">Temporary not available</li>
                 )}
               </ul>
             </List.Item>
