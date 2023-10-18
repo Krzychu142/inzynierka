@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, InputNumber, Switch } from "antd";
 import "./addNew.css";
+import { useParams } from "react-router-dom";
 import { Store } from "antd/lib/form/interface";
 import axios from "axios";
 import { useAppSelector } from "../../hooks";
 import { useNavigate } from "react-router-dom";
-import ErrorDisplayer from "../../components/error/ErrorDisplayer";
+import dayjs from "dayjs";
+import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 
 const addNew = () => {
-  const [isError, setIsError] = useState(false);
+  const [form] = Form.useForm();
+  const { id } = useParams();
+  const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const token = useAppSelector((state) => state.auth.token);
@@ -18,25 +22,60 @@ const addNew = () => {
     baseUrl = "http://localhost:3001/";
   }
 
-  const [form] = Form.useForm();
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`${baseUrl}products/${id}`, config)
+        .then((res) => {
+          const product = res.data;
+          form.setFieldsValue({
+            sku: product.sku,
+            name: product.name,
+            description: product.description,
+            stockQuantity: product.stockQuantity,
+            initialStockQuantity: product.initialStockQuantity,
+            price: product.price,
+            isOnSale: product.isOnSale,
+            promotionalPrice: product.promotionalPrice,
+            isAvailable: product.isAvailable,
+            soldAt: product.soldAt ? dayjs(product.soldAt) : null,
+            images: product.images,
+            addedAt: product.addedAt ? dayjs(product.addedAt) : null,
+          });
+        })
+        .catch((err) => {
+          if (err.response.data.message) {
+            setErrorMessage(err.response.data.message);
+          } else {
+            setErrorMessage("Something went wrong!");
+          }
+        });
+    }
+  }, [id]);
+
   const [isOnSale, setIsOnSale] = useState(false);
 
   const onFinish = (values: Store) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+    const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
-    axios
-      .post(`${baseUrl}products/create`, values, config)
+    const method = id ? "put" : "post";
+
+    axios[method](url, id ? { id, ...values } : values, config)
       .then((res) => {
         if (res.status == 201) {
           navigate("/warhouse");
         }
+        if (res.status == 202) {
+          setSuccessMessage("Product updated!");
+        }
       })
       .catch((err) => {
-        setIsError(true);
         if (err.response.data.message) {
           setErrorMessage(err.response.data.message);
         } else {
@@ -144,11 +183,24 @@ const addNew = () => {
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Submit
+              {id ? "Edit " : "Add "}Product
             </Button>
           </Form.Item>
         </Form>
-        {isError && <ErrorDisplayer message={errorMessage} />}
+        {errorMessage && (
+          <MessageDisplayer
+            message={errorMessage}
+            type="error"
+            className="error"
+          />
+        )}
+        {successMessage && (
+          <MessageDisplayer
+            message={successMessage}
+            type="success"
+            className="success"
+          />
+        )}
       </section>
     </>
   );

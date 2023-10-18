@@ -121,7 +121,10 @@ const WarhouseListing = () => {
               actions={[
                 ...(decodedToken?.role !== "cart operator"
                   ? [
-                      <Link to="/" className="link darker">
+                      <Link
+                        to={`/warhouse/${item._id}`}
+                        className="link darker"
+                      >
                         <IconText
                           icon={EditOutlined}
                           text="Edit"
@@ -188,7 +191,7 @@ const WarhouseListing = () => {
                     <b>Available</b>
                   </li>
                 ) : (
-                  <li className="danger">Temporary not available</li>
+                  <li className="error">Temporary not available</li>
                 )}
               </ul>
             </List.Item>

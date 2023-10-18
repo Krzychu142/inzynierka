@@ -5,7 +5,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { login } from "../../features/authSlice";
-import ErrorDisplayer from "../../components/error/ErrorDisplayer";
+import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 
 interface LoginDataType {
   email: string;
@@ -79,7 +79,11 @@ const Login: React.FC = () => {
               Reset password
             </Link>
           </Form.Item>
-          <ErrorDisplayer message={authState?.error} />
+          <MessageDisplayer
+            type="error"
+            className="error"
+            message={authState?.error}
+          />
         </Form>
       </section>
       <Link to="/">

@@ -51,16 +51,28 @@ const App: React.FC = () => {
                   }
                 ></Route>
                 {role != "cart operator" ? (
-                  <Route
-                    path="/warhouse/addNew"
-                    element={
-                      <>
-                        <Navbar />
-                        <AddNew />
-                        <Footer />
-                      </>
-                    }
-                  ></Route>
+                  <>
+                    <Route
+                      path="/warhouse/addNew"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNew />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/warhouse/:id"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNew />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                  </>
                 ) : (
                   <Route path="*" element={<Navigate to="/dashboard" />} />
                 )}
