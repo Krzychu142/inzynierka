@@ -1,7 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, List, Result, Skeleton, Spin } from "antd";
+import { Avatar, List, Result, Spin } from "antd";
 import { UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import "./employeesListing.css";
+import { IEmployee } from "../../types/employee.interface";
 
 const EmployeesListing = () => {
   const {
@@ -11,12 +14,24 @@ const EmployeesListing = () => {
     refetch,
   } = useGetAllEmployeesQuery("");
 
+  console.log(employees, "employees");
+
   useEffect(() => {
     refetch();
   }, [refetch]);
 
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [windowWidth]);
+
   return (
-    <div>
+    <>
       {isError && (
         <Result
           status="error"
@@ -30,34 +45,71 @@ const EmployeesListing = () => {
         </Spin>
       )}
       {employees && (
-        <List
-          itemLayout="horizontal"
-          loading={isLoading}
-          dataSource={employees}
-          renderItem={(item) => (
-            <List.Item
-              actions={[
-                <a key="list-loadmore-edit">edit</a>,
-                <a key="list-loadmore-more">more</a>,
-              ]}
-            >
-              {isLoading ? (
-                <Skeleton avatar title={false} active />
-              ) : (
+        <section className="employees-listing">
+          <List
+            itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
+            loading={isLoading}
+            dataSource={employees}
+            renderItem={(employee: IEmployee) => (
+              <List.Item
+                actions={[
+                  <Link to="/" key="list-loadmore-edit" className="link">
+                    edit
+                  </Link>,
+                  <Link to="/" key="list-loadmore-more" className="link">
+                    delete
+                  </Link>,
+                ]}
+              >
                 <>
                   <List.Item.Meta
-                    avatar={<Avatar icon={<UserOutlined />} />}
-                    title={<a href="https://ant.design"></a>}
-                    description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                    avatar={
+                      <Avatar
+                        size={64}
+                        shape="square"
+                        icon={<UserOutlined />}
+                      />
+                    }
+                    title={employee.name + " " + employee.surname}
+                    description={windowWidth > 400 ? employee.email : ""}
                   />
-                  <div>content</div>
+                  <ul>
+                    {windowWidth < 400 && (
+                      <li>
+                        <span className="main bold">{employee.email}</span>
+                      </li>
+                    )}
+                    <li>
+                      <span className="main bold">Role: {employee.role}</span>
+                    </li>
+                    <li>
+                      <span className="main bold">
+                        Salary: {employee.salary}PLN
+                      </span>
+                    </li>
+                    <li>
+                      Employed At:{" "}
+                      {
+                        // split, because I do not want to display time
+                        new Date(employee.employedAt)
+                          .toLocaleString()
+                          .split(",")[0]
+                      }
+                    </li>
+                    <li>Phon number: {employee.phoneNumber}</li>
+                    <li>Country: {employee.country}</li>
+                    <li>
+                      City: {employee.postalCode} {employee.city}
+                    </li>
+                    <li>Address: {employee.address}</li>
+                  </ul>
                 </>
-              )}
-            </List.Item>
-          )}
-        />
+              </List.Item>
+            )}
+          />
+        </section>
       )}
-    </div>
+    </>
   );
 };
 

@@ -81,7 +81,6 @@ const App: React.FC = () => {
                       <>
                         <Navbar />
                         <EmployeesListing />
-                        <Footer />
                       </>
                     }
                   ></Route>
