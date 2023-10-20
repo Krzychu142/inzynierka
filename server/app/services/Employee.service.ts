@@ -8,6 +8,10 @@ class EmployeeService {
   static async getSingleEmployee(id: string): Promise<IEmployee | null> {
     return Employee.findById(id);
   }
+
+  static async deleteSingleEmployee(email: string) {
+    return Employee.deleteOne({email: email});
+  }
 }
 
 export default EmployeeService
