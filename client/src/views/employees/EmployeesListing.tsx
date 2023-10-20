@@ -5,16 +5,18 @@ import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
 import { IEmployee } from "../../types/employee.interface";
+import { useAppSelector } from "../../hooks";
 
 const EmployeesListing = () => {
+  // TODO: It can be moved to custom hook
+  const decodedToken = useAppSelector((store) => store.auth.decodedToken);
+
   const {
     data: employees,
     isLoading,
     isError,
     refetch,
   } = useGetAllEmployeesQuery("");
-
-  console.log(employees, "employees");
 
   useEffect(() => {
     refetch();
@@ -52,14 +54,19 @@ const EmployeesListing = () => {
             dataSource={employees}
             renderItem={(employee: IEmployee) => (
               <List.Item
-                actions={[
-                  <Link to="/" key="list-loadmore-edit" className="link">
-                    edit
-                  </Link>,
-                  <Link to="/" key="list-loadmore-more" className="link">
-                    delete
-                  </Link>,
-                ]}
+                // only manager can delete or edit employee
+                actions={
+                  decodedToken?.role === "manager"
+                    ? [
+                        <Link to="/" key="list-loadmore-edit" className="link">
+                          edit
+                        </Link>,
+                        <Link to="/" key="list-loadmore-more" className="link">
+                          delete
+                        </Link>,
+                      ]
+                    : []
+                }
               >
                 <>
                   <List.Item.Meta
