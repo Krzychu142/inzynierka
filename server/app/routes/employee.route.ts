@@ -1,8 +1,10 @@
 import express from 'express'
 import EmployeeController from '../controllers/Employee.controller'
+import AuthMiddleware from '../middleware/Auth.middleware';
+import { Role } from '../types/role.enum';
 
 const router = express.Router()
 
-router.get('/get', EmployeeController.getAllEmployees)
+router.get('/get', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), EmployeeController.getAllEmployees);
 
 export default router
