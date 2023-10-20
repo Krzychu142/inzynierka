@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, List, Result, Spin } from "antd";
+import { Avatar, Button, List, Result, Spin, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
 import { IEmployee } from "../../types/employee.interface";
 import { useAppSelector } from "../../hooks";
+import axios from "axios";
 
 const EmployeesListing = () => {
   // TODO: It can be moved to custom hook
@@ -32,8 +33,50 @@ const EmployeesListing = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [windowWidth]);
 
+  // TODO: move this to global function to not repeat
+  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
+
+  if (!baseUrl) {
+    baseUrl = "http://localhost:3001/";
+  }
+
+  const token = useAppSelector((state) => state.auth.token);
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  const deleteEmployee = (email: string) => {
+    axios
+      .delete(`${baseUrl}employees/delete`, {
+        data: { email },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.status) {
+          refetch();
+          if (res.status === 201) {
+            messageApi.open({
+              type: "success",
+              content: res.data?.message,
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
+  };
+
   return (
     <>
+      {contextHolder}
       {isError && (
         <Result
           status="error"
@@ -61,9 +104,17 @@ const EmployeesListing = () => {
                         <Link to="/" key="list-loadmore-edit" className="link">
                           edit
                         </Link>,
-                        <Link to="/" key="list-loadmore-more" className="link">
+                        <Button
+                          type="link"
+                          key="list-loadmore-more"
+                          className="link"
+                          onClick={() => {
+                            deleteEmployee(employee.email);
+                          }}
+                          disabled={decodedToken.email === employee.email}
+                        >
                           delete
-                        </Link>,
+                        </Button>,
                       ]
                     : []
                 }
