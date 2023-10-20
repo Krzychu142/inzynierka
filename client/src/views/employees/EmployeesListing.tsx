@@ -7,6 +7,7 @@ import "./employeesListing.css";
 import { IEmployee } from "../../types/employee.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
+import Search from "antd/es/input/Search";
 
 const EmployeesListing = () => {
   // TODO: It can be moved to custom hook
@@ -90,84 +91,105 @@ const EmployeesListing = () => {
         </Spin>
       )}
       {employees && (
-        <section className="employees-listing">
-          <List
-            itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
-            loading={isLoading}
-            dataSource={employees}
-            renderItem={(employee: IEmployee) => (
-              <List.Item
-                // only manager can delete or edit employee
-                actions={
-                  decodedToken?.role === "manager"
-                    ? [
-                        <Link to="/" key="list-loadmore-edit" className="link">
-                          edit
-                        </Link>,
-                        <Button
-                          type="link"
-                          key="list-loadmore-more"
-                          className="link"
-                          onClick={() => {
-                            deleteEmployee(employee.email);
-                          }}
-                          disabled={decodedToken.email === employee.email}
-                        >
-                          delete
-                        </Button>,
-                      ]
-                    : []
-                }
+        <>
+          <section className="search-section">
+            <Search
+              placeholder="input search text"
+              enterButton
+              // onChange={(e) => setSearchValue(e.target.value)}
+            />
+            {decodedToken?.role === "manager" && (
+              <Link
+                to="/warhouse/addNew"
+                className="link darker search-section--add-new"
               >
-                <>
-                  <List.Item.Meta
-                    avatar={
-                      <Avatar
-                        size={64}
-                        shape="square"
-                        icon={<UserOutlined />}
-                      />
-                    }
-                    title={employee.name + " " + employee.surname}
-                    description={windowWidth > 400 ? employee.email : ""}
-                  />
-                  <ul className="employees-listing__description">
-                    {windowWidth < 400 && (
+                Add new
+              </Link>
+            )}
+          </section>
+          <section className="employees-listing">
+            <List
+              itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
+              loading={isLoading}
+              dataSource={employees}
+              renderItem={(employee: IEmployee) => (
+                <List.Item
+                  // only manager can delete or edit employee
+                  actions={
+                    decodedToken?.role === "manager"
+                      ? [
+                          <Link
+                            to="/"
+                            key="list-loadmore-edit"
+                            className="link"
+                          >
+                            edit
+                          </Link>,
+                          <Button
+                            type="link"
+                            key="list-loadmore-more"
+                            className="link"
+                            onClick={() => {
+                              deleteEmployee(employee.email);
+                            }}
+                            disabled={decodedToken.email === employee.email}
+                          >
+                            delete
+                          </Button>,
+                        ]
+                      : []
+                  }
+                >
+                  <>
+                    <List.Item.Meta
+                      avatar={
+                        <Avatar
+                          size={64}
+                          shape="square"
+                          icon={<UserOutlined />}
+                        />
+                      }
+                      title={employee.name + " " + employee.surname}
+                      description={windowWidth > 400 ? employee.email : ""}
+                    />
+                    <ul className="employees-listing__description">
+                      {windowWidth < 400 && (
+                        <li>
+                          <span className="main bold email">
+                            {employee.email}
+                          </span>
+                        </li>
+                      )}
                       <li>
-                        <span className="main bold email">
-                          {employee.email}
+                        <span className="main bold">Role: {employee.role}</span>
+                      </li>
+                      <li>
+                        <span className="main bold">
+                          Salary: {employee.salary}PLN
                         </span>
                       </li>
-                    )}
-                    <li>
-                      <span className="main bold">Role: {employee.role}</span>
-                    </li>
-                    <li>
-                      <span className="main bold">
-                        Salary: {employee.salary}PLN
-                      </span>
-                    </li>
-                    <li>
-                      Employed At:{" "}
-                      {
-                        // split, because I do not want to display time
-                        new Date(employee.employedAt)
-                          .toLocaleString()
-                          .split(",")[0]
-                      }
-                    </li>
-                    <li>Phon number: {employee.phoneNumber}</li>
-                    <li>Country: {employee.country}</li>
-                    <li>
-                      City: {employee.postalCode} {employee.city}
-                    </li>
-                    <li>Address: {employee.address}</li>
-                  </ul>
-                </>
-              </List.Item>
-            )}
-          />
-        </section>
+                      <li>
+                        Employed At:{" "}
+                        {
+                          // split, because I do not want to display time
+                          new Date(employee.employedAt)
+                            .toLocaleString()
+                            .split(",")[0]
+                        }
+                      </li>
+                      <li>Phon number: {employee.phoneNumber}</li>
+                      <li>Country: {employee.country}</li>
+                      <li>
+                        City: {employee.postalCode} {employee.city}
+                      </li>
+                      <li>Address: {employee.address}</li>
+                    </ul>
+                  </>
+                </List.Item>
+              )}
+            />
+          </section>
+        </>
       )}
     </>
   );
