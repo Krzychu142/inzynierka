@@ -14,7 +14,10 @@ class EmployeeController {
 
   static async deleteEmployee(req: Request, res: Response): Promise<void> {
     try {
-      console.log(req, "req deleteEmployee")
+      if(!req.body.email) {
+        res.status(400).json({ message: 'The email parameter is missing' }) 
+      }
+      console.log("here")
     } catch (error) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }

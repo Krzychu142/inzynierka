@@ -33,7 +33,7 @@ class ProductController {
   Promise<void> {
     try {
       if(!req.body.id) {
-        res.status(400).json({ message: 'The id parameter is missingClick to apply' }) 
+        res.status(400).json({ message: 'The id parameter is missing' }) 
       }
       const result = await ProductService.deleteProduct(req.body.id);
       if (result.deletedCount !== 0) {
