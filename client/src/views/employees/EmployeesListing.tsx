@@ -80,10 +80,12 @@ const EmployeesListing = () => {
                     title={employee.name + " " + employee.surname}
                     description={windowWidth > 400 ? employee.email : ""}
                   />
-                  <ul>
+                  <ul className="employees-listing__description">
                     {windowWidth < 400 && (
                       <li>
-                        <span className="main bold">{employee.email}</span>
+                        <span className="main bold email">
+                          {employee.email}
+                        </span>
                       </li>
                     )}
                     <li>
