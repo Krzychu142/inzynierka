@@ -75,6 +75,15 @@ const EmployeesListing = () => {
       });
   };
 
+  const [searchValue, setSearchValue] = useState("");
+  const filteredData = employees?.filter(
+    (item: IEmployee) =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.role.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
   return (
     <>
       {contextHolder}
@@ -96,7 +105,7 @@ const EmployeesListing = () => {
             <Search
               placeholder="input search text"
               enterButton
-              // onChange={(e) => setSearchValue(e.target.value)}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
             {decodedToken?.role === "manager" && (
               <Link
@@ -111,7 +120,7 @@ const EmployeesListing = () => {
             <List
               itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
               loading={isLoading}
-              dataSource={employees}
+              dataSource={filteredData}
               renderItem={(employee: IEmployee) => (
                 <List.Item
                   // only manager can delete or edit employee
