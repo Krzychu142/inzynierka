@@ -28,9 +28,10 @@ class AuthService {
 
             const user = new Employee(userData)
             await user.save()
+            const encodedToken = Buffer.from(userData.passwordResetToken).toString('base64');
 
             const subject = `Welcome ${user.name}`;
-            const message = `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} The link will be valid for 24 hours.`;
+            const message = `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours.`;
 
             await this.sendEmail(user.email, subject, message);
 
@@ -103,9 +104,9 @@ class AuthService {
             )
             await user.save()
 
-            
+            const encodedToken = Buffer.from(user.passwordResetToken).toString('base64');
             const subject = "Reset password";
-            const message = `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} If you have not reset your password ignore this message and contact the manager.`;
+            const message = `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours. If you have not reset your password ignore this message and contact the manager.`;
 
             await this.sendEmail(user.email, subject, message);
 
