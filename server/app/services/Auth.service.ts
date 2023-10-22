@@ -13,6 +13,12 @@ class AuthService {
 
     private static emailAdress = process.env.EMAIL_ADRESS || 'krzysztofradzieta@outlook.com'
 
+    private static async sendEmail(recipientEmail: string, subject: string, message: string): Promise<void> {
+        const emailSender = Email.getInstance();
+        const emailOptions = emailSender.emailOptions(this.emailAdress, recipientEmail, subject, message);
+        await emailSender.sendEmail(emailOptions);
+    }
+
     static async register(userData: IEmployee): Promise<IEmployee | string> {
         try {
             userData.password = await Crypt.hashPassword(userData.password)
@@ -23,9 +29,10 @@ class AuthService {
             const user = new Employee(userData)
             await user.save()
 
-            const emailSender = Email.getInstance()
-            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, `Welcome ${user.name}`, `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} The link will be valid for 24 hours.`)
-            await emailSender.sendEmail(emailOptions)
+            const subject = `Welcome ${user.name}`;
+            const message = `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} The link will be valid for 24 hours.`;
+
+            await this.sendEmail(user.email, subject, message);
 
             return user
         } catch (error: unknown) {
@@ -96,9 +103,11 @@ class AuthService {
             )
             await user.save()
 
-            const emailSender = Email.getInstance()
-            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, "Reset password", `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${user.passwordResetToken}`)
-            await emailSender.sendEmail(emailOptions)
+            
+            const subject = "Reset password";
+            const message = `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} If you have not reset your password ignore this message and contact the manager.`;
+
+            await this.sendEmail(user.email, subject, message);
 
         } catch (error: unknown) {
             throw new Error(ErrorsHandlers.errorMessageHandler(error).message)
