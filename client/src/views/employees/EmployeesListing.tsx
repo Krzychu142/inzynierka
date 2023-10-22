@@ -8,6 +8,7 @@ import { IEmployee } from "../../types/employee.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import Search from "antd/es/input/Search";
+import useBaseURL from "../../customHooks/useBaseURL";
 
 const EmployeesListing = () => {
   // TODO: It can be moved to custom hook
@@ -34,12 +35,7 @@ const EmployeesListing = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [windowWidth]);
 
-  // TODO: move this to global function to not repeat
-  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
-
-  if (!baseUrl) {
-    baseUrl = "http://localhost:3001/";
-  }
+  const baseUrl = useBaseURL();
 
   const token = useAppSelector((state) => state.auth.token);
 
@@ -132,7 +128,7 @@ const EmployeesListing = () => {
                             key="list-loadmore-edit"
                             className="link"
                           >
-                            edit
+                            Edit
                           </Link>,
                           <Button
                             type="link"
@@ -143,7 +139,7 @@ const EmployeesListing = () => {
                             }}
                             disabled={decodedToken.email === employee.email}
                           >
-                            delete
+                            Delete
                           </Button>,
                         ]
                       : []
@@ -164,7 +160,7 @@ const EmployeesListing = () => {
                     <ul className="employees-listing__description">
                       {windowWidth < 400 && (
                         <li>
-                          <span className="main bold email">
+                          <span className="main bold break-word">
                             {employee.email}
                           </span>
                         </li>

@@ -8,6 +8,7 @@ import { useAppSelector } from "../../hooks";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
+import useBaseURL from "../../customHooks/useBaseURL";
 
 const addNew = () => {
   const [form] = Form.useForm();
@@ -16,11 +17,7 @@ const addNew = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const token = useAppSelector((state) => state.auth.token);
-  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
-
-  if (!baseUrl) {
-    baseUrl = "http://localhost:3001/";
-  }
+  const baseUrl = useBaseURL();
 
   const config = {
     headers: {

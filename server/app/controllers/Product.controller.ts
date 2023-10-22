@@ -71,7 +71,7 @@ class ProductController {
     try {
     ProductController.ensureIdExists(req);
     const { id, ...editedProductWithoutId } = req.body;
-    const updatedProduct = await ProductService.editProduct(id, editedProductWithoutId);
+    const updatedProduct = await ProductService.editProduct(req.params.id, editedProductWithoutId);
     if (updatedProduct) {
       res.status(202).json(updatedProduct);
     } else {

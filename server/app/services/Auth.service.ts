@@ -17,14 +17,14 @@ class AuthService {
         try {
             userData.password = await Crypt.hashPassword(userData.password)
 
-            userData.tokenForEmailVerification =
+            userData.passwordResetToken =
                 TokenService.generateTokenForEmailVerificationOrPasswordReset(userData.email)
 
             const user = new Employee(userData)
             await user.save()
 
             const emailSender = Email.getInstance()
-            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, "Email verification", `Please click on this link to verify your email: ${this.clientUrl}/verifyEmail/${user.tokenForEmailVerification}`)
+            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, `Welcome ${user.name}`, `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${user.passwordResetToken} The link will be valid for 24 hours.`)
             await emailSender.sendEmail(emailOptions)
 
             return user
@@ -49,11 +49,11 @@ class AuthService {
             if (!user) {
                 throw new Error('User not found')
             }
-            if (user.isVerified) {
-                throw new Error('Email already verified')
-            }
-            user.isVerified = true
-            user.tokenForEmailVerification = null
+            // if (user.isVerified) {
+            //     throw new Error('Email already verified')
+            // }
+            // user.isVerified = true
+            // user.tokenForEmailVerification = null
             await user.save()
         } catch (error: unknown) {
             throw new Error(ErrorsHandlers.errorMessageHandler(error).message)

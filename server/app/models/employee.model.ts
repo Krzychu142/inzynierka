@@ -16,8 +16,8 @@ export interface IEmployee {
   phoneNumber: string
   birthDate: Date
   passwordResetToken: string | null
-  tokenForEmailVerification: string | null
-  isVerified: boolean
+  // tokenForEmailVerification: string | null
+  // isVerified: boolean
 }
 
 export const employeeSchema = new Schema<IEmployee>({
@@ -82,14 +82,14 @@ export const employeeSchema = new Schema<IEmployee>({
     type: String,
     default: null,
   },
-  tokenForEmailVerification: {
-    type: String,
-    default: null,
-  },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  }
+  // tokenForEmailVerification: {
+  //   type: String,
+  //   default: null,
+  // },
+  // isVerified: {
+  //   type: Boolean,
+  //   default: false,
+  // }
 })
 
 export default model<IEmployee>('Employee', employeeSchema)

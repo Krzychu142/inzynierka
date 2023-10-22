@@ -75,8 +75,8 @@ const Login: React.FC = () => {
             </Button>
           </Form.Item>
           <Form.Item className="login__form__button--center">
-            <Link to="/" id="form__link-reset" className="link">
-              Reset password
+            <Link to="/forgotPassword" id="form__link-reset" className="link">
+              Forgot Your password?
             </Link>
           </Form.Item>
           <MessageDisplayer

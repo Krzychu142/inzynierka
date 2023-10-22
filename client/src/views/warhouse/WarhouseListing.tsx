@@ -8,6 +8,7 @@ import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
+import useBaseURL from "../../customHooks/useBaseURL";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -17,11 +18,7 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarhouseListing = () => {
-  let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
-
-  if (!baseUrl) {
-    baseUrl = "http://localhost:3001/";
-  }
+  const baseUrl = useBaseURL();
   const [messageApi, contextHolder] = message.useMessage();
 
   const {

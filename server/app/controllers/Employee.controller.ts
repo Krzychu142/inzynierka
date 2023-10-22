@@ -28,6 +28,21 @@ class EmployeeController {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
+
+  static async createEmployee(req: Request, res: Response):
+  Promise<void> {
+    try {
+      console.log(req.body, "req.body")
+
+      // so what i want here is create new user
+      // send for his email link to set new password
+
+      
+
+    } catch (error) {
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+    }
+  }
 }
 
 export default EmployeeController

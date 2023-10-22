@@ -10,6 +10,7 @@ import WarhouseListing from "./views/warhouse/WarhouseListing";
 import AddNew from "./views/warhouse/addNew";
 import Footer from "./components/footer/Footer";
 import EmployeesListing from "./views/employees/EmployeesListing";
+import ForgotPassword from "./views/forgotPassword/ForgotPassword";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -91,7 +92,13 @@ const App: React.FC = () => {
             )}
             {!isAuthenticated ? (
               // only for guests
-              <Route path="/login" element={<Login />}></Route>
+              <>
+                <Route path="/login" element={<Login />}></Route>
+                <Route
+                  path="/forgotPassword"
+                  element={<ForgotPassword />}
+                ></Route>
+              </>
             ) : (
               <Route path="*" element={<Navigate to="/dashboard" />} />
             )}
