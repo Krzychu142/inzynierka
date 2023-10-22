@@ -105,7 +105,7 @@ const EmployeesListing = () => {
             />
             {decodedToken?.role === "manager" && (
               <Link
-                to="/warhouse/addNew"
+                to="/employees/addNew"
                 className="link darker search-section--add-new"
               >
                 Add new
@@ -117,6 +117,10 @@ const EmployeesListing = () => {
               itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
               loading={isLoading}
               dataSource={filteredData}
+              pagination={{
+                align: "center",
+                pageSize: 3,
+              }}
               renderItem={(employee: IEmployee) => (
                 <List.Item
                   // only manager can delete or edit employee
