@@ -22,19 +22,19 @@ class AuthController {
     })
 
     static async register(req: Request, res: Response): Promise<void> {
-        const userData: IEmployee = req.body
         try {
+            const userData: IEmployee = req.body
             await AuthController.employeeValidator.validateAsync(userData)
             const employee = await AuthService.register(userData)
-            res.json(employee)
+            res.status(201).json(employee)
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
     static async verifyEmail(req: Request, res: Response): Promise<void> {
-        const token = req.params.token
         try {
+            const token = req.params.token
             await AuthService.verifyEmail(token)
             res.json({ message: 'Email verified' })
         } catch (error: unknown) {
@@ -43,8 +43,8 @@ class AuthController {
     }
 
     static async login(req: Request, res: Response): Promise<void> {
-        const { email, password } = req.body
         try {
+            const { email, password } = req.body
             const token = await AuthService.login(email, password)
             res.json({ token })
         } catch (error: unknown) {
@@ -53,19 +53,20 @@ class AuthController {
     }
 
     static async forgotPassword(req: Request, res: Response): Promise<void> {
-        const { email } = req.body
         try {
+            if (!req.body.email) throw new Error("Email is mising.")
+            const { email } = req.body 
             await AuthService.forgotPassword(email)
-            res.json({ message: 'Email sent' })
+            res.status(201).json({ message: 'Email sent' })
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 
     static async resetPassword(req: Request, res: Response): Promise<void> {
-        const { token } = req.params
-        const { password } = req.body
         try {
+            const { token } = req.params
+            const { password } = req.body
             await AuthService.resetPassword(token, password)
             res.json({ message: 'Password changed' })
         } catch (error: unknown) {

@@ -13,19 +13,27 @@ class AuthService {
 
     private static emailAdress = process.env.EMAIL_ADRESS || 'krzysztofradzieta@outlook.com'
 
+    private static async sendEmail(recipientEmail: string, subject: string, message: string): Promise<void> {
+        const emailSender = Email.getInstance();
+        const emailOptions = emailSender.emailOptions(this.emailAdress, recipientEmail, subject, message);
+        await emailSender.sendEmail(emailOptions);
+    }
+
     static async register(userData: IEmployee): Promise<IEmployee | string> {
         try {
             userData.password = await Crypt.hashPassword(userData.password)
 
-            userData.tokenForEmailVerification =
+            userData.passwordResetToken =
                 TokenService.generateTokenForEmailVerificationOrPasswordReset(userData.email)
 
             const user = new Employee(userData)
             await user.save()
+            const encodedToken = Buffer.from(userData.passwordResetToken).toString('base64');
 
-            const emailSender = Email.getInstance()
-            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, "Email verification", `Please click on this link to verify your email: ${this.clientUrl}/verifyEmail/${user.tokenForEmailVerification}`)
-            await emailSender.sendEmail(emailOptions)
+            const subject = `Welcome ${user.name}`;
+            const message = `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours.`;
+
+            await this.sendEmail(user.email, subject, message);
 
             return user
         } catch (error: unknown) {
@@ -49,11 +57,11 @@ class AuthService {
             if (!user) {
                 throw new Error('User not found')
             }
-            if (user.isVerified) {
-                throw new Error('Email already verified')
-            }
-            user.isVerified = true
-            user.tokenForEmailVerification = null
+            // if (user.isVerified) {
+            //     throw new Error('Email already verified')
+            // }
+            // user.isVerified = true
+            // user.tokenForEmailVerification = null
             await user.save()
         } catch (error: unknown) {
             throw new Error(ErrorsHandlers.errorMessageHandler(error).message)
@@ -96,9 +104,11 @@ class AuthService {
             )
             await user.save()
 
-            const emailSender = Email.getInstance()
-            const emailOptions = emailSender.emailOptions(this.emailAdress, user.email, "Reset password", `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${user.passwordResetToken}`)
-            await emailSender.sendEmail(emailOptions)
+            const encodedToken = Buffer.from(user.passwordResetToken).toString('base64');
+            const subject = "Reset password";
+            const message = `Please click on this link to reset your password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours. If you have not reset your password ignore this message and contact the manager.`;
+
+            await this.sendEmail(user.email, subject, message);
 
         } catch (error: unknown) {
             throw new Error(ErrorsHandlers.errorMessageHandler(error).message)
