@@ -9,6 +9,9 @@ import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
 import AddNew from "./views/warhouse/addNew";
 import Footer from "./components/footer/Footer";
+import EmployeesListing from "./views/employees/EmployeesListing";
+import ForgotPassword from "./views/forgotPassword/ForgotPassword";
+import ResetPassword from "./views/resetPassword/ResetPassword";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -30,7 +33,6 @@ const App: React.FC = () => {
         <BrowserRouter>
           <Routes>
             {isAuthenticated ? (
-              // only for authenticated
               <>
                 <Route
                   path="/dashboard"
@@ -50,19 +52,40 @@ const App: React.FC = () => {
                     </>
                   }
                 ></Route>
-                {role != "cart operator" ? (
+                {role !== "cart operator" && (
+                  <>
+                    <Route
+                      path="/warhouse/addNew"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNew />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/warhouse/:id"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNew />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                  </>
+                )}
+                {role !== "cart operator" && role !== "warehouseman" && (
                   <Route
-                    path="/warhouse/addNew"
+                    path="/employees"
                     element={
                       <>
                         <Navbar />
-                        <AddNew />
-                        <Footer />
+                        <EmployeesListing />
                       </>
                     }
                   ></Route>
-                ) : (
-                  <Route path="*" element={<Navigate to="/dashboard" />} />
                 )}
               </>
             ) : (
@@ -70,7 +93,17 @@ const App: React.FC = () => {
             )}
             {!isAuthenticated ? (
               // only for guests
-              <Route path="/login" element={<Login />}></Route>
+              <>
+                <Route path="/login" element={<Login />}></Route>
+                <Route
+                  path="/forgotPassword"
+                  element={<ForgotPassword />}
+                ></Route>
+                <Route
+                  path="/resetPassword/:token"
+                  element={<ResetPassword />}
+                ></Route>
+              </>
             ) : (
               <Route path="*" element={<Navigate to="/dashboard" />} />
             )}

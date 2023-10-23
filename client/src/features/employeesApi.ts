@@ -3,13 +3,13 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 let baseUrl = import.meta.env.VITE_BASE_BACKEND_URL;
 
 if (!baseUrl) {
-    baseUrl = "http://localhost:3001/"
+    baseUrl = "http://localhost:3001/";
 }
 
-export const productsApi = createApi({
-    reducerPath: 'productsApi',
+export const employeesApi = createApi({
+    reducerPath: 'employeesApi',
     baseQuery: fetchBaseQuery({
-		baseUrl: baseUrl + "products",
+        baseUrl: baseUrl + "employees",
         prepareHeaders: (headers) => {
             const token = localStorage.getItem('token');
             if (token) {
@@ -17,12 +17,12 @@ export const productsApi = createApi({
             }
             return headers;
         },
-	}),
+    }),
     endpoints: (builder) => ({
-        getAllProducts: builder.query({
+        getAllEmployees: builder.query({
             query: () => ("get"),
         })
     })
 })
 
-export const { useGetAllProductsQuery } = productsApi;
+export const { useGetAllEmployeesQuery } = employeesApi;

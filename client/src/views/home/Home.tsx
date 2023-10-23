@@ -28,7 +28,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
           <section className="home__navigation">
             {isAuthenticated ? (
               <>
-                <p>
+                <p className="break-word">
                   Welcome! Go to dashboard
                   <Link
                     className="link home__navigation--spacing"

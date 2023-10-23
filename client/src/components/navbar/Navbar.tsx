@@ -38,7 +38,7 @@ const Navbar = () => {
       title: "Go to employees module.",
       icon: <TeamOutlined />,
       titleToDisplay: "Employees",
-      to: "/",
+      to: "/employees",
       key: "employees",
     },
     {

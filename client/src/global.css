@@ -38,7 +38,7 @@ body {
     color: var(--main-color-dark);
 }
 
-.danger {
+.error {
     color: #d32029;
 }
 
@@ -56,4 +56,9 @@ body {
 
 .secondary {
     color: var(--secondary-color);
+}
+
+.break-word {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }

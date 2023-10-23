@@ -20,7 +20,7 @@ class TokenService {
   }
 
   static generateTokenForEmailVerificationOrPasswordReset(email: string): string {
-    const expiresIn = process.env.JWT_EXPIRES_IN || '7d'
+    const expiresIn = process.env.JWT_EXPIRES_IN || '1d'
     const payload = {
       email: email,
     }

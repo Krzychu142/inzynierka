@@ -1,0 +1,25 @@
+.employees-listing {
+    padding: 0 25px;
+}
+
+.employees-listing__description li {
+    list-style-type: none;
+    position: relative;
+    padding-left: 20px;
+}
+
+.employees-listing__description li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--main-color);
+    font-size: 1.5em;
+    line-height: 1;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.email {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
