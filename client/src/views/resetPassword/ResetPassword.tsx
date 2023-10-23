@@ -80,7 +80,7 @@ const ResetPassword = () => {
                 },
               ]}
             >
-              <Input
+              <Input.Password
                 placeholder="new password"
                 type="password"
                 id="password"
@@ -100,7 +100,7 @@ const ResetPassword = () => {
                 },
               ]}
             >
-              <Input
+              <Input.Password
                 placeholder="repeat password"
                 type="password"
                 id="password2"
