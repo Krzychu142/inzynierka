@@ -131,6 +131,11 @@ const EmployeesListing = () => {
                             to="/"
                             key="list-loadmore-edit"
                             className="link"
+                            style={
+                              decodedToken.email === employee.email
+                                ? { pointerEvents: "none", opacity: 0.5 }
+                                : {}
+                            }
                           >
                             Edit
                           </Link>,
