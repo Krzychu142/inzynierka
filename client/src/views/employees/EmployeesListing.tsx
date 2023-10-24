@@ -11,7 +11,6 @@ import Search from "antd/es/input/Search";
 import useBaseURL from "../../customHooks/useBaseURL";
 
 const EmployeesListing = () => {
-  // TODO: It can be moved to custom hook
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
 
   const {
@@ -128,14 +127,17 @@ const EmployeesListing = () => {
                     decodedToken?.role === "manager"
                       ? [
                           <Link
-                            to="/"
+                            to={`/employees/${employee._id}`}
                             key="list-loadmore-edit"
                             className="link"
-                            style={
-                              decodedToken.email === employee.email
-                                ? { pointerEvents: "none", opacity: 0.5 }
-                                : {}
-                            }
+                            // style={
+                            //   decodedToken.email === employee.email
+                            //     ? {
+                            //         opacity: 0.5,
+                            //         pointerEvents: "none",
+                            //       }
+                            //     : {}
+                            // }
                           >
                             Edit
                           </Link>,

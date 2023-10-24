@@ -54,16 +54,28 @@ const App: React.FC = () => {
                   }
                 ></Route>
                 {role === "manager"} && (
-                <Route
-                  path="/employees/addNew"
-                  element={
-                    <>
-                      <Navbar />
-                      <AddNewEmployee />
-                      <Footer />
-                    </>
-                  }
-                ></Route>
+                <>
+                  <Route
+                    path="/employees/addNew"
+                    element={
+                      <>
+                        <Navbar />
+                        <AddNewEmployee />
+                        <Footer />
+                      </>
+                    }
+                  ></Route>
+                  <Route
+                    path="/employees/:id"
+                    element={
+                      <>
+                        <Navbar />
+                        <AddNewEmployee />
+                        <Footer />
+                      </>
+                    }
+                  ></Route>
+                </>
                 )
                 {role !== "cart operator" && (
                   <>

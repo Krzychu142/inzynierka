@@ -21,5 +21,6 @@ export interface IEmployee {
   birthDate: Date
   passwordResetToken: string | null
   tokenForEmailVerification: string | null
-  isVerified: boolean
+  isVerified: boolean,
+  _id: string
 }

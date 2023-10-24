@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./addNewEmployee.css";
 import {
   Button,
@@ -16,9 +16,17 @@ import { useAppSelector } from "../../hooks";
 import { Store } from "antd/es/form/interface";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useGeneratePassword from "../../customHooks/useGeneratePassword";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewEmployee = () => {
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      // get data from server about current employee
+    }
+  }, [id]);
+
   const [form] = Form.useForm();
   const baseUrl = useBaseURL();
   const token = useAppSelector((state) => state.auth.token);
