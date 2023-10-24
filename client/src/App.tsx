@@ -7,11 +7,12 @@ import Login from "./views/login/Login";
 import Dashboard from "./views/dashboard/Dashboard";
 import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
-import AddNew from "./views/warhouse/addNew";
+import AddNew from "./views/warhouse/AddNew";
 import Footer from "./components/footer/Footer";
 import EmployeesListing from "./views/employees/EmployeesListing";
 import ForgotPassword from "./views/forgotPassword/ForgotPassword";
 import ResetPassword from "./views/resetPassword/ResetPassword";
+import AddNewEmployee from "./views/employees/AddNewEmployee";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -52,6 +53,30 @@ const App: React.FC = () => {
                     </>
                   }
                 ></Route>
+                {role === "manager"} && (
+                <>
+                  <Route
+                    path="/employees/addNew"
+                    element={
+                      <>
+                        <Navbar />
+                        <AddNewEmployee />
+                        <Footer />
+                      </>
+                    }
+                  ></Route>
+                  <Route
+                    path="/employees/:id"
+                    element={
+                      <>
+                        <Navbar />
+                        <AddNewEmployee />
+                        <Footer />
+                      </>
+                    }
+                  ></Route>
+                </>
+                )
                 {role !== "cart operator" && (
                   <>
                     <Route

@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useBaseURL from "../../customHooks/useBaseURL";
 
-const addNew = () => {
+const AddNew = () => {
   const [form] = Form.useForm();
   const { id } = useParams();
   const [successMessage, setSuccessMessage] = useState("");
@@ -203,4 +203,4 @@ const addNew = () => {
   );
 };
 
-export default addNew;
+export default AddNew;

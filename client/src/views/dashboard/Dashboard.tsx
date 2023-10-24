@@ -36,9 +36,9 @@ const Dashboard: React.FC = () => {
             Your email: <span className="secondary">{userEmail}</span>
           </h2>
         </section>
-        <section className="dashboard__last--activity">
+        {/* <section className="dashboard__last--activity">
           <p>There will be last activity</p>
-        </section>
+        </section> */}
       </main>
     </>
   );
