@@ -40,6 +40,7 @@ const AddNewEmployee = () => {
           console.log(employee);
           form.setFieldsValue({
             name: employee.name,
+            surname: employee.surname,
           });
         })
         .catch((err) => {
