@@ -11,6 +11,7 @@ import Search from "antd/es/input/Search";
 import useBaseURL from "../../customHooks/useBaseURL";
 
 const EmployeesListing = () => {
+  // TODO: It can be moved to custom hook
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
 
   const {
@@ -104,7 +105,7 @@ const EmployeesListing = () => {
             />
             {decodedToken?.role === "manager" && (
               <Link
-                to="/employees/addNew"
+                to="/warhouse/addNew"
                 className="link darker search-section--add-new"
               >
                 Add new
@@ -116,10 +117,6 @@ const EmployeesListing = () => {
               itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
               loading={isLoading}
               dataSource={filteredData}
-              pagination={{
-                align: "center",
-                pageSize: 3,
-              }}
               renderItem={(employee: IEmployee) => (
                 <List.Item
                   // only manager can delete or edit employee
@@ -127,17 +124,9 @@ const EmployeesListing = () => {
                     decodedToken?.role === "manager"
                       ? [
                           <Link
-                            to={`/employees/${employee._id}`}
+                            to="/"
                             key="list-loadmore-edit"
                             className="link"
-                            // style={
-                            //   decodedToken.email === employee.email
-                            //     ? {
-                            //         opacity: 0.5,
-                            //         pointerEvents: "none",
-                            //       }
-                            //     : {}
-                            // }
                           >
                             Edit
                           </Link>,

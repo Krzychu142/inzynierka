@@ -60,7 +60,7 @@ const Login: React.FC = () => {
             label="Password"
             rules={[{ required: true, message: "Please input Your password!" }]}
           >
-            <Input.Password
+            <Input
               placeholder="password"
               type="password"
               id="password"

@@ -21,7 +21,6 @@ class AuthService {
 
     static async register(userData: IEmployee): Promise<IEmployee | string> {
         try {
-            const passwordBeforeCrypt = userData.password;
             userData.password = await Crypt.hashPassword(userData.password)
 
             userData.passwordResetToken =
@@ -32,7 +31,7 @@ class AuthService {
             const encodedToken = Buffer.from(userData.passwordResetToken).toString('base64');
 
             const subject = `Welcome ${user.name}`;
-            const message = `Here is Your autogenerate password: ${passwordBeforeCrypt} . Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours.`;
+            const message = `Please click on this link to set Your new password: ${this.clientUrl}/resetPassword/${encodedToken} The link will be valid for 24 hours.`;
 
             await this.sendEmail(user.email, subject, message);
 

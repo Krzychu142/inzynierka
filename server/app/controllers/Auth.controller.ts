@@ -65,11 +65,10 @@ class AuthController {
 
     static async resetPassword(req: Request, res: Response): Promise<void> {
         try {
-            if (!req.body.token || !req.body.password) throw new Error("Missing arguments.")
-            const { token, password } = req.body
-            const decodedToken = Buffer.from(token, 'base64').toString('utf8');
-            await AuthService.resetPassword(decodedToken, password)
-            res.status(201).json({ message: 'Password changed' })
+            const { token } = req.params
+            const { password } = req.body
+            await AuthService.resetPassword(token, password)
+            res.json({ message: 'Password changed' })
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
