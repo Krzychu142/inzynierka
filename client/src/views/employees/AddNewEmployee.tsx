@@ -20,13 +20,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewEmployee = () => {
   const { id } = useParams();
-
-  useEffect(() => {
-    if (id) {
-      // get data from server about current employee
-    }
-  }, [id]);
-
+  const [errorMessage, setErrorMessage] = useState("");
+  // const [successMessage, setSuccessMessage] = useState("");
   const [form] = Form.useForm();
   const baseUrl = useBaseURL();
   const token = useAppSelector((state) => state.auth.token);
@@ -35,7 +30,28 @@ const AddNewEmployee = () => {
       Authorization: `Bearer ${token}`,
     },
   };
-  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    if (id) {
+      axios
+        .get(`${baseUrl}employees/${id}`, config)
+        .then((res) => {
+          const employee = res.data;
+          console.log(employee);
+          form.setFieldsValue({
+            name: employee.name,
+          });
+        })
+        .catch((err) => {
+          if (err.response.data.message) {
+            setErrorMessage(err.response.data.message);
+          } else {
+            setErrorMessage("Something went wrong!");
+          }
+        });
+    }
+  }, [id]);
+
   const { password } = useGeneratePassword();
   const naviagte = useNavigate();
   const [isRequestInProccess, setIsRequestInProccess] = useState(false);
@@ -203,7 +219,7 @@ const AddNewEmployee = () => {
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Add Employee
+              {id ? "Edit Employee" : "Add Employee"}
             </Button>
           </Form.Item>
         </Form>
