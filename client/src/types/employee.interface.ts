@@ -1,4 +1,4 @@
-enum Role {
+export enum Role {
   CARTOPERATOR = 'cart operator',
   WAREHOUSEMAN = 'warehouseman',
   SALESMAN = 'salesman',
@@ -21,5 +21,6 @@ export interface IEmployee {
   birthDate: Date
   passwordResetToken: string | null
   tokenForEmailVerification: string | null
-  isVerified: boolean
+  isVerified: boolean,
+  _id: string
 }

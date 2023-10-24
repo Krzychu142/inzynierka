@@ -18,8 +18,3 @@
     top: 50%;
     transform: translateY(-50%);
 }
-
-.email {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
