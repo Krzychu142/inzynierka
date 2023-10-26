@@ -1,13 +1,14 @@
 import { Request, Response } from 'express'
 import ProductService from '../services/Product.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
+import ensureIdExists from '../utils/helpers/ensureIdExists'
 
 class ProductController {
-  private static ensureIdExists(req: Request): void {
-      if (!req.params.id) {
-          throw new Error('The id parameter is missing');
-      }
-  }
+  // private static ensureIdExists(req: Request): void {
+  //     if (!req.params.id) {
+  //         throw new Error('The id parameter is missing');
+  //     }
+  // }
 
   static async getAllProduct(req: Request, res: Response): Promise<void> {
     try {
@@ -52,7 +53,7 @@ class ProductController {
   static async getSingleProduct(req: Request, res: Response):
   Promise<void> {
     try {
-      ProductController.ensureIdExists(req);
+      ensureIdExists(req);
       const product = await ProductService.getSingleProduct(req.params.id)
       if (product) {
         res.status(201).json(product)
@@ -69,7 +70,7 @@ class ProductController {
   static async editProduct(req: Request, res: Response):
   Promise<void> {
     try {
-    ProductController.ensureIdExists(req);
+    ensureIdExists(req);
     const { id, ...editedProductWithoutId } = req.body;
     const updatedProduct = await ProductService.editProduct(req.params.id, editedProductWithoutId);
     if (updatedProduct) {

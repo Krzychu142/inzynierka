@@ -1,4 +1,5 @@
 import Employee, { IEmployee } from '../models/employee.model'
+import ErrorsHandlers from '../utils/helpers/ErrorsHandlers';
 
 class EmployeeService {
   static async getAllEmployees(): Promise<IEmployee[]> {
@@ -11,6 +12,14 @@ class EmployeeService {
 
   static async deleteSingleEmployee(email: string) {
     return Employee.deleteOne({email: email});
+  }
+
+  static async editEmployee(id: string, editedEmployee: IEmployee) {
+    try {
+      return await Employee.findByIdAndUpdate(id, editedEmployee, { new: true });
+    }  catch (error: unknown) {
+      ErrorsHandlers.handleMongoError(error);
+    }
   }
 }
 

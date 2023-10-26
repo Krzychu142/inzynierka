@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import "./addNewEmployee.css";
-import {
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  InputNumber,
-  Select,
-  Spin,
-} from "antd";
+import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
 import { Role } from "../../types/employee.interface";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
@@ -18,23 +10,33 @@ import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer
 import useGeneratePassword from "../../customHooks/useGeneratePassword";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
+import { useLoading } from "../../customHooks/useLoading";
 
 const AddNewEmployee = () => {
   const { id } = useParams();
   const [errorMessage, setErrorMessage] = useState("");
-  // const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const [form] = Form.useForm();
   const baseUrl = useBaseURL();
   const token = useAppSelector((state) => state.auth.token);
+  const { password } = useGeneratePassword();
+  const naviagte = useNavigate();
+  const { startLoading, stopLoading, RenderSpinner } = useLoading();
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
+  const clearMessages = () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+  };
+
   useEffect(() => {
     if (id) {
-      setIsRequestInProccess(true);
+      startLoading();
+      clearMessages();
       axios
         .get(`${baseUrl}employees/${id}`, config)
         .then((res) => {
@@ -62,26 +64,33 @@ const AddNewEmployee = () => {
           }
         })
         .finally(() => {
-          setIsRequestInProccess(false);
+          stopLoading();
         });
     }
   }, [id]);
 
-  const { password } = useGeneratePassword();
-  const naviagte = useNavigate();
-  const [isRequestInProccess, setIsRequestInProccess] = useState(false);
-
   const onFinish = (values: Store) => {
+    startLoading();
+    clearMessages();
     if (!values.employedAt) {
       values.employedAt = new Date().toISOString();
     }
-    values.password = password;
-    setIsRequestInProccess(true);
-    axios
-      .post(`${baseUrl}auth/register`, values, config)
+
+    if (!id) {
+      values.password = password;
+    }
+
+    const url = id ? `${baseUrl}employees/${id}` : `${baseUrl}auth/register`;
+
+    const method = id ? "put" : "post";
+
+    axios[method](url, values, config)
       .then((res) => {
         if (res.status === 201) {
           naviagte("/employees");
+        }
+        if (res.status === 202) {
+          setSuccessMessage("Edited successfully");
         }
       })
       .catch((err) => {
@@ -92,19 +101,13 @@ const AddNewEmployee = () => {
         }
       })
       .finally(() => {
-        setIsRequestInProccess(false);
+        stopLoading();
       });
   };
 
   return (
     <>
-      {isRequestInProccess && (
-        <div className="loading-spin">
-          <Spin size="large">
-            <div />
-          </Spin>
-        </div>
-      )}
+      <RenderSpinner />
       <section className="add-new-employee">
         <Form
           labelCol={{ span: 24 }}
@@ -243,6 +246,13 @@ const AddNewEmployee = () => {
             message={errorMessage}
             type="error"
             className="error"
+          />
+        )}
+        {successMessage && (
+          <MessageDisplayer
+            message={successMessage}
+            type="success"
+            className="success"
           />
         )}
       </section>
