@@ -3,7 +3,6 @@ import Employee from '../models/employee.model'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import Crypt from '../utils/helpers/Crypt'
 import TokenService from './Token.service'
-import { MongoError } from 'mongodb'
 import Email from '../utils/email/Email'
 import { JwtPayload } from 'jsonwebtoken'
 
@@ -38,11 +37,7 @@ class AuthService {
 
             return user
         } catch (error: unknown) {
-            if (error instanceof MongoError && error.code === 11000) {
-                throw new Error('Email already exists')
-            } else {
-                throw new Error(ErrorsHandlers.errorMessageHandler(error).message)
-            }
+            ErrorsHandlers.handleMongoError(error);
         }
     }
 

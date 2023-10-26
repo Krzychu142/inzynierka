@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useBaseURL from "../../customHooks/useBaseURL";
+import { useLoading } from "../../customHooks/useLoading";
 
 const AddNew = () => {
   const [form] = Form.useForm();
@@ -18,15 +19,22 @@ const AddNew = () => {
   const navigate = useNavigate();
   const token = useAppSelector((state) => state.auth.token);
   const baseUrl = useBaseURL();
-
+  const { startLoading, stopLoading, RenderSpinner } = useLoading();
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
+  const clearMessages = () => {
+    setErrorMessage("");
+    setSuccessMessage("");
+  };
+
   useEffect(() => {
     if (id) {
+      startLoading();
+      clearMessages();
       axios
         .get(`${baseUrl}products/${id}`, config)
         .then((res) => {
@@ -52,6 +60,9 @@ const AddNew = () => {
           } else {
             setErrorMessage("Something went wrong!");
           }
+        })
+        .finally(() => {
+          stopLoading();
         });
     }
   }, [id]);
@@ -59,6 +70,8 @@ const AddNew = () => {
   const [isOnSale, setIsOnSale] = useState(false);
 
   const onFinish = (values: Store) => {
+    startLoading();
+    clearMessages();
     const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
     const method = id ? "put" : "post";
@@ -78,11 +91,15 @@ const AddNew = () => {
         } else {
           setErrorMessage("Something went wrong!");
         }
+      })
+      .finally(() => {
+        stopLoading();
       });
   };
 
   return (
     <>
+      <RenderSpinner />
       <section className="add-new-product">
         <Form
           labelCol={{ span: 24 }}
