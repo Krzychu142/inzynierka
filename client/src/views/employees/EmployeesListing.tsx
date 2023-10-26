@@ -129,7 +129,7 @@ const EmployeesListing = () => {
                           <Link
                             to={`/employees/${employee._id}`}
                             key="list-loadmore-edit"
-                            className="link"
+                            className="link darker"
                             // style={
                             //   decodedToken.email === employee.email
                             //     ? {
@@ -144,7 +144,7 @@ const EmployeesListing = () => {
                           <Button
                             type="link"
                             key="list-loadmore-more"
-                            className="link"
+                            className="link darker"
                             onClick={() => {
                               deleteEmployee(employee.email);
                             }}

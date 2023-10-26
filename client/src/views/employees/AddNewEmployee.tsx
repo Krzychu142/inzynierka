@@ -17,6 +17,7 @@ import { Store } from "antd/es/form/interface";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useGeneratePassword from "../../customHooks/useGeneratePassword";
 import { useNavigate, useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 const AddNewEmployee = () => {
   const { id } = useParams();
@@ -33,14 +34,24 @@ const AddNewEmployee = () => {
 
   useEffect(() => {
     if (id) {
+      setIsRequestInProccess(true);
       axios
         .get(`${baseUrl}employees/${id}`, config)
         .then((res) => {
           const employee = res.data;
-          console.log(employee);
           form.setFieldsValue({
             name: employee.name,
             surname: employee.surname,
+            email: employee.email,
+            role: employee.role,
+            salary: employee.salary,
+            employedAt: dayjs(employee.employedAt),
+            birthDate: dayjs(employee.birthDate),
+            phoneNumber: employee.phoneNumber,
+            country: employee.country,
+            city: employee.city,
+            postalCode: employee.postalCode,
+            address: employee.address,
           });
         })
         .catch((err) => {
@@ -49,6 +60,9 @@ const AddNewEmployee = () => {
           } else {
             setErrorMessage("Something went wrong!");
           }
+        })
+        .finally(() => {
+          setIsRequestInProccess(false);
         });
     }
   }, [id]);
