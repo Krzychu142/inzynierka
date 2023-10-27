@@ -4,12 +4,6 @@ import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
 
 class ProductController {
-  // private static ensureIdExists(req: Request): void {
-  //     if (!req.params.id) {
-  //         throw new Error('The id parameter is missing');
-  //     }
-  // }
-
   static async getAllProduct(req: Request, res: Response): Promise<void> {
     try {
       const products = await ProductService.getAllProducts()
