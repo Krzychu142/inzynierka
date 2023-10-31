@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, DatePicker, Form, Input, InputNumber, Switch } from "antd";
-import "./addNew.css";
+import "./addNewItem.css";
 import { useParams } from "react-router-dom";
 import { Store } from "antd/lib/form/interface";
 import axios from "axios";
@@ -11,7 +11,7 @@ import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useLoading } from "../../customHooks/useLoading";
 
-const AddNew = () => {
+const AddNewItem = () => {
   const [form] = Form.useForm();
   const { id } = useParams();
   const [successMessage, setSuccessMessage] = useState("");
@@ -220,4 +220,4 @@ const AddNew = () => {
   );
 };
 
-export default AddNew;
+export default AddNewItem;
