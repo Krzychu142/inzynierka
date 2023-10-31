@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Skeleton, Space, message } from "antd";
+import { Button, List, Result, Skeleton, Space, message, Image } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
@@ -97,6 +97,7 @@ const WarhouseListing = () => {
       )}
       {products && (
         <List
+          className="products__list"
           itemLayout="vertical"
           size="large"
           pagination={{
@@ -105,7 +106,7 @@ const WarhouseListing = () => {
             // onChange: (page) => {
             //   console.log(page);
             // },
-            pageSize: 3,
+            pageSize: 2,
           }}
           dataSource={filteredData}
           renderItem={(item: IProduct) => (
@@ -142,11 +143,9 @@ const WarhouseListing = () => {
               extra={
                 <section className="section__logo">
                   {item.images.length > 0 ? (
-                    <img
-                      className="listing-logo"
-                      alt={item.description}
-                      src={item.images[0]}
-                    />
+                    <Image.PreviewGroup items={item.images}>
+                      <Image className="listing-logo" src={item.images[0]} />
+                    </Image.PreviewGroup>
                   ) : (
                     <Skeleton.Image className="listing-logo" />
                   )}
