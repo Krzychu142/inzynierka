@@ -21,8 +21,8 @@ class RequestLogger {
     static logRequest(req: Request, res: Response, next: NextFunction) {
 
         res.on('finish', () => {
-            if (req.path === "/auth/login" && req.body.email && res.statusCode === 200) {
-                this.logLoginOperation(req);
+            if (req.path === "/login" && req.body.email && res.statusCode === 200) {
+                RequestLogger.logLoginOperation(req);
             }
         });
 

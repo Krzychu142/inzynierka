@@ -95,7 +95,7 @@ const EmployeesListing = () => {
         <>
           <section className="search-section">
             <Search
-              placeholder="input search text"
+              placeholder="type name, surname, email or role"
               enterButton
               onChange={(e) => setSearchValue(e.target.value)}
             />
