@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Skeleton, Space, Spin, message } from "antd";
+import { Button, List, Result, Skeleton, Space, message } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
@@ -9,6 +9,7 @@ import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
+import LoadingSpinner from "../../components/loading/LoadingSpinner";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -86,11 +87,7 @@ const WarhouseListing = () => {
           </Link>
         )}
       </section>
-      {isLoading && (
-        <Spin tip="Loading" size="large">
-          <div />
-        </Spin>
-      )}
+      {isLoading && <LoadingSpinner />}
       {isError && (
         <Result
           status="error"

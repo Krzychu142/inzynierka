@@ -46,7 +46,7 @@ class AuthController {
         try {
             const { email, password } = req.body
             const token = await AuthService.login(email, password)
-            res.json({ token })
+            res.status(200).json({ token })
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }

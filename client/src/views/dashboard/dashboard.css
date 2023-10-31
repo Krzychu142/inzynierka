@@ -4,9 +4,48 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .dashboard__user {
     margin-bottom: 1rem;
     text-align: center;
+}
+
+.dashboard__last__activity {
+    width: 100%;
+}
+
+.operation-list {
+    border: var(--border-size) solid var(--secondary-color);
+    border-bottom: none;
+    border-radius: var(--border-radius);
+    padding: 0px 12px;
+}
+
+.load-more {
+    text-align: center;
+    margin-top: 12px;
+    height: 32px;
+    line-height: 32px;
+}
+
+.load-more__button--rigth {
+    margin-left: 12px;
+}
+
+@media (max-width: 360px) {
+    .operation-list {
+        border: none;
+        padding: 0 0;
+    }
+
+    .load-more__button--rigth {
+        margin-left: 0px;
+    }
+}
+
+.operation-performed {
+    display: block;
 }

@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import express, { Express } from 'express'
 import cors from 'cors'
 import routes from './routes/routes'
+import RequestLogger from './utils/RequestLogger'
 dotenv.config()
 
 export default class App {
@@ -16,6 +17,7 @@ export default class App {
     this.app = express()
     this.app.use(cors())
     this.app.use(express.json())
+    this.app.use(RequestLogger.logRequest)
     this.app.use(routes)
   }
 

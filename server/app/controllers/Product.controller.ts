@@ -7,7 +7,7 @@ class ProductController {
   static async getAllProduct(req: Request, res: Response): Promise<void> {
     try {
       const products = await ProductService.getAllProducts()
-      res.json(products)
+      res.status(201).json(products)
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
@@ -18,6 +18,8 @@ class ProductController {
       const product = await ProductService.createProduct(req.body)
       if (product) {
         res.status(201).json({ message: 'Product created successfully' })
+      } else {
+        throw Error("The user was not created")
       }
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
