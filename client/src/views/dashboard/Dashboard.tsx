@@ -8,19 +8,7 @@ import { DownOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
 import { useGetAllOperationsQuery } from "../../features/operationsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import dayjs from "dayjs";
-
-enum Operation {
-  LOGGING = "Logged in",
-  NEWCLIENT = "Added new client",
-  NEWORDER = "A new order has been placed",
-}
-
-interface ILastOperation {
-  _id: string;
-  nameOfOperation: Operation;
-  dateExecution: Date;
-  operationPerformedBy: string;
-}
+import { ILastOperation } from "../../types/operation.interface";
 
 const Dashboard: React.FC = () => {
   const [displayedOperations, setDisplayedOperations] = useState(3);
