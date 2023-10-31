@@ -83,4 +83,4 @@ export const clientSchema = new Schema<IClient>({
     }
 });
 
-export const ClientModel = model<IClient>('Client', clientSchema);
+export default model<IClient>('Client', clientSchema);
