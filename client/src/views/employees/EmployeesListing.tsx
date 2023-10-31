@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, Button, List, Result, Spin, message } from "antd";
+import { Avatar, Button, List, Result, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
@@ -9,6 +9,7 @@ import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import Search from "antd/es/input/Search";
 import useBaseURL from "../../customHooks/useBaseURL";
+import LoadingSpinner from "../../components/loading/LoadingSpinner";
 
 const EmployeesListing = () => {
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
@@ -89,11 +90,7 @@ const EmployeesListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
-      {isLoading && (
-        <Spin tip="Loading" size="large">
-          <div />
-        </Spin>
-      )}
+      {isLoading && <LoadingSpinner />}
       {employees && (
         <>
           <section className="search-section">
