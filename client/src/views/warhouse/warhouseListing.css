@@ -28,3 +28,7 @@
         display: none !important;
     }
 }
+
+.products__list {
+    padding-bottom: 12px;
+}

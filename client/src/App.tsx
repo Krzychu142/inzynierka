@@ -7,12 +7,13 @@ import Login from "./views/login/Login";
 import Dashboard from "./views/dashboard/Dashboard";
 import Navbar from "./components/navbar/Navbar";
 import WarhouseListing from "./views/warhouse/WarhouseListing";
-import AddNew from "./views/warhouse/AddNew";
+import AddNewItem from "./views/warhouse/AddNewItem";
 import Footer from "./components/footer/Footer";
 import EmployeesListing from "./views/employees/EmployeesListing";
 import ForgotPassword from "./views/forgotPassword/ForgotPassword";
 import ResetPassword from "./views/resetPassword/ResetPassword";
 import AddNewEmployee from "./views/employees/AddNewEmployee";
+import ClientsListing from "./views/clients/ClientsListing";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -84,7 +85,7 @@ const App: React.FC = () => {
                       element={
                         <>
                           <Navbar />
-                          <AddNew />
+                          <AddNewItem />
                           <Footer />
                         </>
                       }
@@ -94,7 +95,7 @@ const App: React.FC = () => {
                       element={
                         <>
                           <Navbar />
-                          <AddNew />
+                          <AddNewItem />
                           <Footer />
                         </>
                       }
@@ -102,15 +103,26 @@ const App: React.FC = () => {
                   </>
                 )}
                 {role !== "cart operator" && role !== "warehouseman" && (
-                  <Route
-                    path="/employees"
-                    element={
-                      <>
-                        <Navbar />
-                        <EmployeesListing />
-                      </>
-                    }
-                  ></Route>
+                  <>
+                    <Route
+                      path="/employees"
+                      element={
+                        <>
+                          <Navbar />
+                          <EmployeesListing />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/clients"
+                      element={
+                        <>
+                          <Navbar />
+                          <ClientsListing />
+                        </>
+                      }
+                    ></Route>
+                  </>
                 )}
               </>
             ) : (

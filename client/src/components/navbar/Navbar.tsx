@@ -45,14 +45,14 @@ const Navbar = () => {
       title: "Go to orders module.",
       icon: <AuditOutlined />,
       titleToDisplay: "Orders",
-      to: "/",
+      to: "/orders",
       key: "orders",
     },
     {
       title: "Go to clietns module.",
       icon: <SolutionOutlined />,
       titleToDisplay: "Clients",
-      to: "/",
+      to: "/clients",
       key: "clients",
     },
     {
