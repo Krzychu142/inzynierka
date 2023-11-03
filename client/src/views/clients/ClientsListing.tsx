@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Result } from "antd";
+import { List, Result } from "antd";
+import useWindowWidth from "../../customHooks/useWindowWidth";
 
 const ClientsListing = () => {
   const {
@@ -15,7 +16,7 @@ const ClientsListing = () => {
     refetch();
   }, [refetch]);
 
-  console.log(clients, "clients");
+  const windowWidth = useWindowWidth();
 
   return (
     <>
@@ -27,7 +28,19 @@ const ClientsListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
-      {clients && <p>there will be list of clients</p>}
+      {/* {clients && (
+        <section className="employees-listing">
+          <List
+            itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
+            loading={isLoading}
+            dataSource={filteredData}
+            pagination={{
+              align: "center",
+              pageSize: 3,
+            }}
+          ></List>
+        </section>
+      )} */}
     </>
   );
 };
