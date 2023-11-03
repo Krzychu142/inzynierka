@@ -12,7 +12,7 @@ class ErrorsHandlers {
     if (error instanceof MongoError && error.code === 11000) {
         throw new Error('Email already exists');
     } else {
-        throw new Error(this.errorMessageHandler(error).message);
+        throw new Error(ErrorsHandlers.errorMessageHandler(error).message);
     }
   }
 }
