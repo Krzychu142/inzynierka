@@ -133,6 +133,11 @@ const Dashboard: React.FC = () => {
                             "DD-MM-YYYY HH:mm:ss"
                           )}`}
                         </span>
+                        {operation.nameOfOperation === "Added new client" && (
+                          <span className="operation-performed">
+                            new client email:
+                          </span>
+                        )}
                         <span className="operation-performed darker bold">
                           {operation.operationPerformedBy}
                         </span>
