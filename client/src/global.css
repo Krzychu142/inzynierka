@@ -62,3 +62,7 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
+
+.block {
+    display: block;
+}
