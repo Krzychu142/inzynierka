@@ -6,13 +6,13 @@ export interface IClient {
     surname: string
     addedAt: Date
     email: string
-    salary: number
     address: string
+    shippingAddress?: string | null
     city: string
     country: string
     postalCode: string
     phoneNumber: string
-    description: string | null
+    description?: string | null
     priority: Priority,
     // it will be true if user create more than 5 orders for example
     regular: boolean
@@ -37,16 +37,18 @@ export const clientSchema = new Schema<IClient>({
         type: String,
         required: true,
         trim: true,
-        lowercase: true
-    },
-    salary: {
-        type: Number,
-        required: true
+        lowercase: true,
+        unique: true
     },
     address: {
         type: String,
         required: true,
         trim: true
+    },
+    shippingAddress: {
+        type: String,
+        trim: true,
+        default: null
     },
     city: {
         type: String,
@@ -81,6 +83,11 @@ export const clientSchema = new Schema<IClient>({
         type: Boolean,
         default: false
     }
+});
+
+// let shippingAddress be same as an address by default
+clientSchema.virtual('effectiveShippingAddress').get(function(this: IClient) {
+  return this.shippingAddress || this.address;
 });
 
 export default model<IClient>('Client', clientSchema);
