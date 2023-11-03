@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { Avatar, List, Result } from "antd";
@@ -7,6 +7,9 @@ import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
 import "./clientsListing.css";
 import dayjs from "dayjs";
+import Search from "antd/es/input/Search";
+import { Link } from "react-router-dom";
+import { useAppSelector } from "../../hooks";
 
 const ClientsListing = () => {
   const {
@@ -20,7 +23,16 @@ const ClientsListing = () => {
     refetch();
   }, [refetch]);
 
+  const decodedToken = useAppSelector((store) => store.auth.decodedToken);
+
   const windowWidth = useWindowWidth();
+  const [searchValue, setSearchValue] = useState("");
+  const filteredData = clients?.filter(
+    (item: IClient) =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
+      item.email.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   return (
     <>
@@ -32,12 +44,27 @@ const ClientsListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
+      <section className="search-section">
+        <Search
+          placeholder="type name, surname, email or role"
+          enterButton
+          onChange={(e) => setSearchValue(e.target.value)}
+        />
+        {decodedToken?.role === "manager" && (
+          <Link
+            to="/clients/addNew"
+            className="link darker search-section--add-new"
+          >
+            Add new
+          </Link>
+        )}
+      </section>
       {clients && (
         <section className="clients-listing">
           <List
             itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
             loading={isLoading}
-            dataSource={clients}
+            dataSource={filteredData}
             pagination={{
               align: "center",
               pageSize: 3,
@@ -75,7 +102,7 @@ const ClientsListing = () => {
                       Added at: {dayjs(client.addedAt).format("DD.MM.YYYY")}
                     </li>
                     {/* maybe here how many orders for this client, end his last order or click to generate his all orders? */}
-                    {client.priority && (
+                    {client.regular && (
                       <li>
                         <b className="darker">Regular client</b>
                       </li>
