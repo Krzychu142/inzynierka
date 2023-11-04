@@ -50,7 +50,8 @@ const ClientsListing = () => {
           enterButton
           onChange={(e) => setSearchValue(e.target.value)}
         />
-        {decodedToken?.role === "manager" && (
+        {(decodedToken?.role === "manager" ||
+          decodedToken?.role === "salesman") && (
           <Link
             to="/clients/addNew"
             className="link darker search-section--add-new"
