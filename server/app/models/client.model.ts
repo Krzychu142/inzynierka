@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose'
-import {Priority} from "../types/priority.enum"
+import { Priority } from "../types/priority.enum"
 
 export interface IClient {
     name: string

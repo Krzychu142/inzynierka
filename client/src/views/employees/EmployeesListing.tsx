@@ -10,6 +10,7 @@ import axios from "axios";
 import Search from "antd/es/input/Search";
 import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
+import useWindowWidth from "../../customHooks/useWindowWidth";
 
 const EmployeesListing = () => {
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
@@ -25,15 +26,7 @@ const EmployeesListing = () => {
     refetch();
   }, [refetch]);
 
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [windowWidth]);
+  const windowWidth = useWindowWidth();
 
   const baseUrl = useBaseURL();
 

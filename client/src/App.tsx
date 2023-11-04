@@ -14,6 +14,7 @@ import ForgotPassword from "./views/forgotPassword/ForgotPassword";
 import ResetPassword from "./views/resetPassword/ResetPassword";
 import AddNewEmployee from "./views/employees/AddNewEmployee";
 import ClientsListing from "./views/clients/ClientsListing";
+import AddNewClient from "./views/clients/AddNewClient";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -119,6 +120,16 @@ const App: React.FC = () => {
                         <>
                           <Navbar />
                           <ClientsListing />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/clients/addNew"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNewClient />
+                          <Footer />
                         </>
                       }
                     ></Route>
