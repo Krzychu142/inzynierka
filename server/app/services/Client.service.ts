@@ -8,6 +8,10 @@ class ClientService {
     static async createClient(client: IClient): Promise<IClient> {
         return Client.create(client)
     }
+
+    static async deleteClient(email: string) {
+        return Client.deleteOne({email: email})
+    }
 }
 
 export default ClientService

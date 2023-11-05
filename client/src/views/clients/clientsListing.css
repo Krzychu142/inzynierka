@@ -1,0 +1,29 @@
+.clients-listing {
+    padding: 0 25px;
+    padding-bottom: 12px;
+}
+
+.client__description {
+    max-width: 250px;
+}
+
+.clients-listing__list li {
+    list-style-type: none;
+    position: relative;
+    padding-left: 20px;
+}
+
+.clients-listing__list li p {
+    margin: 0;
+}
+
+.clients-listing__list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: var(--main-color);
+    font-size: 1.5em;
+    line-height: 1;
+    top: 50%;
+    transform: translateY(-50%);
+}

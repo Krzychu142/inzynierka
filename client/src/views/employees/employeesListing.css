@@ -1,5 +1,6 @@
 .employees-listing {
     padding: 0 25px;
+    padding-bottom: 12px;
 }
 
 .employees-listing__description li {
