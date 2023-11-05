@@ -13,6 +13,10 @@
     padding-left: 20px;
 }
 
+.clients-listing__list li p {
+    margin: 0;
+}
+
 .clients-listing__list li::before {
     content: "•";
     position: absolute;

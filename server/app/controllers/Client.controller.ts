@@ -29,6 +29,23 @@ class ClientController {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
+
+    static async deleteClient(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.body.email) {
+                res.status(400).json({ message: 'The email parameter is missing' }) 
+            } else {
+                const result = await ClientService.deleteClient(req.body.email)
+                if (result.deletedCount === 0) {
+                    res.status(404).json({ message: 'Client not found' }) 
+                } else {
+                    res.status(201).json({ message: 'Client deleted successful'})
+                }
+            }
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
 }
 
 export default ClientController;
