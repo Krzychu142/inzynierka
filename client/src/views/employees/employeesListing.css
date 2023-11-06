@@ -7,6 +7,13 @@
     list-style-type: none;
     position: relative;
     padding-left: 20px;
+    width: 300px;
+}
+
+@media screen and (max-width: 900px) {
+    .employees-listing__description li {
+        width: auto;
+    }
 }
 
 .employees-listing__description li::before {

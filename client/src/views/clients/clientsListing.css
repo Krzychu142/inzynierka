@@ -3,14 +3,17 @@
     padding-bottom: 12px;
 }
 
-.client__description {
-    max-width: 250px;
-}
-
 .clients-listing__list li {
     list-style-type: none;
     position: relative;
     padding-left: 20px;
+    width: 300px;
+}
+
+@media screen and (max-width: 850px) {
+    .clients-listing__list li {
+        width: auto;
+    }
 }
 
 .clients-listing__list li p {

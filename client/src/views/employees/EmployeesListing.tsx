@@ -103,7 +103,7 @@ const EmployeesListing = () => {
           </section>
           <section className="employees-listing">
             <List
-              itemLayout={windowWidth > 700 ? "horizontal" : "vertical"}
+              itemLayout={windowWidth > 900 ? "horizontal" : "vertical"}
               loading={isLoading}
               dataSource={filteredData}
               pagination={{

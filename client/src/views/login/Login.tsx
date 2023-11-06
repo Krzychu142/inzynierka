@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "./login.css";
 import { Form, FormInstance, Input, Button } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { login } from "../../features/authSlice";
@@ -50,6 +50,7 @@ const Login: React.FC = () => {
             <Input
               placeholder="email@yourWarehouse.com"
               id="email"
+              prefix={<MailOutlined className="main" />}
               onChange={(event) => {
                 setLoginData({ ...loginData, email: event.target.value });
               }}
@@ -64,6 +65,7 @@ const Login: React.FC = () => {
               placeholder="password"
               type="password"
               id="password"
+              prefix={<LockOutlined className="main" />}
               onChange={(event) => {
                 setLoginData({ ...loginData, password: event.target.value });
               }}

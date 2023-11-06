@@ -14,7 +14,6 @@ import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 
 const ClientsListing = () => {
-
   //TODO: function to generate orders summary for this client
   //TODO: create function for edit
 
@@ -41,40 +40,40 @@ const ClientsListing = () => {
   );
 
   const [messageApi, contextHolder] = message.useMessage();
-  
+
   const baseUrl = useBaseURL();
 
   const token = useAppSelector((state) => state.auth.token);
 
   const deleteClient = (email: string) => {
     axios
-    .delete(`${baseUrl}clients/delete`, {
-      data: { email },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((res) => {
-      if (res.status) {
-        refetch();
-        if (res.status === 201) {
-          messageApi.open({
-            type: "success",
-            content: res.data?.message,
-          });
+      .delete(`${baseUrl}clients/delete`, {
+        data: { email },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        if (res.status) {
+          refetch();
+          if (res.status === 201) {
+            messageApi.open({
+              type: "success",
+              content: res.data?.message,
+            });
+          }
         }
-      }
-    })
-    .catch((err) => {
-      messageApi.open({
-        type: "error",
-        content:
-          err.response && err.response.data.message
-            ? err.response.data.message
-            : "Something goes wrong",
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
       });
-    });
-  }
+  };
 
   return (
     <>
@@ -106,7 +105,7 @@ const ClientsListing = () => {
       {clients && (
         <section className="clients-listing">
           <List
-            itemLayout={windowWidth > 775 ? "horizontal" : "vertical"}
+            itemLayout={windowWidth > 850 ? "horizontal" : "vertical"}
             loading={isLoading}
             dataSource={filteredData}
             pagination={{
@@ -116,46 +115,47 @@ const ClientsListing = () => {
             renderItem={(client: IClient) => {
               return (
                 <List.Item
-                actions={
-                  decodedToken?.role === "manager"
-                    ? [
-                        <Link
-                          to={`/clients/${client._id}`}
-                          key="list-loadmore-edit"
-                          className="link darker action-element"
-                          // style={
-                          //   decodedToken.email === employee.email
-                          //     ? {
-                          //         opacity: 0.5,
-                          //         pointerEvents: "none",
-                          //       }
-                          //     : {}
-                          // }
-                        >
-                          Edit
-                        </Link>,
-                        <Button
-                          type="link"
-                          key="list-loadmore-more"
-                          className="link darker action-element"
-                          onClick={() => {
-                            deleteClient(client.email);
-                          }}
-                          disabled={decodedToken.email === client.email}
-                        >
-                          Delete
-                        </Button>,
-                        <Button
-                          type="link"
-                          key="list-loadmore-more"
-                          className="link darker action-element"
-                        >
-                          Orders
-                        </Button>
-                      ]
-                    : []
-                } 
-                key={client._id}>
+                  actions={
+                    decodedToken?.role === "manager"
+                      ? [
+                          <Link
+                            to={`/clients/${client._id}`}
+                            key="list-loadmore-edit"
+                            className="link darker action-element"
+                            // style={
+                            //   decodedToken.email === employee.email
+                            //     ? {
+                            //         opacity: 0.5,
+                            //         pointerEvents: "none",
+                            //       }
+                            //     : {}
+                            // }
+                          >
+                            Edit
+                          </Link>,
+                          <Button
+                            type="link"
+                            key="list-loadmore-more"
+                            className="link darker action-element"
+                            onClick={() => {
+                              deleteClient(client.email);
+                            }}
+                            disabled={decodedToken.email === client.email}
+                          >
+                            Delete
+                          </Button>,
+                          <Button
+                            type="link"
+                            key="list-loadmore-more"
+                            className="link darker action-element"
+                          >
+                            Orders
+                          </Button>,
+                        ]
+                      : []
+                  }
+                  key={client._id}
+                >
                   <List.Item.Meta
                     avatar={
                       <Avatar
