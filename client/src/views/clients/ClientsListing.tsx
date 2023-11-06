@@ -15,7 +15,6 @@ import useBaseURL from "../../customHooks/useBaseURL";
 
 const ClientsListing = () => {
   //TODO: function to generate orders summary for this client
-  //TODO: create function for edit
 
   const {
     data: clients,
@@ -183,7 +182,8 @@ const ClientsListing = () => {
                       </li>
                     )}
                     <li>
-                      Added at: {dayjs(client.addedAt).format("DD.MM.YYYY")}
+                      <b>Added at: </b>
+                      {dayjs(client.addedAt).format("DD.MM.YYYY")}
                     </li>
                     {/* maybe here how many orders for this client, end his last order or click to generate his all orders? */}
                     {client.regular && (
@@ -191,13 +191,17 @@ const ClientsListing = () => {
                         <b className="darker">Regular client</b>
                       </li>
                     )}
-                    <li>Phon number: {client.phoneNumber}</li>
                     <li>
-                      Address: {client.country} {client.city}{" "}
+                      <b>Phon number:</b> {client.phoneNumber}
+                    </li>
+                    <li>
+                      <b>Address:</b> {client.country} {client.city}{" "}
                       {client.postalCode}
                     </li>
                     {client.shippingAddress && (
-                      <li>Shipping address: {client.shippingAddress}</li>
+                      <li>
+                        <b>Shipping address:</b> {client.shippingAddress}
+                      </li>
                     )}
                   </ul>
                 </List.Item>

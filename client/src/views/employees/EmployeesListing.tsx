@@ -167,15 +167,17 @@ const EmployeesListing = () => {
                         </li>
                       )}
                       <li>
-                        <span className="main bold">Role: {employee.role}</span>
-                      </li>
-                      <li>
                         <span className="main bold">
-                          Salary: {employee.salary}PLN
+                          <b>Role:</b> {employee.role}
                         </span>
                       </li>
                       <li>
-                        Employed At:{" "}
+                        <span className="main bold">
+                          <b>Salary:</b> {employee.salary}PLN
+                        </span>
+                      </li>
+                      <li>
+                        <b>Employed At: </b>
                         {
                           // split, because I do not want to display time
                           new Date(employee.employedAt)
@@ -183,12 +185,18 @@ const EmployeesListing = () => {
                             .split(",")[0]
                         }
                       </li>
-                      <li>Phon number: {employee.phoneNumber}</li>
-                      <li>Country: {employee.country}</li>
                       <li>
-                        City: {employee.postalCode} {employee.city}
+                        <b>Phon number:</b> {employee.phoneNumber}
                       </li>
-                      <li>Address: {employee.address}</li>
+                      <li>
+                        <b>Country:</b> {employee.country}
+                      </li>
+                      <li>
+                        <b>City:</b> {employee.postalCode} {employee.city}
+                      </li>
+                      <li>
+                        <b>Address:</b> {employee.address}
+                      </li>
                     </ul>
                   </>
                 </List.Item>

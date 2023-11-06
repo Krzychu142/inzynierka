@@ -34,14 +34,17 @@ const AddNewClient = () => {
   const onFinish = (values: IClient) => {
     startLoading();
     clearMessages();
-    const url = `${baseUrl}clients/create`;
+    const url = id ? `${baseUrl}clients/${id}` : `${baseUrl}clients/create`;
+    const method = id ? "put" : "post";
 
-    axios
-      .post(url, values, config)
+    axios[method](url, values, config)
       .then((res) => {
         if (res.status === 201) {
           navigate("/clients");
           setSuccessMessage("Client added successfully!");
+        }
+        if (res.status === 202) {
+          setSuccessMessage("Client edited successfully!");
         }
       })
       .catch((err) => {
