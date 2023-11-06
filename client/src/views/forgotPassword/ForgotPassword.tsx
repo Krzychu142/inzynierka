@@ -1,7 +1,7 @@
 import { Button, Form, Input, Spin, message } from "antd";
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { RollbackOutlined } from "@ant-design/icons";
+import { MailOutlined, RollbackOutlined } from "@ant-design/icons";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 import "./forgotPassword.css";
@@ -77,6 +77,7 @@ const ForgotPassword = () => {
                 placeholder="email@yourWarehouse.com"
                 id="email"
                 value={email}
+                prefix={<MailOutlined className="main" />}
                 onChange={(event) => {
                   setEmail(event.target.value);
                 }}

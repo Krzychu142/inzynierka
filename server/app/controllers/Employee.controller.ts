@@ -45,7 +45,7 @@ class EmployeeController {
     }
   }
 
-  static async editEmployee(req: Request, res: Response) {
+  static async editEmployee(req: Request, res: Response): Promise<void> {
     try {
       ensureIdExists(req);
       if (!req.body) {
