@@ -133,6 +133,16 @@ const App: React.FC = () => {
                         </>
                       }
                     ></Route>
+                    <Route
+                      path="/clients/:id"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNewClient />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
                   </>
                 )}
               </>

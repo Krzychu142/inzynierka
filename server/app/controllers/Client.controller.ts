@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { IClient } from '../models/client.model'
 import ClientService from '../services/Client.service';
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers';
+import ensureIdExists from '../utils/helpers/ensureIdExists';
 
 class ClientController {
     static async getAllClients(req: Request, res: Response): Promise<void> {
@@ -42,6 +43,34 @@ class ClientController {
                     res.status(201).json({ message: 'Client deleted successful'})
                 }
             }
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
+
+    static async getSingleClient(req: Request, res: Response): Promise<void> {
+        try {
+            ensureIdExists(req);
+            const result = await ClientService.getSingleClient(req.params.id); 
+            if (!result) {
+                res.status(404).json({ message: "Client doesn't exist" })
+            } else {
+                res.status(200).json(result)
+            }
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
+
+    static async editClient(req: Request, res: Response): Promise<void> {
+        try {
+        ensureIdExists(req);
+        if (!req.body) {
+            res.status(400).json({ message: 'Client data is missing' }) 
+        } else {
+            const result = await ClientService.editClient(req.params.id, req.body)
+            res.status(202).json(result)
+        }
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }

@@ -14,9 +14,9 @@ class EmployeeService {
     return Employee.deleteOne({email: email});
   }
 
-  static async editEmployee(id: string, editedEmployee: IEmployee) {
+  static async editEmployee(id: string, editedEmployee: IEmployee): Promise<IEmployee | null> {
     try {
-      return await Employee.findByIdAndUpdate(id, editedEmployee, { new: true });
+      return Employee.findByIdAndUpdate(id, editedEmployee, { new: true });
     }  catch (error: unknown) {
       ErrorsHandlers.handleMongoError(error);
     }
