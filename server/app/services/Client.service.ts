@@ -12,6 +12,10 @@ class ClientService {
     static async deleteClient(email: string) {
         return Client.deleteOne({email: email})
     }
+
+    static async getSingleClient(id: string): Promise<IClient | null> {
+        return Client.findById(id)
+    }
 }
 
 export default ClientService
