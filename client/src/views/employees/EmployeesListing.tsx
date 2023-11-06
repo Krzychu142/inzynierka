@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, Button, List, Result, message } from "antd";
+import { Avatar, Button, List, Result, Select, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
@@ -73,6 +73,19 @@ const EmployeesListing = () => {
       item.role.toLowerCase().includes(searchValue.toLowerCase())
   );
 
+  const [sortOrder, setSortOrder] = useState<string | null>(null);
+
+  const sortedData = filteredData?.sort((a: IEmployee, b: IEmployee) => {
+    switch (sortOrder) {
+      case "ascending":
+        return a.salary - b.salary;
+      case "descending":
+        return b.salary - a.salary;
+      default:
+        return 0;
+    }
+  });
+
   return (
     <>
       {contextHolder}
@@ -101,11 +114,25 @@ const EmployeesListing = () => {
               </Link>
             )}
           </section>
+          <section className="sort-section">
+            <b className="darker sort-section__b">Sort:</b>
+            <Select
+              value={sortOrder}
+              onChange={(value: string) => setSortOrder(value)}
+              placeholder="Select sorting order"
+              style={{ width: 150 }}
+              options={[
+                { value: "", label: "Default" },
+                { value: "ascending", label: "Lowest Salary" },
+                { value: "descending", label: "Highest Salary" },
+              ]}
+            />
+          </section>
           <section className="employees-listing">
             <List
               itemLayout={windowWidth > 900 ? "horizontal" : "vertical"}
               loading={isLoading}
-              dataSource={filteredData}
+              dataSource={sortedData}
               pagination={{
                 align: "center",
                 pageSize: 3,
@@ -156,14 +183,28 @@ const EmployeesListing = () => {
                         />
                       }
                       title={employee.name + " " + employee.surname}
-                      description={windowWidth > 400 ? employee.email : ""}
+                      description={
+                        windowWidth > 400 ? (
+                          <a
+                            className="darker"
+                            href={`mailto:${employee.email}`}
+                          >
+                            {employee.email}
+                          </a>
+                        ) : (
+                          ""
+                        )
+                      }
                     />
                     <ul className="employees-listing__description">
                       {windowWidth < 400 && (
                         <li>
-                          <span className="main bold break-word">
+                          <a
+                            href={`mailto:${employee.email}`}
+                            className="main bold break-word"
+                          >
                             {employee.email}
-                          </span>
+                          </a>
                         </li>
                       )}
                       <li>
