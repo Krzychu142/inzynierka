@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Form, Input, Switch, Select, DatePicker } from "antd";
 import axios from "axios";
 import { useAppSelector } from "../../hooks";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useLoading } from "../../customHooks/useLoading";
 import { IClient, Priority } from "../../types/client.interface";
 import "./addNewClient.css";
+import dayjs from "dayjs";
 
 const AddNewClient = () => {
+  const { id } = useParams();
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const token = useAppSelector((state) => state.auth.token);
@@ -53,6 +55,43 @@ const AddNewClient = () => {
         stopLoading();
       });
   };
+
+  useEffect(() => {
+    if (id) {
+      startLoading();
+      clearMessages();
+      axios
+        .get(`${baseUrl}clients/${id}`, config)
+        .then((res) => {
+          const client = res.data;
+          form.setFieldsValue({
+            name: client.name,
+            surname: client.surname,
+            email: client.email,
+            address: client.address,
+            shippingAddress: client.shippingAddress,
+            city: client.city,
+            country: client.country,
+            postalCode: client.postalCode,
+            phoneNumber: client.phoneNumber,
+            description: client.description,
+            priority: client.priority,
+            addedAt: dayjs(client.addedAt),
+            regular: client.regular,
+          });
+        })
+        .catch((err) => {
+          if (err.response.data.message) {
+            setErrorMessage(err.response.data.message);
+          } else {
+            setErrorMessage("Something went wrong!");
+          }
+        })
+        .finally(() => {
+          stopLoading();
+        });
+    }
+  }, [id]);
 
   return (
     <>
@@ -184,7 +223,7 @@ const AddNewClient = () => {
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
-              Add Client
+              {id ? "Edit Client" : "Add Client"}
             </Button>
           </Form.Item>
         </Form>
