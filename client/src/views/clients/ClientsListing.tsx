@@ -122,7 +122,7 @@ const ClientsListing = () => {
           placeholder="Select sorting order"
           style={{ width: 150 }}
           options={[
-            { value: null, label: "Default" },
+            { value: "", label: "Default" },
             { value: "ascending", label: "Fewest Orders" },
             { value: "descending", label: "Most Orders" },
           ]}
@@ -199,7 +199,9 @@ const ClientsListing = () => {
                   />
                   <ul className="clients-listing__list">
                     <li>
-                      <b className="break-word">{client.email}</b>
+                      <a href={`mailto:${client.email}`} className="darker">
+                        <b className="break-word">{client.email}</b>
+                      </a>
                     </li>
                     {client.description && (
                       <li>
