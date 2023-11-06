@@ -15,7 +15,8 @@ export interface IClient {
     description?: string | null
     priority: Priority,
     // it will be true if user create more than 5 orders for example
-    regular: boolean
+    regular: boolean,
+    countOfOrder: number
 }
 
 export const clientSchema = new Schema<IClient>({
@@ -82,6 +83,10 @@ export const clientSchema = new Schema<IClient>({
     regular: {
         type: Boolean,
         default: false
+    },
+    countOfOrder: {
+        type: Number,
+        default: 0
     }
 });
 

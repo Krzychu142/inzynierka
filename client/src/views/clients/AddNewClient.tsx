@@ -81,6 +81,7 @@ const AddNewClient = () => {
             priority: client.priority,
             addedAt: dayjs(client.addedAt),
             regular: client.regular,
+            countOfOrder: client.countOfOrder,
           });
         })
         .catch((err) => {
@@ -222,6 +223,14 @@ const AddNewClient = () => {
             extra="Automatically, one becomes regular after 5 orders."
           >
             <Switch />
+          </Form.Item>
+
+          <Form.Item
+            label="Count of order"
+            name="countOfOrder"
+            valuePropName="checked"
+          >
+            <Input type="number" className="add-new-client__input--number" />
           </Form.Item>
 
           <Form.Item>

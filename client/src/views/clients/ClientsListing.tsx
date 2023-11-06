@@ -203,6 +203,9 @@ const ClientsListing = () => {
                         <b>Shipping address:</b> {client.shippingAddress}
                       </li>
                     )}
+                    <li>
+                      <b>Orders placed:</b> {client.countOfOrder}
+                    </li>
                   </ul>
                 </List.Item>
               );

@@ -19,5 +19,6 @@ export interface IClient {
     phoneNumber: string
     description?: string | null
     priority: Priority,
-    regular: boolean
+    regular: boolean, 
+    countOfOrder: number
 }

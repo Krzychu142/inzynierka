@@ -15,3 +15,7 @@
         width: auto;
     }
 }
+
+.add-new-client__input--number {
+    max-width: 200px;
+}
