@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Avatar, Button, List, Result, message } from "antd";
+import { Avatar, Button, List, Result, Select, message } from "antd";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
@@ -74,6 +74,19 @@ const ClientsListing = () => {
       });
   };
 
+  const [sortOrder, setSortOrder] = useState<string | null>(null);
+
+  const sortedData = filteredData?.sort((a: IClient, b: IClient) => {
+    switch (sortOrder) {
+      case "ascending":
+        return a.countOfOrder - b.countOfOrder;
+      case "descending":
+        return b.countOfOrder - a.countOfOrder;
+      default:
+        return 0;
+    }
+  });
+
   return (
     <>
       {contextHolder}
@@ -101,12 +114,26 @@ const ClientsListing = () => {
           </Link>
         )}
       </section>
+      <section className="sort-section">
+        <b className="darker sort-section__b">Sort:</b>
+        <Select
+          value={sortOrder}
+          onChange={(value: string) => setSortOrder(value)}
+          placeholder="Select sorting order"
+          style={{ width: 150 }}
+          options={[
+            { value: null, label: "Default" },
+            { value: "ascending", label: "Fewest Orders" },
+            { value: "descending", label: "Most Orders" },
+          ]}
+        />
+      </section>
       {clients && (
         <section className="clients-listing">
           <List
             itemLayout={windowWidth > 850 ? "horizontal" : "vertical"}
             loading={isLoading}
-            dataSource={filteredData}
+            dataSource={sortedData}
             pagination={{
               align: "center",
               pageSize: 3,

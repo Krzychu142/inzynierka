@@ -30,3 +30,12 @@
     top: 50%;
     transform: translateY(-50%);
 }
+
+.sort-section {
+    padding: 0 25px;
+    padding-bottom: 12px;
+}
+
+.sort-section__b {
+    padding-right: 12px;
+}
