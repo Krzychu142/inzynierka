@@ -225,11 +225,7 @@ const AddNewClient = () => {
             <Switch />
           </Form.Item>
 
-          <Form.Item
-            label="Count of order"
-            name="countOfOrder"
-            valuePropName="checked"
-          >
+          <Form.Item label="Count of order" name="countOfOrder">
             <Input type="number" className="add-new-client__input--number" />
           </Form.Item>
 
