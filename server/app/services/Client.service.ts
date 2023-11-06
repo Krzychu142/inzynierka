@@ -16,6 +16,10 @@ class ClientService {
     static async getSingleClient(id: string): Promise<IClient | null> {
         return Client.findById(id)
     }
+
+    static async editClient(id: string, editedClient: IClient) {
+        return Client.findByIdAndUpdate(id, editedClient, { new: true });
+    }
 }
 
 export default ClientService

@@ -61,6 +61,20 @@ class ClientController {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
+
+    static async editClient(req: Request, res: Response): Promise<void> {
+        try {
+        ensureIdExists(req);
+        if (!req.body) {
+            res.status(400).json({ message: 'Client data is missing' }) 
+        } else {
+            const result = await ClientService.editClient(req.params.id, req.body)
+            res.status(202).json(result)
+        }
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
 }
 
 export default ClientController;
