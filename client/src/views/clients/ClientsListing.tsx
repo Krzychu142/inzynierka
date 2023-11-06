@@ -74,6 +74,19 @@ const ClientsListing = () => {
       });
   };
 
+  const [sortOrder, setSortOrder] = useState<string | null>(null);
+
+  const sortedData = filteredData?.sort((a: IClient, b: IClient) => {
+    switch (sortOrder) {
+      case "ascending":
+        return a.countOfOrder - b.countOfOrder;
+      case "descending":
+        return b.countOfOrder - a.countOfOrder;
+      default:
+        return 0;
+    }
+  });
+
   return (
     <>
       {contextHolder}
@@ -104,13 +117,14 @@ const ClientsListing = () => {
       <section className="sort-section">
         <b className="darker sort-section__b">Sort:</b>
         <Select
-          defaultValue="lucy"
-          style={{ width: 120 }}
+          value={sortOrder}
+          onChange={(value: string) => setSortOrder(value)}
+          placeholder="Select sorting order"
+          style={{ width: 150 }}
           options={[
-            { value: "jack", label: "Jack" },
-            { value: "lucy", label: "Lucy" },
-            { value: "Yiminghe", label: "yiminghe" },
-            { value: "disabled", label: "Disabled", disabled: true },
+            { value: null, label: "Default" },
+            { value: "ascending", label: "Fewest Orders" },
+            { value: "descending", label: "Most Orders" },
           ]}
         />
       </section>
@@ -119,7 +133,7 @@ const ClientsListing = () => {
           <List
             itemLayout={windowWidth > 850 ? "horizontal" : "vertical"}
             loading={isLoading}
-            dataSource={filteredData}
+            dataSource={sortedData}
             pagination={{
               align: "center",
               pageSize: 3,
