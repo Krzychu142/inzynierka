@@ -1,0 +1,17 @@
+.add-new-client {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 15px;
+}
+
+.add-new-client div{
+    width: 450px;
+}
+
+@media screen and (max-width: 450px) {
+    .add-new-client div {
+        width: auto;
+    }
+}

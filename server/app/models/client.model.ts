@@ -77,7 +77,7 @@ export const clientSchema = new Schema<IClient>({
     priority: {
         type: String,
         enum: Object.values(Priority),
-        required: true
+        default: Priority.NORMAL
     },
     regular: {
         type: Boolean,
