@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Avatar, Button, List, Result, message } from "antd";
+import { Avatar, Button, List, Result, Select, message } from "antd";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
@@ -100,6 +100,19 @@ const ClientsListing = () => {
             Add new
           </Link>
         )}
+      </section>
+      <section className="sort-section">
+        <b className="darker sort-section__b">Sort:</b>
+        <Select
+          defaultValue="lucy"
+          style={{ width: 120 }}
+          options={[
+            { value: "jack", label: "Jack" },
+            { value: "lucy", label: "Lucy" },
+            { value: "Yiminghe", label: "yiminghe" },
+            { value: "disabled", label: "Disabled", disabled: true },
+          ]}
+        />
       </section>
       {clients && (
         <section className="clients-listing">
