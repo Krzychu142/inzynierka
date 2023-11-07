@@ -92,6 +92,16 @@ class OrderController {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
+
+    static async getAllOrders(req: Request, res: Response): Promise<void> {
+        try { 
+            const orders = await OrderService.getAllOrders()
+            res.status(200).json(orders);
+
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
 }
 
 export default OrderController

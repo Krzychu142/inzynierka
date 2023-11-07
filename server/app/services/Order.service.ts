@@ -30,7 +30,19 @@ class OrderService {
     }
 
     static async findOrdersByClient(clientId: mongoose.Types.ObjectId): Promise<IOrder[]> {
-        return Order.find({ client: clientId }).exec();
+        return Order.find({ client: clientId })
+        .populate('client')
+        .populate({
+            path: 'products',
+        });
+    }
+
+    static async getAllOrders(): Promise<IOrder[]> {
+        return Order.find()
+        .populate('client') 
+        .populate({
+            path: 'products',
+        });
     }
 }
 
