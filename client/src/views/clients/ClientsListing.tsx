@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Avatar, Button, List, Result, Select, message } from "antd";
+import { Avatar, Button, List, Result, message } from "antd";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
@@ -32,11 +32,29 @@ const ClientsListing = () => {
 
   const windowWidth = useWindowWidth();
   const [searchValue, setSearchValue] = useState("");
-  const filteredData = clients?.filter(
-    (item: IClient) =>
-      item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchValue.toLowerCase())
+  const [selectedPriority, setSelectedPriority] = useState("");
+
+  const getFilteredData = (
+    data: IClient[],
+    search: string,
+    priority: string
+  ): IClient[] => {
+    return data.filter((client: IClient) => {
+      const matchesSearch =
+        client.name.toLowerCase().includes(search.toLowerCase()) ||
+        client.surname.toLowerCase().includes(search.toLowerCase()) ||
+        client.email.toLowerCase().includes(search.toLowerCase());
+
+      const matchesPriority = priority ? client.priority === priority : true;
+
+      return matchesSearch && matchesPriority;
+    });
+  };
+
+  const filteredData = getFilteredData(
+    clients || [],
+    searchValue,
+    selectedPriority
   );
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -85,7 +103,7 @@ const ClientsListing = () => {
     { value: "newest", label: "Newest First" },
   ];
 
-  const sortedData = filteredData?.sort((a: IClient, b: IClient) => {
+  const sortedData = filteredData.sort((a: IClient, b: IClient) => {
     switch (sortOrder) {
       case "ascending":
         return a.countOfOrder - b.countOfOrder;
@@ -99,6 +117,14 @@ const ClientsListing = () => {
         return 0;
     }
   });
+
+  const priorityOptions = [
+    { value: "", label: "Default" },
+    { value: "vip", label: "VIP" },
+    { value: "important", label: "Important" },
+    { value: "normal", label: "Normal" },
+    { value: "lowPriority", label: "Low Priority" },
+  ];
 
   return (
     <>
@@ -127,6 +153,12 @@ const ClientsListing = () => {
           </Link>
         )}
       </section>
+      <SortSelect
+        value={selectedPriority ?? ""}
+        onChange={setSelectedPriority}
+        options={priorityOptions}
+        label="Priority:"
+      />
       <SortSelect
         value={sortOrder ?? ""}
         onChange={setSortOrder}
