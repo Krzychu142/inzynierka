@@ -11,7 +11,7 @@ class RequestLogger {
             RequestLoggerService.saveLog({
                 nameOfOperation: operation,
                 dateExecution: new Date(),
-                operationPerformedBy: req.body.email
+                operationPerformedBy: req.body.email || req.body.clientEmail
             });
         } catch (error) {
             console.log(ErrorsHandlers.errorMessageHandler(error));
@@ -20,12 +20,19 @@ class RequestLogger {
 
     static logRequest(req: Request, res: Response, next: NextFunction) {
         res.on('finish', () => {
+
             if (req.path === "/login" && req.body.email && res.statusCode === 200) {
                 RequestLogger.logOperation(req, Operation.LOGGING);
             }
+
             if (req.originalUrl === "/clients/create" && req.body.email && res.statusCode === 201) {
                 RequestLogger.logOperation(req, Operation.NEWCLIENT);
             }
+
+            if (req.originalUrl === "/orders/create" && req.body.clientEmail && res.statusCode === 201) {
+                RequestLogger.logOperation(req, Operation.NEWORDER);
+            }
+
         });
 
         next();
