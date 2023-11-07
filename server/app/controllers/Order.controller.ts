@@ -14,7 +14,7 @@ class OrderController {
             const { clientEmail, items, status } = req.body;
 
             if (!clientEmail) {
-                throw Error("Client email is missing.")
+                throw new Error("Client email is missing.")
             }
 
             if (!Array.isArray(items) || items.length === 0) { 
@@ -24,7 +24,7 @@ class OrderController {
             const client = await ClientService.getClientByEmail(clientEmail)
 
             if (!client) {
-                throw Error("Client not found.")
+                throw new Error("Client not found.")
             }
 
             const productIDs: mongoose.Types.ObjectId[] = [];
@@ -37,7 +37,7 @@ class OrderController {
                 }
 
                 if (!product.isAvailable) {
-                    throw new Error(`Product ${product.name} is not available.`);
+                    throw new Error(`Product ${item.productSKU} is not available.`);
                 }
 
                 if (product.stockQuantity < item.quantity) {
@@ -70,6 +70,26 @@ class OrderController {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         } finally {
             await session.endSession();
+        }
+    }
+
+    static async getOrdersByClient(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.params.email) {
+                throw new Error("Client email is missign.")
+            }
+
+            const client = await ClientService.getClientByEmail(req.params.email);
+
+            if (!client) {
+                throw new Error('User not found.')
+            }
+
+            const orders = await OrderService.findOrdersByClient(client._id);
+            res.status(200).json(orders);
+
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 }

@@ -6,5 +6,6 @@ import OrderController from '../controllers/Order.controller';
 const router = express.Router()
 
 router.post('/create', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN, Role.WAREHOUSEMAN]), OrderController.createOrder)
+router.get('/getOrdersByClient/:email', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN, Role.WAREHOUSEMAN]), OrderController.getOrdersByClient)
 
 export default router

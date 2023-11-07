@@ -28,6 +28,10 @@ class OrderService {
             return newOrder.save();
         }
     }
+
+    static async findOrdersByClient(clientId: mongoose.Types.ObjectId): Promise<IOrder[]> {
+        return Order.find({ client: clientId }).exec();
+    }
 }
 
 export default OrderService;
