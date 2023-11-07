@@ -138,8 +138,13 @@ const Dashboard: React.FC = () => {
                             new client email:
                           </span>
                         )}
-                        <span className="operation-performed darker bold">
-                          {operation.operationPerformedBy}
+                        <span className="operation-performed">
+                          <a
+                            className="darker bold"
+                            href={`mailto:${operation.operationPerformedBy}`}
+                          >
+                            {operation.operationPerformedBy}
+                          </a>
                         </span>
                       </>
                     }
