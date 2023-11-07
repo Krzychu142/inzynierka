@@ -11,6 +11,7 @@ import Search from "antd/es/input/Search";
 import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import useWindowWidth from "../../customHooks/useWindowWidth";
+import SortSelect from "../../components/sortSection/SortSelect";
 
 const EmployeesListing = () => {
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
@@ -81,10 +82,26 @@ const EmployeesListing = () => {
         return a.salary - b.salary;
       case "descending":
         return b.salary - a.salary;
+      case "oldest":
+        return (
+          new Date(a.employedAt).getTime() - new Date(b.employedAt).getTime()
+        );
+      case "newest":
+        return (
+          new Date(b.employedAt).getTime() - new Date(a.employedAt).getTime()
+        );
       default:
         return 0;
     }
   });
+
+  const sortOptions = [
+    { value: "", label: "Default" },
+    { value: "ascending", label: "Lowest Salary" },
+    { value: "descending", label: "Highest Salary" },
+    { value: "oldest", label: "Oldest Employee" },
+    { value: "newest", label: "Newest Employee" },
+  ];
 
   return (
     <>
@@ -114,20 +131,12 @@ const EmployeesListing = () => {
               </Link>
             )}
           </section>
-          <section className="sort-section">
-            <b className="darker sort-section__b">Sort:</b>
-            <Select
-              value={sortOrder}
-              onChange={(value: string) => setSortOrder(value)}
-              placeholder="Select sorting order"
-              style={{ width: 150 }}
-              options={[
-                { value: "", label: "Default" },
-                { value: "ascending", label: "Lowest Salary" },
-                { value: "descending", label: "Highest Salary" },
-              ]}
-            />
-          </section>
+          <SortSelect
+            value={sortOrder ?? ""}
+            onChange={setSortOrder}
+            options={sortOptions}
+            label="Sort:"
+          />
           <section className="employees-listing">
             <List
               itemLayout={windowWidth > 900 ? "horizontal" : "vertical"}

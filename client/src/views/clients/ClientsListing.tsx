@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
+import SortSelect from "../../components/sortSection/SortSelect";
 
 const ClientsListing = () => {
   //TODO: function to generate orders summary for this client
@@ -76,12 +77,24 @@ const ClientsListing = () => {
 
   const [sortOrder, setSortOrder] = useState<string | null>(null);
 
+  const sortOptions = [
+    { value: "", label: "Default" },
+    { value: "ascending", label: "Fewest Orders" },
+    { value: "descending", label: "Most Orders" },
+    { value: "oldest", label: "Oldest First" },
+    { value: "newest", label: "Newest First" },
+  ];
+
   const sortedData = filteredData?.sort((a: IClient, b: IClient) => {
     switch (sortOrder) {
       case "ascending":
         return a.countOfOrder - b.countOfOrder;
       case "descending":
         return b.countOfOrder - a.countOfOrder;
+      case "oldest":
+        return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+      case "newest":
+        return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
       default:
         return 0;
     }
@@ -114,20 +127,12 @@ const ClientsListing = () => {
           </Link>
         )}
       </section>
-      <section className="sort-section">
-        <b className="darker sort-section__b">Sort:</b>
-        <Select
-          value={sortOrder}
-          onChange={(value: string) => setSortOrder(value)}
-          placeholder="Select sorting order"
-          style={{ width: 150 }}
-          options={[
-            { value: "", label: "Default" },
-            { value: "ascending", label: "Fewest Orders" },
-            { value: "descending", label: "Most Orders" },
-          ]}
-        />
-      </section>
+      <SortSelect
+        value={sortOrder ?? ""}
+        onChange={setSortOrder}
+        options={sortOptions}
+        label="Sort:"
+      />
       {clients && (
         <section className="clients-listing">
           <List

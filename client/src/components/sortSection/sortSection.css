@@ -1,0 +1,18 @@
+.sort-section__select {
+    width: 200px;
+}
+
+@media screen and (max-width: 900px) {
+    .sort-section__select {
+        width: 150px;
+    }
+}
+
+.sort-section {
+    padding: 0 25px;
+    padding-bottom: 12px;
+}
+
+.sort-section__b {
+    padding-right: 12px;
+}
