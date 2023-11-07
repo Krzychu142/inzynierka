@@ -6,7 +6,6 @@ import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
 import "./clientsListing.css";
-import dayjs from "dayjs";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
@@ -249,7 +248,7 @@ const ClientsListing = () => {
                     )}
                     <li>
                       <b>Added at: </b>
-                      {dayjs(client.addedAt).format("DD.MM.YYYY")}
+                      {new Date(client.addedAt).toLocaleString().split(",")[0]}
                     </li>
                     {/* maybe here how many orders for this client, end his last order or click to generate his all orders? */}
                     {client.regular && (
