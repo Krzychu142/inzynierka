@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, Button, List, Result, Select, message } from "antd";
+import { Avatar, Button, List, Result, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
