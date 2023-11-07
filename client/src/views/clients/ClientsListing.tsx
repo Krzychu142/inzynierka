@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { Avatar, Button, List, Result, message } from "antd";
@@ -33,28 +33,20 @@ const ClientsListing = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
 
-  const getFilteredData = (
-    data: IClient[],
-    search: string,
-    priority: string
-  ): IClient[] => {
-    return data.filter((client: IClient) => {
+  const filteredData = useMemo(() => {
+    if (!clients) return [];
+
+    return clients.filter((client: IClient) => {
       const matchesSearch =
-        client.name.toLowerCase().includes(search.toLowerCase()) ||
-        client.surname.toLowerCase().includes(search.toLowerCase()) ||
-        client.email.toLowerCase().includes(search.toLowerCase());
-
-      const matchesPriority = priority ? client.priority === priority : true;
-
+        client.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        client.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchValue.toLowerCase());
+      const matchesPriority = selectedPriority
+        ? client.priority === selectedPriority
+        : true;
       return matchesSearch && matchesPriority;
     });
-  };
-
-  const filteredData = getFilteredData(
-    clients || [],
-    searchValue,
-    selectedPriority
-  );
+  }, [clients, searchValue, selectedPriority]);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -102,20 +94,22 @@ const ClientsListing = () => {
     { value: "newest", label: "Newest First" },
   ];
 
-  const sortedData = filteredData.sort((a: IClient, b: IClient) => {
-    switch (sortOrder) {
-      case "ascending":
-        return a.countOfOrder - b.countOfOrder;
-      case "descending":
-        return b.countOfOrder - a.countOfOrder;
-      case "oldest":
-        return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
-      case "newest":
-        return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
-      default:
-        return 0;
-    }
-  });
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a: IClient, b: IClient) => {
+      switch (sortOrder) {
+        case "ascending":
+          return a.countOfOrder - b.countOfOrder;
+        case "descending":
+          return b.countOfOrder - a.countOfOrder;
+        case "oldest":
+          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+        case "newest":
+          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  }, [filteredData, sortOrder]);
 
   const priorityOptions = [
     { value: "", label: "Default" },
