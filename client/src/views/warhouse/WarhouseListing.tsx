@@ -106,6 +106,14 @@ const WarhouseListing = () => {
   return (
     <>
       {contextHolder}
+      {isLoading && <LoadingSpinner />}
+      {isError && (
+        <Result
+          status="error"
+          title="Somthing goes wrong"
+          subTitle="Please try later"
+        ></Result>
+      )}
       <section className="search-section">
         <Search
           placeholder="type name or sku"
@@ -127,14 +135,6 @@ const WarhouseListing = () => {
         options={sortOptions}
         label="Sort:"
       />
-      {isLoading && <LoadingSpinner />}
-      {isError && (
-        <Result
-          status="error"
-          title="Somthing goes wrong"
-          subTitle="Please try later"
-        ></Result>
-      )}
       {products && (
         <List
           className="products__list"
