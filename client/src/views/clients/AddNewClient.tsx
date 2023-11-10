@@ -81,7 +81,7 @@ const AddNewClient = () => {
             priority: client.priority,
             addedAt: dayjs(client.addedAt),
             regular: client.regular,
-            countOfOrder: client.countOfOrder,
+            // countOfOrder: client.countOfOrder,
           });
         })
         .catch((err) => {
@@ -225,9 +225,9 @@ const AddNewClient = () => {
             <Switch />
           </Form.Item>
 
-          <Form.Item label="Count of order" name="countOfOrder">
+          {/* <Form.Item label="Count of order" name="countOfOrder">
             <Input type="number" className="add-new-client__input--number" />
-          </Form.Item>
+          </Form.Item> */}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">

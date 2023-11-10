@@ -172,7 +172,8 @@ const ClientsListing = () => {
               return (
                 <List.Item
                   actions={
-                    decodedToken?.role === "manager"
+                    decodedToken?.role === "manager" ||
+                    decodedToken?.role === "salesman"
                       ? [
                           <Link
                             to={`/clients/${client._id}`}
@@ -200,13 +201,13 @@ const ClientsListing = () => {
                           >
                             Delete
                           </Button>,
-                          <Button
-                            type="link"
+                          <Link
+                            to={`/clients/orders/${btoa(client.email)}`}
                             key="list-loadmore-more"
                             className="link darker action-element"
                           >
                             Orders
-                          </Button>,
+                          </Link>,
                         ]
                       : []
                   }

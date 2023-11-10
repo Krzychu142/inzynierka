@@ -21,8 +21,11 @@ export const ordersApi = createApi({
     endpoints: (builder) => ({
         getAllOrders: builder.query({
             query: () => ("get"),
-        })
+        }),
+        getOrdersByClient: builder.query({
+            query: (email) => `getOrdersByClient/${email}`,
+        }),
     })
 })
 
-export const { useGetAllOrdersQuery } = ordersApi;
+export const { useGetAllOrdersQuery, useGetOrdersByClientQuery } = ordersApi;

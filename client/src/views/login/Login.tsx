@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./login.css";
 import { Form, FormInstance, Input, Button } from "antd";
 import { HomeOutlined, MailOutlined, LockOutlined } from "@ant-design/icons";
@@ -13,6 +13,20 @@ interface LoginDataType {
 }
 
 const Login: React.FC = () => {
+  useEffect(() => {
+    const enterClick = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        loginHandler();
+      }
+    };
+
+    document.addEventListener("keydown", enterClick);
+
+    return () => {
+      document.removeEventListener("keydown", enterClick);
+    };
+  }, []);
+
   const authState = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
