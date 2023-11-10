@@ -116,7 +116,7 @@ const ClientsListing = () => {
     { value: "vip", label: "VIP" },
     { value: "important", label: "Important" },
     { value: "normal", label: "Normal" },
-    { value: "lowPriority", label: "Low Priority" },
+    { value: "low priority", label: "Low Priority" },
   ];
 
   return (
@@ -223,7 +223,10 @@ const ClientsListing = () => {
                     title={client.name + " " + client.surname}
                     description={
                       <span>
-                        Priority: <b>{client.priority}</b>
+                        Priority:{" "}
+                        <b className={client.priority}>
+                          {client.priority.toUpperCase()}
+                        </b>
                       </span>
                     }
                   />
