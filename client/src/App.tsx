@@ -15,6 +15,8 @@ import ResetPassword from "./views/resetPassword/ResetPassword";
 import AddNewEmployee from "./views/employees/AddNewEmployee";
 import ClientsListing from "./views/clients/ClientsListing";
 import AddNewClient from "./views/clients/AddNewClient";
+import OrdersListing from "./views/orders/OrdersListing";
+import SingleClientOrders from "./views/clients/SingleClientOrders";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -52,6 +54,15 @@ const App: React.FC = () => {
                     <>
                       <Navbar />
                       <WarhouseListing />
+                    </>
+                  }
+                ></Route>
+                <Route
+                  path="/orders"
+                  element={
+                    <>
+                      <Navbar />
+                      <OrdersListing />
                     </>
                   }
                 ></Route>
@@ -139,6 +150,16 @@ const App: React.FC = () => {
                         <>
                           <Navbar />
                           <AddNewClient />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/clients/orders/:email"
+                      element={
+                        <>
+                          <Navbar />
+                          <SingleClientOrders />
                           <Footer />
                         </>
                       }

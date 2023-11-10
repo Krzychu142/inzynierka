@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import "./warhouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, List, Result, Skeleton, Space, message, Image } from "antd";
@@ -10,6 +10,7 @@ import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
+import SortSelect from "../../components/sortSection/SortSelect";
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   <Space>
@@ -69,9 +70,50 @@ const WarhouseListing = () => {
       });
   };
 
+  const [sortOrder, setSortOrder] = useState<string | null>(null);
+
+  const sortOptions = [
+    { value: "", label: "Default" },
+    { value: "price_asc", label: "Lowest Price" },
+    { value: "price_desc", label: "Highest Price" },
+    { value: "quantity_asc", label: "Lowest Quantity" },
+    { value: "quantity_desc", label: "Highest Quantity" },
+    { value: "addedAt_asc", label: "Oldest Added" },
+    { value: "addedAt_desc", label: "Newest Added" },
+  ];
+
+  const sortedData = useMemo(() => {
+    return filteredData?.sort((a: IProduct, b: IProduct) => {
+      switch (sortOrder) {
+        case "price_asc":
+          return a.price - b.price;
+        case "price_desc":
+          return b.price - a.price;
+        case "quantity_asc":
+          return a.stockQuantity - b.stockQuantity;
+        case "quantity_desc":
+          return b.stockQuantity - a.stockQuantity;
+        case "addedAt_asc":
+          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+        case "addedAt_desc":
+          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  }, [filteredData, sortOrder]);
+
   return (
     <>
       {contextHolder}
+      {isLoading && <LoadingSpinner />}
+      {isError && (
+        <Result
+          status="error"
+          title="Somthing goes wrong"
+          subTitle="Please try later"
+        ></Result>
+      )}
       <section className="search-section">
         <Search
           placeholder="type name or sku"
@@ -87,14 +129,12 @@ const WarhouseListing = () => {
           </Link>
         )}
       </section>
-      {isLoading && <LoadingSpinner />}
-      {isError && (
-        <Result
-          status="error"
-          title="Somthing goes wrong"
-          subTitle="Please try later"
-        ></Result>
-      )}
+      <SortSelect
+        value={sortOrder ?? ""}
+        onChange={setSortOrder}
+        options={sortOptions}
+        label="Sort:"
+      />
       {products && (
         <List
           className="products__list"
@@ -108,7 +148,7 @@ const WarhouseListing = () => {
             // },
             pageSize: 2,
           }}
-          dataSource={filteredData}
+          dataSource={sortedData}
           renderItem={(item: IProduct) => (
             <List.Item
               key={item.name}
@@ -161,7 +201,10 @@ const WarhouseListing = () => {
                   <b>Stock quantity:</b> {item.stockQuantity}
                 </li>
                 <li>Initial stock quantiti: {item.initialStockQuantity}</li>
-                <li>Added at: {new Date(item.addedAt).toLocaleString()}</li>
+                <li>
+                  Added at:{" "}
+                  {new Date(item.addedAt).toLocaleString().split(",")[0]}
+                </li>
                 {item.soldAt && (
                   <li>
                     Last time sold at: {new Date(item.soldAt).toLocaleString()}

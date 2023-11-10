@@ -1,7 +1,7 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 import { Priority } from "../types/priority.enum"
 
-export interface IClient {
+export interface IClient extends Document {
     name: string
     surname: string
     addedAt: Date

@@ -58,7 +58,7 @@ class ProductController {
           message: "The product was not found"
         })
       }
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
@@ -74,7 +74,7 @@ class ProductController {
     } else {
       res.status(404).json({ message: "The product was not found" });
     }
-    } catch (error) {
+    } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
