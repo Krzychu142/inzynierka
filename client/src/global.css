@@ -66,3 +66,11 @@ body {
 .block {
     display: block;
 }
+
+.important, .vip {
+    color: var(--main-color);
+}
+
+.normal {
+    color: var(--main-color-dark);
+}

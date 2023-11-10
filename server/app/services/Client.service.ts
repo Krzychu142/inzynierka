@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import Client, {IClient} from "../models/client.model"
 
 class ClientService {
@@ -20,6 +21,24 @@ class ClientService {
     static async editClient(id: string, editedClient: IClient) {
         return Client.findByIdAndUpdate(id, editedClient, { new: true });
     }
+
+    static async getClientByEmail(email: string): Promise<IClient | null> {
+        return Client.findOne({ email: email });
+    }
+
+    static async incrementOrderCount(clientId: mongoose.Types.ObjectId, session?: mongoose.ClientSession): Promise<void> {
+        const updatedClient = await Client.findOneAndUpdate(
+            { _id: clientId },
+            { $inc: { countOfOrder: 1 } },
+            { new: true, session: session } 
+        );
+
+        if (updatedClient && updatedClient.countOfOrder > 5) {
+            updatedClient.regular = true;
+            await updatedClient.save({ session: session });
+        }
+    }
+
 }
 
 export default ClientService

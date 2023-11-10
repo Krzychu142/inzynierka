@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
 import { Avatar, Button, List, Result, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -76,24 +76,28 @@ const EmployeesListing = () => {
 
   const [sortOrder, setSortOrder] = useState<string | null>(null);
 
-  const sortedData = filteredData?.sort((a: IEmployee, b: IEmployee) => {
-    switch (sortOrder) {
-      case "ascending":
-        return a.salary - b.salary;
-      case "descending":
-        return b.salary - a.salary;
-      case "oldest":
-        return (
-          new Date(a.employedAt).getTime() - new Date(b.employedAt).getTime()
-        );
-      case "newest":
-        return (
-          new Date(b.employedAt).getTime() - new Date(a.employedAt).getTime()
-        );
-      default:
-        return 0;
-    }
-  });
+  const sortedData = useMemo(() => {
+    if (!filteredData) return [];
+
+    return [...filteredData].sort((a: IEmployee, b: IEmployee) => {
+      switch (sortOrder) {
+        case "ascending":
+          return a.salary - b.salary;
+        case "descending":
+          return b.salary - a.salary;
+        case "oldest":
+          return (
+            new Date(a.employedAt).getTime() - new Date(b.employedAt).getTime()
+          );
+        case "newest":
+          return (
+            new Date(b.employedAt).getTime() - new Date(a.employedAt).getTime()
+          );
+        default:
+          return 0;
+      }
+    });
+  }, [filteredData, sortOrder]);
 
   const sortOptions = [
     { value: "", label: "Default" },

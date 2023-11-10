@@ -24,6 +24,26 @@ class ProductService {
   static async editProduct(id: string, editedProduct: IProduct) {
     return Product.findByIdAndUpdate(id, editedProduct, { new: true });
   }
+
+  static async getSingleProductBySKU(sku: string): Promise<IProduct | null> {
+    return Product.findOne({ sku: sku });
+  }
+
+  static async updateProductStock(sku: string, quantityToDeduct: number, session: mongoose.ClientSession): Promise<IProduct | null> {
+      const product = await Product.findOne({ sku: sku }).session(session);
+
+      if (product && product.stockQuantity >= quantityToDeduct) {
+          product.stockQuantity -= quantityToDeduct;
+          if (product.stockQuantity === 0) {
+              product.isAvailable = false;
+          }
+          await product.save({ session });
+          return product;
+      } else {
+          throw new Error(`Insufficient stock for product SKU: ${sku}.`);
+      }
+  }
+
 }
 
 export default ProductService

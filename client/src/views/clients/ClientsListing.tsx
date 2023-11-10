@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { Avatar, Button, List, Result, message } from "antd";
@@ -6,7 +6,6 @@ import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined } from "@ant-design/icons";
 import "./clientsListing.css";
-import dayjs from "dayjs";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../hooks";
@@ -34,28 +33,20 @@ const ClientsListing = () => {
   const [searchValue, setSearchValue] = useState("");
   const [selectedPriority, setSelectedPriority] = useState("");
 
-  const getFilteredData = (
-    data: IClient[],
-    search: string,
-    priority: string
-  ): IClient[] => {
-    return data.filter((client: IClient) => {
+  const filteredData = useMemo(() => {
+    if (!clients) return [];
+
+    return clients.filter((client: IClient) => {
       const matchesSearch =
-        client.name.toLowerCase().includes(search.toLowerCase()) ||
-        client.surname.toLowerCase().includes(search.toLowerCase()) ||
-        client.email.toLowerCase().includes(search.toLowerCase());
-
-      const matchesPriority = priority ? client.priority === priority : true;
-
+        client.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+        client.surname.toLowerCase().includes(searchValue.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchValue.toLowerCase());
+      const matchesPriority = selectedPriority
+        ? client.priority === selectedPriority
+        : true;
       return matchesSearch && matchesPriority;
     });
-  };
-
-  const filteredData = getFilteredData(
-    clients || [],
-    searchValue,
-    selectedPriority
-  );
+  }, [clients, searchValue, selectedPriority]);
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -103,27 +94,29 @@ const ClientsListing = () => {
     { value: "newest", label: "Newest First" },
   ];
 
-  const sortedData = filteredData.sort((a: IClient, b: IClient) => {
-    switch (sortOrder) {
-      case "ascending":
-        return a.countOfOrder - b.countOfOrder;
-      case "descending":
-        return b.countOfOrder - a.countOfOrder;
-      case "oldest":
-        return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
-      case "newest":
-        return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
-      default:
-        return 0;
-    }
-  });
+  const sortedData = useMemo(() => {
+    return [...filteredData].sort((a: IClient, b: IClient) => {
+      switch (sortOrder) {
+        case "ascending":
+          return a.countOfOrder - b.countOfOrder;
+        case "descending":
+          return b.countOfOrder - a.countOfOrder;
+        case "oldest":
+          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+        case "newest":
+          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        default:
+          return 0;
+      }
+    });
+  }, [filteredData, sortOrder]);
 
   const priorityOptions = [
     { value: "", label: "Default" },
     { value: "vip", label: "VIP" },
     { value: "important", label: "Important" },
     { value: "normal", label: "Normal" },
-    { value: "lowPriority", label: "Low Priority" },
+    { value: "low priority", label: "Low Priority" },
   ];
 
   return (
@@ -179,7 +172,8 @@ const ClientsListing = () => {
               return (
                 <List.Item
                   actions={
-                    decodedToken?.role === "manager"
+                    decodedToken?.role === "manager" ||
+                    decodedToken?.role === "salesman"
                       ? [
                           <Link
                             to={`/clients/${client._id}`}
@@ -207,13 +201,13 @@ const ClientsListing = () => {
                           >
                             Delete
                           </Button>,
-                          <Button
-                            type="link"
+                          <Link
+                            to={`/clients/orders/${btoa(client.email)}`}
                             key="list-loadmore-more"
                             className="link darker action-element"
                           >
                             Orders
-                          </Button>,
+                          </Link>,
                         ]
                       : []
                   }
@@ -230,7 +224,10 @@ const ClientsListing = () => {
                     title={client.name + " " + client.surname}
                     description={
                       <span>
-                        Priority: <b>{client.priority}</b>
+                        Priority:{" "}
+                        <b className={client.priority}>
+                          {client.priority.toUpperCase()}
+                        </b>
                       </span>
                     }
                   />
@@ -249,7 +246,7 @@ const ClientsListing = () => {
                     )}
                     <li>
                       <b>Added at: </b>
-                      {dayjs(client.addedAt).format("DD.MM.YYYY")}
+                      {new Date(client.addedAt).toLocaleString().split(",")[0]}
                     </li>
                     {/* maybe here how many orders for this client, end his last order or click to generate his all orders? */}
                     {client.regular && (
