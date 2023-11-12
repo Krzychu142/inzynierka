@@ -169,50 +169,47 @@ const ClientsListing = () => {
               pageSize: 3,
             }}
             renderItem={(client: IClient) => {
+              let actions = [];
+
+              if (
+                decodedToken?.role === "manager" ||
+                decodedToken?.role === "salesman"
+              ) {
+                actions.push(
+                  <Link
+                    to={`/clients/${client._id}`}
+                    key="list-loadmore-edit"
+                    className="link darker action-element"
+                  >
+                    Edit
+                  </Link>,
+                  <Button
+                    type="link"
+                    key="list-loadmore-delete"
+                    className="link darker action-element"
+                    onClick={() => {
+                      deleteClient(client.email);
+                    }}
+                    disabled={decodedToken.email === client.email}
+                  >
+                    Delete
+                  </Button>
+                );
+
+                if (client.countOfOrder > 0) {
+                  actions.push(
+                    <Link
+                      to={`/clients/orders/${btoa(client.email)}`}
+                      key="list-loadmore-orders"
+                      className="link darker action-element"
+                    >
+                      Orders
+                    </Link>
+                  );
+                }
+              }
               return (
-                <List.Item
-                  actions={
-                    decodedToken?.role === "manager" ||
-                    decodedToken?.role === "salesman"
-                      ? [
-                          <Link
-                            to={`/clients/${client._id}`}
-                            key="list-loadmore-edit"
-                            className="link darker action-element"
-                            // style={
-                            //   decodedToken.email === employee.email
-                            //     ? {
-                            //         opacity: 0.5,
-                            //         pointerEvents: "none",
-                            //       }
-                            //     : {}
-                            // }
-                          >
-                            Edit
-                          </Link>,
-                          <Button
-                            type="link"
-                            key="list-loadmore-more"
-                            className="link darker action-element"
-                            onClick={() => {
-                              deleteClient(client.email);
-                            }}
-                            disabled={decodedToken.email === client.email}
-                          >
-                            Delete
-                          </Button>,
-                          <Link
-                            to={`/clients/orders/${btoa(client.email)}`}
-                            key="list-loadmore-more"
-                            className="link darker action-element"
-                          >
-                            Orders
-                          </Link>,
-                        ]
-                      : []
-                  }
-                  key={client._id}
-                >
+                <List.Item actions={actions} key={client._id}>
                   <List.Item.Meta
                     avatar={
                       <Avatar
