@@ -6,6 +6,7 @@ import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { IOrder } from "../../types/order.interface";
 import "./singleClientOrders.css";
 import dayjs from "dayjs";
+import { IOrderProduct } from "../../types/orderProduct.interface";
 
 const SingleClientOrders = () => {
   //TODO: add some state for currency??? mayby global?
@@ -21,6 +22,17 @@ const SingleClientOrders = () => {
   useEffect(() => {
     refetch();
   }, [refetch]);
+
+  const getTotalCostOfOrder = (products: IOrderProduct[]): string => {
+    // reduce instead of forEach to get better performance
+    const totalCost = products.reduce((total, product) => {
+      return total + product.quantity * product.priceAtOrder;
+    }, 0);
+
+    return totalCost.toFixed(2) + " PLN";
+  };
+
+  //TODO: maybe some brutto netto????
 
   console.log(orders);
 
@@ -71,6 +83,7 @@ const SingleClientOrders = () => {
                     </div>
                   );
                 })}
+                <h4>Total cost: {getTotalCostOfOrder(order.products)}</h4>
               </List.Item>
             );
           }}
