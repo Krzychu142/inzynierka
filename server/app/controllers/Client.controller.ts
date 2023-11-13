@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
-import { IClient } from '../models/client.model'
 import ClientService from '../services/Client.service';
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers';
 import ensureIdExists from '../utils/helpers/ensureIdExists';
+import OrderService from '../services/Order.service';
 
 class ClientController {
     static async getAllClients(req: Request, res: Response): Promise<void> {
@@ -33,15 +33,17 @@ class ClientController {
 
     static async deleteClient(req: Request, res: Response): Promise<void> {
         try {
-            if (!req.body.email) {
-                res.status(400).json({ message: 'The email parameter is missing' }) 
+            if (!req.body.clientId){
+                throw new Error("Client id is missing")
+            }
+
+            const deletedOrdersCount = await OrderService.deleteOrdersByClientId(req.body.clientId);
+
+            const result = await ClientService.deleteClient(req.body.clientId)
+            if (result.deletedCount === 0) {
+                res.status(404).json({ message: 'Client not found' }) 
             } else {
-                const result = await ClientService.deleteClient(req.body.email)
-                if (result.deletedCount === 0) {
-                    res.status(404).json({ message: 'Client not found' }) 
-                } else {
-                    res.status(201).json({ message: 'Client deleted successful'})
-                }
+                res.status(201).json({ message: `Client and ${deletedOrdersCount} orders deleted successful`})
             }
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))

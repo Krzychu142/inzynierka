@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
-import Client, {IClient} from "../models/client.model"
+import Client from "../models/client.model"
+import { IClient } from "../types/client.interface"
 
 class ClientService {
     static async getAllClients(): Promise<IClient[]> {
@@ -10,8 +11,8 @@ class ClientService {
         return Client.create(client)
     }
 
-    static async deleteClient(email: string) {
-        return Client.deleteOne({email: email})
+    static async deleteClient(clientId: string) {
+        return Client.deleteOne({ _id: clientId});
     }
 
     static async getSingleClient(id: string): Promise<IClient | null> {

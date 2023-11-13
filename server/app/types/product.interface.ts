@@ -1,5 +1,6 @@
-export interface IProduct {
-  _id: string,
+import { Document } from "mongoose"
+
+export interface IProduct extends Document {
   sku: string
   name: string
   description: string
@@ -10,7 +11,7 @@ export interface IProduct {
   isAvailable: boolean
   images: string[]
   initialStockQuantity: number
-  addedAt: Date
+  addedAt?: Date
   soldAt?: Date
-  currency: string
+  currency?: string
 }
