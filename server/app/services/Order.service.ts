@@ -46,6 +46,11 @@ class OrderService {
             path: 'products.product',
         });
     }
+
+    static async deleteOrdersByClientId(clientId: mongoose.Types.ObjectId): Promise<number> {
+        const result = await Order.deleteMany({ client: clientId });
+        return result.deletedCount || 0;
+    }
 }
 
 export default OrderService;

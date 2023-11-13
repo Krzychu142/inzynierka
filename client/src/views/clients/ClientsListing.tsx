@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Avatar, Button, List, Result, message } from "antd";
+import { Avatar, Button, List, Modal, Result, message } from "antd";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
-import { UserOutlined } from "@ant-design/icons";
+import { UserOutlined, WarningOutlined } from "@ant-design/icons";
 import "./clientsListing.css";
 import Search from "antd/es/input/Search";
 import { Link } from "react-router-dom";
@@ -54,10 +54,22 @@ const ClientsListing = () => {
 
   const token = useAppSelector((state) => state.auth.token);
 
-  const deleteClient = (email: string) => {
+  const [open, setOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState<string | null>(null);
+
+  // const handleCancel = () => {
+  //   setOpen(false);
+  // };
+
+  const showDeleteModal = (clientId: string) => {
+    setOpen(true);
+    setClientToDelete(clientId);
+  };
+
+  const deleteClient = () => {
     axios
       .delete(`${baseUrl}clients/delete`, {
-        data: { email },
+        data: { clientId: clientToDelete },
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -66,6 +78,7 @@ const ClientsListing = () => {
         if (res.status) {
           refetch();
           if (res.status === 201) {
+            setOpen(false);
             messageApi.open({
               type: "success",
               content: res.data?.message,
@@ -160,6 +173,20 @@ const ClientsListing = () => {
       />
       {clients && (
         <section className="clients-listing">
+          <Modal
+            title={
+              <span>
+                <WarningOutlined />
+                Be careful!
+              </span>
+            }
+            open={open}
+            okText="Confirm"
+            onOk={deleteClient}
+            onCancel={() => setOpen(false)}
+          >
+            <p>Deleting a customer will also delete all their orders!</p>
+          </Modal>
           <List
             itemLayout={windowWidth > 850 ? "horizontal" : "vertical"}
             loading={isLoading}
@@ -188,7 +215,7 @@ const ClientsListing = () => {
                     key="list-loadmore-delete"
                     className="link darker action-element"
                     onClick={() => {
-                      deleteClient(client.email);
+                      showDeleteModal(client._id);
                     }}
                     disabled={decodedToken.email === client.email}
                   >

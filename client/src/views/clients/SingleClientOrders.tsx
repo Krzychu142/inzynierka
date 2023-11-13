@@ -10,7 +10,6 @@ import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
 
 const SingleClientOrders = () => {
-  //TODO: add some state for currency??? mayby global?
   const { email } = useParams();
 
   const {
@@ -40,8 +39,6 @@ const SingleClientOrders = () => {
 
     return totalCostString;
   };
-
-  //TODO: maybe some brutto netto????
 
   return (
     <div className="single-client-orders-container">

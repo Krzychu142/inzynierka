@@ -11,8 +11,8 @@ class ClientService {
         return Client.create(client)
     }
 
-    static async deleteClient(email: string) {
-        return Client.deleteOne({email: email})
+    static async deleteClient(clientId: string) {
+        return Client.deleteOne({ _id: clientId});
     }
 
     static async getSingleClient(id: string): Promise<IClient | null> {
