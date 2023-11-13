@@ -4,7 +4,8 @@ import { useGetOrdersByClientQuery } from "../../features/orderSlice";
 import { List, Result } from "antd";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { IOrder } from "../../types/order.interface";
-import './singleClientOrders.css'
+import "./singleClientOrders.css";
+import dayjs from "dayjs";
 
 const SingleClientOrders = () => {
   const { email } = useParams();
@@ -34,32 +35,34 @@ const SingleClientOrders = () => {
       )}
       {orders && (
         <List
-        loading={isLoading} 
-        dataSource={orders}
-        pagination={{
-          align: "center",
-          pageSize: 2,
-        }}
-        itemLayout={"vertical"}
-        renderItem={(order: IOrder) => {
-          return (
-            <List.Item>
-              <h4>Order id:</h4>
-              <span>{order._id}</span>
-              <h5>Status:</h5>
-              <b>{order.status}</b>
-              <h5>Products:</h5>
-              {order.products.map((product) => {
-                return (
-                  <div>
-                  <h6>{product.name}</h6></div>
-                )
-              })}
-            </List.Item>
-          )
-        }}
-        >
-        </List>
+          loading={isLoading}
+          dataSource={orders}
+          pagination={{
+            align: "center",
+            pageSize: 2,
+          }}
+          itemLayout={"vertical"}
+          renderItem={(order: IOrder) => {
+            return (
+              <List.Item>
+                <h4>Order id:</h4>
+                <span>{order._id}</span>
+                <h5>Placed at:</h5>
+                <span>{dayjs(order.orderDate).format("DD-MM-YYYY")}</span>
+                <h5>Status:</h5>
+                <b>{order.status}</b>
+                <h5>Products:</h5>
+                {order.products.map((product) => {
+                  return (
+                    <div>
+                      <h6>{product.name}</h6>
+                    </div>
+                  );
+                })}
+              </List.Item>
+            );
+          }}
+        ></List>
       )}
     </div>
   );

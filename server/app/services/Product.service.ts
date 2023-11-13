@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import Product, { IProduct } from '../models/product.model'
+import Product from '../models/product.model'
+import { IProduct } from '../types/product.interface';
 
 class ProductService {
 

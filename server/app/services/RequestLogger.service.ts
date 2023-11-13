@@ -1,4 +1,5 @@
-import lastOperationModel, { ILastOperation } from "../models/lastOperation.model";
+import lastOperationModel from "../models/lastOperation.model";
+import { ILastOperation } from "../types/lastOperation.interface";
 
 class RequestLoggerService {
     static async saveLog(operation: ILastOperation): Promise<ILastOperation> {

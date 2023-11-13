@@ -1,14 +1,23 @@
-import { Schema, model, Document } from 'mongoose';
-import { IClient } from './client.model';
-import { IProduct } from './product.model';
+import { Schema, model } from 'mongoose';
 import { OrderStatus } from '../types/orderStatus.enum';
+import { IOrderProduct } from '../types/orderProduct.interface';
+import { IOrder } from '../types/order.interface';
 
-export interface IOrder extends Document {
-  client: IClient['_id'];
-  products: IProduct['_id'][];
-  orderDate: Date;
-  status: OrderStatus;
-}
+const orderProductSchema = new Schema<IOrderProduct>({
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
+  priceAtOrder: {
+    type: Number,
+    required: true
+  }
+});
 
 const orderSchema = new Schema<IOrder>({
   client: {
@@ -16,11 +25,7 @@ const orderSchema = new Schema<IOrder>({
     ref: 'Client',
     required: true
   },
-  products: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true
-  }],
+  products: [orderProductSchema],
   orderDate: {
     type: Date,
     default: Date.now

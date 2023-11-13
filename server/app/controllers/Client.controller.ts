@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { IClient } from '../models/client.model'
 import ClientService from '../services/Client.service';
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers';
 import ensureIdExists from '../utils/helpers/ensureIdExists';

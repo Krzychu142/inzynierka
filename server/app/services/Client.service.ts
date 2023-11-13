@@ -1,5 +1,6 @@
 import mongoose from "mongoose"
-import Client, {IClient} from "../models/client.model"
+import Client from "../models/client.model"
+import { IClient } from "../types/client.interface"
 
 class ClientService {
     static async getAllClients(): Promise<IClient[]> {

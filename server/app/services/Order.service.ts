@@ -1,18 +1,20 @@
-import Order, { IOrder } from '../models/order.model';
+import Order from '../models/order.model';
 import mongoose from 'mongoose';
 import { OrderStatus } from '../types/orderStatus.enum';
+import { IOrderProduct } from '../types/orderProduct.interface';
+import { IOrder } from '../types/order.interface';
 
 class OrderService {
     static async createOrder(
         clientID: mongoose.Types.ObjectId,
-        productIDs: mongoose.Types.ObjectId[],
+        orderProducts: IOrderProduct[],
         status: OrderStatus,
         orderDate?: Date,
         session?: mongoose.ClientSession
     ): Promise<IOrder> {
         const orderData: Partial<IOrder> = {
             client: clientID,
-            products: productIDs,
+            products: orderProducts,
             status: status
         };
 
