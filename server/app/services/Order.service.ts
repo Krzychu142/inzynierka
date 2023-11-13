@@ -35,7 +35,7 @@ class OrderService {
         return Order.find({ client: clientId })
         .populate('client')
         .populate({
-            path: 'products',
+            path: 'products.product',
         });
     }
 
@@ -43,7 +43,7 @@ class OrderService {
         return Order.find()
         .populate('client') 
         .populate({
-            path: 'products',
+            path: 'products.product',
         });
     }
 }
