@@ -13,6 +13,7 @@ class OrderController {
             session.startTransaction(); 
             const { clientEmail, items, status } = req.body;
 
+            // that will be changed to _id 
             if (!clientEmail) {
                 throw new Error("Client email is missing.")
             }
@@ -29,6 +30,7 @@ class OrderController {
             const orderProducts = [];
 
             for (const item of items) {
+                // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
                 const product = await ProductService.getSingleProductBySKU(item.productSKU);
                 if (!product) {
                     throw new Error(`Product with SKU ${item.productSKU} was not found.`);
