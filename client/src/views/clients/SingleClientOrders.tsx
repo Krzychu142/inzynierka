@@ -33,6 +33,7 @@ const SingleClientOrders = () => {
       )}
       {orders && (
         <List
+          // className="orders-list"
           loading={isLoading}
           dataSource={orders}
           pagination={{
@@ -41,7 +42,11 @@ const SingleClientOrders = () => {
           }}
           itemLayout={"vertical"}
           renderItem={(order: IOrder) => {
-            return <Order order={order} />;
+            return (
+              <div className="order-item">
+                <Order order={order} />
+              </div>
+            );
           }}
         ></List>
       )}

@@ -30,12 +30,12 @@ const Order: React.FC<OrderProps> = ({ order }) => {
 
   return (
     <List.Item key={order._id}>
-      <h3>Order id:</h3>
+      <h3 className="main">Order id:</h3>
       <span>{order._id}</span>
       <h4>Ordered at:</h4>
       <span>{dayjs(order.orderDate).format("MM/DD/YYYY")}</span>
       <h4>Status:</h4>
-      <b>{order.status}</b>
+      <b>{order.status.toUpperCase()}</b>
       <h4>Products:</h4>
       {order.products.map((product, index) => {
         const key = `${order._id}-${index}`;

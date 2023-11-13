@@ -1,3 +1,7 @@
 .single-client-orders-container { 
     min-height: 60vh;
 }
+
+.order-item {
+    padding-left: 24px;
+}
