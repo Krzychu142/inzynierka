@@ -37,6 +37,7 @@ class ProductService {
           product.stockQuantity -= quantityToDeduct;
           if (product.stockQuantity === 0) {
               product.isAvailable = false;
+              product.soldAt = new Date();
           }
           await product.save({ session });
           return product;

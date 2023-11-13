@@ -12,4 +12,5 @@ export interface IProduct {
   initialStockQuantity: number
   addedAt: Date
   soldAt?: Date
+  currency: string
 }

@@ -7,6 +7,7 @@ import { IOrder } from "../../types/order.interface";
 import "./singleClientOrders.css";
 import dayjs from "dayjs";
 import { IOrderProduct } from "../../types/orderProduct.interface";
+import { ICostByCurrency } from "../../types/costByCurrency.interface";
 
 const SingleClientOrders = () => {
   //TODO: add some state for currency??? mayby global?
@@ -24,17 +25,23 @@ const SingleClientOrders = () => {
   }, [refetch]);
 
   const getTotalCostOfOrder = (products: IOrderProduct[]): string => {
-    // reduce instead of forEach to get better performance
-    const totalCost = products.reduce((total, product) => {
-      return total + product.quantity * product.priceAtOrder;
-    }, 0);
+    const costByCurrency = products.reduce((acc: ICostByCurrency, product) => {
+      const { currencyAtOrder, priceAtOrder, quantity } = product;
+      if (!acc[currencyAtOrder]) {
+        acc[currencyAtOrder] = 0;
+      }
+      acc[currencyAtOrder] += priceAtOrder * quantity;
+      return acc;
+    }, {} as ICostByCurrency);
 
-    return totalCost.toFixed(2) + " PLN";
+    const totalCostString = Object.entries(costByCurrency)
+      .map(([currency, total]) => `${total.toFixed(2)} ${currency}`)
+      .join(", ");
+
+    return totalCostString;
   };
 
   //TODO: maybe some brutto netto????
-
-  console.log(orders);
 
   return (
     <div className="single-client-orders-container">
@@ -70,15 +77,18 @@ const SingleClientOrders = () => {
                   return (
                     <div key={key}>
                       <h4>{product.product.name}</h4>
+                      <span className="block">SKU: {product.product.sku}</span>
                       <span className="block">
-                        Quantity: {product.quantity}
+                        Ordered quantity: {product.quantity}
                       </span>
                       <span className="block">
-                        Price in order: {product.priceAtOrder} PLN
+                        Price in order: {product.priceAtOrder}{" "}
+                        {product.currencyAtOrder}
                       </span>
                       <span className="block">
                         Cost of product:{" "}
-                        {product.quantity * product.priceAtOrder} PLN
+                        {product.quantity * product.priceAtOrder}{" "}
+                        {product.currencyAtOrder}
                       </span>
                     </div>
                   );

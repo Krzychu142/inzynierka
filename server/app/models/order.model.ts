@@ -16,6 +16,10 @@ const orderProductSchema = new Schema<IOrderProduct>({
   priceAtOrder: {
     type: Number,
     required: true
+  },
+  currencyAtOrder: {
+    type: String,
+    default: "PLN"
   }
 });
 

@@ -13,4 +13,5 @@ export interface IProduct extends Document {
   initialStockQuantity: number
   addedAt?: Date
   soldAt?: Date
+  currency?: string
 }

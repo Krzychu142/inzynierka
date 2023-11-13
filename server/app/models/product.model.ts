@@ -51,6 +51,10 @@ export const productSchema = new Schema<IProduct>({
     type: Date,
     default: null,
   },
+  currency: {
+    type: String,
+    default: "PLN"
+  }
 })
 
 export default model<IProduct>('Product', productSchema)

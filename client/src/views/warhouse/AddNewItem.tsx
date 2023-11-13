@@ -46,6 +46,7 @@ const AddNewItem = () => {
             stockQuantity: product.stockQuantity,
             initialStockQuantity: product.initialStockQuantity,
             price: product.price,
+            currency: product.currency,
             isOnSale: product.isOnSale,
             promotionalPrice: product.promotionalPrice,
             isAvailable: product.isAvailable,
@@ -53,6 +54,10 @@ const AddNewItem = () => {
             images: product.images,
             addedAt: product.addedAt ? dayjs(product.addedAt) : null,
           });
+
+          if (product.isOnSale) {
+            setIsOnSale(true);
+          }
         })
         .catch((err) => {
           if (err.response.data.message) {
@@ -72,6 +77,11 @@ const AddNewItem = () => {
   const onFinish = (values: Store) => {
     startLoading();
     clearMessages();
+
+    if (values.initialStockQuantity === undefined) {
+      values.initialStockQuantity = values.stockQuantity;
+    }
+
     const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
     const method = id ? "put" : "post";
@@ -110,13 +120,15 @@ const AddNewItem = () => {
             isAvailable: true,
           }}
         >
-          <Form.Item
-            label="SKU"
-            name="sku"
-            rules={[{ required: true, message: "Please input the SKU!" }]}
-          >
-            <Input />
-          </Form.Item>
+          {!id && (
+            <Form.Item
+              label="SKU"
+              name="sku"
+              rules={[{ required: true, message: "Please input the SKU!" }]}
+            >
+              <Input />
+            </Form.Item>
+          )}
 
           <Form.Item
             label="Name"
@@ -140,18 +152,20 @@ const AddNewItem = () => {
             <InputNumber min={0} />
           </Form.Item>
 
-          <Form.Item
-            label="Initial Stock Quantity"
-            name="initialStockQuantity"
-            rules={[
-              {
-                required: true,
-                message: "Please input the initial stock quantity!",
-              },
-            ]}
-          >
-            <InputNumber min={0} />
-          </Form.Item>
+          {id && (
+            <Form.Item
+              label="Initial Stock Quantity"
+              name="initialStockQuantity"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the initial stock quantity!",
+                },
+              ]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+          )}
 
           <Form.Item
             label="Price"
@@ -159,6 +173,10 @@ const AddNewItem = () => {
             rules={[{ required: true, message: "Please input the price!" }]}
           >
             <InputNumber min={0} precision={2} />
+          </Form.Item>
+
+          <Form.Item label="Currency" name="currency" extra="PLN by default">
+            <Input />
           </Form.Item>
 
           <Form.Item label="On Sale" name="isOnSale" valuePropName="checked">
@@ -179,21 +197,25 @@ const AddNewItem = () => {
             <Switch />
           </Form.Item>
 
-          <Form.Item label="Sold At" name="soldAt">
-            <DatePicker showTime />
-          </Form.Item>
+          {id && (
+            <Form.Item label="Sold At" name="soldAt">
+              <DatePicker showTime />
+            </Form.Item>
+          )}
 
           <Form.Item label="Images (comma separated URLs)" name="images">
             <Input placeholder="e.g., http://example.com/image1.jpg, http://example.com/image2.jpg" />
           </Form.Item>
 
-          <Form.Item
-            label="Added At"
-            name="addedAt"
-            extra="If you don't specify any the default will be today."
-          >
-            <DatePicker showTime />
-          </Form.Item>
+          {id && (
+            <Form.Item
+              label="Added At"
+              name="addedAt"
+              // extra="If you don't specify any the default will be today."
+            >
+              <DatePicker showTime />
+            </Form.Item>
+          )}
 
           <Form.Item>
             <Button type="primary" htmlType="submit">

@@ -51,7 +51,8 @@ class OrderController {
                 orderProducts.push({
                     product: product._id,
                     quantity: item.quantity,
-                    priceAtOrder: priceAtOrder
+                    priceAtOrder: priceAtOrder,
+                    currencyAtOrder: product.currency || "PLN"
                 });
             }
 

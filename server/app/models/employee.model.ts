@@ -9,6 +9,7 @@ export interface IEmployee {
   password: string
   role: Role
   salary: number
+  currency?: string
   address: string
   city: string
   country: string
@@ -53,6 +54,10 @@ export const employeeSchema = new Schema<IEmployee>({
   salary: {
     type: Number,
     required: true,
+  },
+  currency: {
+    type: String,
+    default: "PLN"
   },
   address: {
     type: String,
