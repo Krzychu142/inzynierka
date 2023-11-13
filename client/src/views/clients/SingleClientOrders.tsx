@@ -74,11 +74,11 @@ const SingleClientOrders = () => {
                         Quantity: {product.quantity}
                       </span>
                       <span className="block">
-                        Price in order: {product.priceAtOrder}PLN
+                        Price in order: {product.priceAtOrder} PLN
                       </span>
                       <span className="block">
                         Cost of product:{" "}
-                        {product.quantity * product.priceAtOrder}PLN
+                        {product.quantity * product.priceAtOrder} PLN
                       </span>
                     </div>
                   );
