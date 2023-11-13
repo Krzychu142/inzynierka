@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { useGetAllOrdersQuery } from "../../features/orderSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { List, Result } from "antd";
+import { IOrder } from "../../types/order.interface";
+import Order from "../../components/order/Order";
 
 const OrdersListing = () => {
   const {
@@ -25,7 +27,25 @@ const OrdersListing = () => {
           subTitle="Please try later"
         ></Result>
       )}
-      {orders && <List></List>}
+      {orders && (
+        <List
+          // className="orders-list"
+          loading={isLoading}
+          dataSource={orders}
+          pagination={{
+            align: "center",
+            pageSize: 2,
+          }}
+          itemLayout={"vertical"}
+          renderItem={(order: IOrder) => {
+            return (
+              <div className="order-item">
+                <Order order={order} />
+              </div>
+            );
+          }}
+        ></List>
+      )}
     </>
   );
 };

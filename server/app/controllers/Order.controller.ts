@@ -13,6 +13,7 @@ class OrderController {
             session.startTransaction(); 
             const { clientEmail, items, status } = req.body;
 
+            // that will be changed to _id 
             if (!clientEmail) {
                 throw new Error("Client email is missing.")
             }
@@ -21,17 +22,16 @@ class OrderController {
                 throw new Error("Order must have at least one item.");
             }
 
-            const client = await ClientService.getClientByEmail(clientEmail)
-
+            const client = await ClientService.getClientByEmail(clientEmail);
             if (!client) {
-                throw new Error("Client not found.")
+                throw new Error("Client not found.");
             }
 
-            const productIDs: mongoose.Types.ObjectId[] = [];
-            
-            for (const item of items) {
-                const product = await ProductService.getSingleProductBySKU(item.productSKU);
+            const orderProducts = [];
 
+            for (const item of items) {
+                // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
+                const product = await ProductService.getSingleProductBySKU(item.productSKU);
                 if (!product) {
                     throw new Error(`Product with SKU ${item.productSKU} was not found.`);
                 }
@@ -46,14 +46,23 @@ class OrderController {
 
                 await ProductService.updateProductStock(item.productSKU, item.quantity, session);
 
-                productIDs.push(product._id);
+                const priceAtOrder = product.isOnSale && product.promotionalPrice != null
+                                    ? product.promotionalPrice
+                                    : product.price;
+
+                orderProducts.push({
+                    product: product._id,
+                    quantity: item.quantity,
+                    priceAtOrder: priceAtOrder,
+                    currencyAtOrder: product.currency || "PLN"
+                });
             }
 
             const orderDate = req.body.orderDate ? new Date(req.body.orderDate) : undefined;
 
             const order = await OrderService.createOrder(
                 client._id,
-                productIDs,
+                orderProducts,
                 status || OrderStatus.PENDING,
                 orderDate,
                 session

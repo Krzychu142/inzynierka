@@ -1,12 +1,6 @@
 import { Schema, model } from 'mongoose'
 import { Operation } from "../types/operation.enum"
-
-
-export interface ILastOperation {
-    nameOfOperation: Operation,
-    dateExecution: Date,
-    operationPerformedBy: string
-}
+import { ILastOperation } from '../types/lastOperation.interface';
 
 export const lastOperationSchema = new Schema<ILastOperation>({
     nameOfOperation: {

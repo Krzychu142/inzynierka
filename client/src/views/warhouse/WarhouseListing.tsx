@@ -7,8 +7,8 @@ import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
-import axios from "axios";
-import useBaseURL from "../../customHooks/useBaseURL";
+// import axios from "axios";
+// import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import SortSelect from "../../components/sortSection/SortSelect";
 
@@ -20,8 +20,8 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarhouseListing = () => {
-  const baseUrl = useBaseURL();
-  const [messageApi, contextHolder] = message.useMessage();
+  // const baseUrl = useBaseURL();
+  // const [messageApi, contextHolder] = message.useMessage();
 
   const {
     data: products,
@@ -44,31 +44,31 @@ const WarhouseListing = () => {
       item.description.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const token = useAppSelector((state) => state.auth.token);
+  // const token = useAppSelector((state) => state.auth.token);
 
-  const deleteProduct = (id: string) => {
-    axios
-      .delete(`${baseUrl}products/delete`, {
-        data: { id },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        if (res.status) {
-          refetch();
-        }
-      })
-      .catch((err) => {
-        messageApi.open({
-          type: "error",
-          content:
-            err.response && err.response.data.message
-              ? err.response.data.message
-              : "Something goes wrong",
-        });
-      });
-  };
+  // const deleteProduct = (id: string) => {
+  //   axios
+  //     .delete(`${baseUrl}products/delete`, {
+  //       data: { id },
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       if (res.status) {
+  //         refetch();
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       messageApi.open({
+  //         type: "error",
+  //         content:
+  //           err.response && err.response.data.message
+  //             ? err.response.data.message
+  //             : "Something goes wrong",
+  //       });
+  //     });
+  // };
 
   const [sortOrder, setSortOrder] = useState<string | null>(null);
 
@@ -82,30 +82,57 @@ const WarhouseListing = () => {
     { value: "addedAt_desc", label: "Newest Added" },
   ];
 
+  const [availabilitySort, setAvailabilitySort] = useState<string | null>(null);
+
+  const availabilityOptions = [
+    { value: "", label: "Default" },
+    { value: "available", label: "Available" },
+    { value: "unavailable", label: "Unavailable" },
+  ];
+
   const sortedData = useMemo(() => {
-    return filteredData?.sort((a: IProduct, b: IProduct) => {
-      switch (sortOrder) {
-        case "price_asc":
-          return a.price - b.price;
-        case "price_desc":
-          return b.price - a.price;
-        case "quantity_asc":
-          return a.stockQuantity - b.stockQuantity;
-        case "quantity_desc":
-          return b.stockQuantity - a.stockQuantity;
-        case "addedAt_asc":
-          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
-        case "addedAt_desc":
-          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
-        default:
-          return 0;
-      }
-    });
-  }, [filteredData, sortOrder]);
+    let filteredByAvailability = filteredData;
+    if (availabilitySort === "available") {
+      filteredByAvailability = filteredData.filter(
+        (a: IProduct) => a.isAvailable
+      );
+    } else if (availabilitySort === "unavailable") {
+      filteredByAvailability = filteredData.filter(
+        (a: IProduct) => !a.isAvailable
+      );
+    }
+
+    if (sortOrder) {
+      filteredByAvailability.sort((a: IProduct, b: IProduct) => {
+        switch (sortOrder) {
+          case "price_asc":
+            return a.price - b.price;
+          case "price_desc":
+            return b.price - a.price;
+          case "quantity_asc":
+            return a.stockQuantity - b.stockQuantity;
+          case "quantity_desc":
+            return b.stockQuantity - a.stockQuantity;
+          case "addedAt_asc":
+            return (
+              new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime()
+            );
+          case "addedAt_desc":
+            return (
+              new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime()
+            );
+          default:
+            return 0;
+        }
+      });
+    }
+
+    return filteredByAvailability;
+  }, [filteredData, sortOrder, availabilitySort]);
 
   return (
     <>
-      {contextHolder}
+      {/* {contextHolder} */}
       {isLoading && <LoadingSpinner />}
       {isError && (
         <Result
@@ -135,6 +162,13 @@ const WarhouseListing = () => {
         options={sortOptions}
         label="Sort:"
       />
+      <SortSelect
+        value={availabilitySort ?? ""}
+        onChange={setAvailabilitySort}
+        options={availabilityOptions}
+        label="Availability:"
+      />
+
       {products && (
         <List
           className="products__list"
@@ -166,17 +200,17 @@ const WarhouseListing = () => {
                           key="id-list-iteam"
                         />
                       </Link>,
-                      <Button
-                        type="link"
-                        className="link darker"
-                        onClick={() => deleteProduct(item._id)}
-                      >
-                        <IconText
-                          icon={DeleteOutlined}
-                          text="Delete"
-                          key="id-list-iteam"
-                        />
-                      </Button>,
+                      // <Button
+                      //   type="link"
+                      //   className="link darker"
+                      //   onClick={() => deleteProduct(item._id)}
+                      // >
+                      //   <IconText
+                      //     icon={DeleteOutlined}
+                      //     text="Delete"
+                      //     key="id-list-iteam"
+                      //   />
+                      // </Button>,
                     ]
                   : []),
               ]}
@@ -212,13 +246,18 @@ const WarhouseListing = () => {
                 )}
                 {!item.isOnSale ? (
                   <li>
-                    <b>Price:</b> {item.price}PLN
+                    <b>Price:</b> {item.price}
+                    {item.currency}
                   </li>
                 ) : (
                   <li>
-                    <s>Price: {item.price}PLN</s>
+                    <s>
+                      Price: {item.price}
+                      {item.currency}
+                    </s>
                     <br />
-                    <b>Promotional price:</b> {item.promotionalPrice}PLN
+                    <b>Promotional price:</b> {item.promotionalPrice}
+                    {item.currency}
                   </li>
                 )}
                 <li>SKU: {item.sku}</li>

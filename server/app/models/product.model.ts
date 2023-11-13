@@ -1,19 +1,5 @@
-import { Schema, model, Document } from 'mongoose'
-
-export interface IProduct extends Document {
-  sku: string
-  name: string
-  description: string
-  stockQuantity: number
-  price: number
-  promotionalPrice?: number
-  isOnSale: boolean
-  isAvailable: boolean
-  images: string[]
-  initialStockQuantity: number
-  addedAt?: Date
-  soldAt?: Date
-}
+import { Schema, model } from 'mongoose'
+import { IProduct } from '../types/product.interface'
 
 export const productSchema = new Schema<IProduct>({
   sku: {
@@ -65,6 +51,10 @@ export const productSchema = new Schema<IProduct>({
     type: Date,
     default: null,
   },
+  currency: {
+    type: String,
+    default: "PLN"
+  }
 })
 
 export default model<IProduct>('Product', productSchema)

@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { useGetOrdersByClientQuery } from "../../features/orderSlice";
 import { List, Result } from "antd";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
+import { IOrder } from "../../types/order.interface";
+import "./singleClientOrders.css";
+import Order from "../../components/order/Order";
 
 const SingleClientOrders = () => {
   const { email } = useParams();
@@ -18,10 +21,8 @@ const SingleClientOrders = () => {
     refetch();
   }, [refetch]);
 
-  console.log(orders);
-
   return (
-    <>
+    <section className="single-client-orders-container">
       {isLoading && <LoadingSpinner />}
       {isError && (
         <Result
@@ -31,11 +32,25 @@ const SingleClientOrders = () => {
         ></Result>
       )}
       {orders && (
-        <List loading={isLoading} dataSource={orders}>
-          <List.Item></List.Item>
-        </List>
+        <List
+          // className="orders-list"
+          loading={isLoading}
+          dataSource={orders}
+          pagination={{
+            align: "center",
+            pageSize: 2,
+          }}
+          itemLayout={"vertical"}
+          renderItem={(order: IOrder) => {
+            return (
+              <div className="order-item">
+                <Order order={order} />
+              </div>
+            );
+          }}
+        ></List>
       )}
-    </>
+    </section>
   );
 };
 
