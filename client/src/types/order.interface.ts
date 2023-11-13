@@ -1,5 +1,5 @@
 import { IClient } from './client.interface';
-import { IProduct } from './product.interface';
+import { IOrderProduct } from './orderProduct.interface';
 
 export enum OrderStatus {
   PENDING = 'pending',
@@ -10,7 +10,7 @@ export enum OrderStatus {
 export interface IOrder {
   _id: string;
   client: IClient;
-  products: IProduct[];
+  products: IOrderProduct[];
   orderDate: Date;
   status: OrderStatus;
 }

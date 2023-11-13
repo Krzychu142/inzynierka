@@ -8,6 +8,7 @@ import "./singleClientOrders.css";
 import dayjs from "dayjs";
 
 const SingleClientOrders = () => {
+  //TODO: add some state for currency??? mayby global?
   const { email } = useParams();
 
   const {
@@ -44,18 +45,29 @@ const SingleClientOrders = () => {
           itemLayout={"vertical"}
           renderItem={(order: IOrder) => {
             return (
-              <List.Item>
-                <h4>Order id:</h4>
+              <List.Item key={order._id}>
+                <h3>Order id:</h3>
                 <span>{order._id}</span>
-                <h5>Placed at:</h5>
+                <h4>Placed at:</h4>
                 <span>{dayjs(order.orderDate).format("DD-MM-YYYY")}</span>
-                <h5>Status:</h5>
+                <h4>Status:</h4>
                 <b>{order.status}</b>
-                <h5>Products:</h5>
-                {order.products.map((product) => {
+                <h4>Products:</h4>
+                {order.products.map((product, index) => {
+                  const key = `${order._id}-${index}`;
                   return (
-                    <div>
-                      <h6>{product.name}</h6>
+                    <div key={key}>
+                      <h4>{product.product.name}</h4>
+                      <span className="block">
+                        Quantity: {product.quantity}
+                      </span>
+                      <span className="block">
+                        Price in order: {product.priceAtOrder}PLN
+                      </span>
+                      <span className="block">
+                        Cost of product:{" "}
+                        {product.quantity * product.priceAtOrder}PLN
+                      </span>
                     </div>
                   );
                 })}
