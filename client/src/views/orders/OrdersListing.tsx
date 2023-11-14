@@ -4,6 +4,7 @@ import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import { List, Result } from "antd";
 import { IOrder } from "../../types/order.interface";
 import Order from "../../components/order/Order";
+import "./ordersListing.css";
 
 const OrdersListing = () => {
   const {
@@ -29,14 +30,14 @@ const OrdersListing = () => {
       )}
       {orders && (
         <List
-          // className="orders-list"
+          className="orders-list"
           loading={isLoading}
           dataSource={orders}
           pagination={{
             align: "center",
             pageSize: 2,
           }}
-          itemLayout={"vertical"}
+          itemLayout="vertical"
           renderItem={(order: IOrder) => {
             return (
               <div className="order-item">
