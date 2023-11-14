@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { IOrder } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import { Button, List } from "antd";
+import { List } from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
