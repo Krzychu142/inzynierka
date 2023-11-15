@@ -160,6 +160,8 @@ class OrderController {
                     await ProductService.incrementProductStock(item.product, item.quantity, session);
                 }
 
+                await ClientService.decrementOrderCount(order.client, session)
+
                 await OrderService.editOrderStatus(orderId, OrderStatus.CANCELED, session);
             } else {
                 await OrderService.editOrderStatus(orderId, req.body.newStatus, session);

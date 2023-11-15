@@ -1,7 +1,8 @@
-import { Schema, model } from 'mongoose'
+import { Document, Schema, model } from 'mongoose'
 import { Role } from '../types/role.enum'
+import { ContractType } from '../types/contractType.enum'
 
-export interface IEmployee {
+export interface IEmployee extends Document {
   name: string
   surname: string
   employedAt: Date
@@ -10,6 +11,7 @@ export interface IEmployee {
   role: Role
   salary: number
   currency?: string
+  contractType: ContractType
   address: string
   city: string
   country: string
@@ -54,6 +56,11 @@ export const employeeSchema = new Schema<IEmployee>({
   salary: {
     type: Number,
     required: true,
+  },
+  contractType: {
+    type: String,
+    enum: Object.values(ContractType),
+    required: true
   },
   currency: {
     type: String,
