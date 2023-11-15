@@ -28,7 +28,7 @@ class OrderController {
             }
 
             const orderProducts = [];
-
+            //TODO: every item should be unique 
             for (const item of items) {
                 // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
                 const product = await ProductService.getSingleProductBySKU(item.productSKU);
@@ -106,6 +106,24 @@ class OrderController {
         try { 
             const orders = await OrderService.getAllOrders()
             res.status(200).json(orders);
+
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
+
+    static async deleteOrder(req: Request, res: Response): Promise<void> {
+        try {
+            if (!req.body.orderId) {
+                throw new Error("Order id is missing.")
+            }
+
+            const result = OrderService.deleteOrder(req.body.orderId)
+            if (!result) {
+                throw new Error("Can't delete this order")
+            }
+
+            res.status(204).send(); 
 
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))

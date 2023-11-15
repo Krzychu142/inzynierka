@@ -3,10 +3,16 @@ import dayjs from "dayjs";
 import { IOrder } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import { List } from "antd";
+import { Button, List } from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DeleteOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 
 interface OrderProps {
   order: IOrder;
@@ -91,29 +97,53 @@ const Order: React.FC<OrderProps> = ({ order }) => {
           </b>
         </div>
         <h3 className="main">Products:</h3>
-        {order.products.map((product, index) => {
-          const key = `${order._id}-${index}`;
-          return (
-            <div key={key} className="order__product">
-              <h4>{product.product.name}</h4>
-              <span className="block">SKU: {product.product.sku}</span>
-              <span className="block">
-                Ordered quantity: {product.quantity}
-              </span>
-              <span className="block">
-                Price when ordering: {product.priceAtOrder}{" "}
-                {product.currencyAtOrder}
-              </span>
-              <span className="block">
-                Cost of position: {product.quantity * product.priceAtOrder}{" "}
-                {product.currencyAtOrder}
-              </span>
-            </div>
-          );
-        })}
+        <div className="order__products-grid">
+          {order.products.map((product, index) => {
+            const key = `${order._id}-${index}`;
+            return (
+              <div key={key} className="order__product">
+                <h4>{product.product.name}</h4>
+                <span className="block">SKU: {product.product.sku}</span>
+                <span className="block">
+                  Ordered quantity: {product.quantity}
+                </span>
+                <span className="block">
+                  Price when ordering: {product.priceAtOrder}{" "}
+                  {product.currencyAtOrder}
+                </span>
+                <span className="block">
+                  Cost of position: {product.quantity * product.priceAtOrder}{" "}
+                  {product.currencyAtOrder}
+                </span>
+              </div>
+            );
+          })}
+        </div>
         <div>
           <h3>Total cost:</h3> <b>{getTotalCostOfOrder(order.products)}</b>
         </div>
+        <div className="order__actions">
+          <Button type="primary">
+            <DeleteOutlined />
+            Delete
+          </Button>
+          <Button type="primary">
+            <DownloadOutlined />
+            PDF
+          </Button>
+        </div>
+        {order.status === "pending" && (
+          <div className="order__actions">
+            <Button>
+              <CloseOutlined />
+              Cancel
+            </Button>
+            <Button>
+              <CheckOutlined />
+              Complete
+            </Button>
+          </div>
+        )}
       </section>
     </List.Item>
   );

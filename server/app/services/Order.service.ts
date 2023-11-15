@@ -51,6 +51,17 @@ class OrderService {
         const result = await Order.deleteMany({ client: clientId });
         return result.deletedCount || 0;
     }
+
+    static async getSingleOrder(orderId: string): Promise<IOrder | null> {
+        const result = await Order.findById(orderId)
+        return result
+    }
+
+    static async deleteOrder(orderId: mongoose.Types.ObjectId, session?: mongoose.ClientSession): Promise<mongoose.mongo.DeleteResult> {
+        const options = session ? { session } : {};
+        const result = await Order.deleteOne({_id: orderId}, options)
+        return result
+    }
 }
 
 export default OrderService;
