@@ -1,3 +1,5 @@
+import { ContractType } from "./contractType.enum"
+
 export enum Role {
   CARTOPERATOR = 'cart operator',
   WAREHOUSEMAN = 'warehouseman',
@@ -13,6 +15,8 @@ export interface IEmployee {
   password: string
   role: Role
   salary: number
+  currency?: string
+  contractType: ContractType
   address: string
   city: string
   country: string

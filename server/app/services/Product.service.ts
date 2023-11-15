@@ -30,7 +30,7 @@ class ProductService {
     return Product.findOne({ sku: sku });
   }
 
-  static async updateProductStock(sku: string, quantityToDeduct: number, session: mongoose.ClientSession): Promise<IProduct | null> {
+  static async decrementProductStock(sku: string, quantityToDeduct: number, session: mongoose.ClientSession): Promise<IProduct | null> {
       const product = await Product.findOne({ sku: sku }).session(session);
 
       if (product && product.stockQuantity >= quantityToDeduct) {
@@ -43,6 +43,21 @@ class ProductService {
           return product;
       } else {
           throw new Error(`Insufficient stock for product SKU: ${sku}.`);
+      }
+  }
+
+  static async incrementProductStock(productId: string, quantityToAdd: number, session: mongoose.ClientSession): Promise<IProduct | null> {
+      const product = await Product.findOne({ _id: productId }).session(session);
+
+      if (product) {
+          product.stockQuantity += quantityToAdd;
+          if (product.stockQuantity > 0 && !product.isAvailable) {
+              product.isAvailable = true;
+          }
+          await product.save({ session });
+          return product;
+      } else {
+          throw new Error(`Product with SKU: ${productId} not found.`);
       }
   }
 

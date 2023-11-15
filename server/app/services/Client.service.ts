@@ -40,6 +40,19 @@ class ClientService {
         }
     }
 
+    static async decrementOrderCount(clientId: mongoose.Types.ObjectId, session?: mongoose.ClientSession): Promise<void> {
+        const updatedClient = await Client.findOneAndUpdate(
+            { _id: clientId },
+            { $inc: { countOfOrder: -1 } },
+            { new: true, session: session } 
+        );
+
+        if (updatedClient) {
+            // I don't set regular for false even event if after decrement he has fewer than 5 BECAUSE, client made this order
+            await updatedClient.save({ session: session });
+        }
+    }
+
 }
 
 export default ClientService

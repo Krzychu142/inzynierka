@@ -38,11 +38,11 @@ body {
     color: var(--main-color-dark);
 }
 
-.error {
+.error, .canceled {
     color: #d32029;
 }
 
-.success {
+.success, .completed {
     color: #49aa19;
 }
 
@@ -71,6 +71,6 @@ body {
     color: var(--main-color);
 }
 
-.normal {
+.normal, .pending {
     color: var(--main-color-dark);
 }

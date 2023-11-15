@@ -11,6 +11,7 @@ import useGeneratePassword from "../../customHooks/useGeneratePassword";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
 import { useLoading } from "../../customHooks/useLoading";
+import { ContractType } from "../../types/contractType.enum";
 
 const AddNewEmployee = () => {
   const { id } = useParams();
@@ -47,6 +48,8 @@ const AddNewEmployee = () => {
             email: employee.email,
             role: employee.role,
             salary: employee.salary,
+            currency: employee?.currency,
+            contractType: employee.contractType,
             employedAt: dayjs(employee.employedAt),
             birthDate: dayjs(employee.birthDate),
             phoneNumber: employee.phoneNumber,
@@ -114,6 +117,10 @@ const AddNewEmployee = () => {
           wrapperCol={{ span: 24 }}
           onFinish={onFinish}
           form={form}
+          initialValues={{
+            currency: "PLN",
+            employedAt: dayjs(),
+          }}
         >
           <Form.Item
             label="Name"
@@ -170,9 +177,34 @@ const AddNewEmployee = () => {
             label="Salary"
             name="salary"
             rules={[{ required: true, message: "Please input the salary!" }]}
-            extra="PLN currency, brutto default"
+            extra="brutto"
           >
             <InputNumber min={0} />
+          </Form.Item>
+
+          <Form.Item
+            label="Currency"
+            name="currency"
+            rules={[{ required: true, message: "Please input the currency!" }]}
+            extra="Default is PLN"
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            label="Contract type"
+            name="contractType"
+            rules={[
+              { required: true, message: "Please select the contract type!" },
+            ]}
+          >
+            <Select>
+              {Object.values(ContractType).map((contractType) => (
+                <Select.Option key={contractType} value={contractType}>
+                  {contractType.charAt(0).toUpperCase() + contractType.slice(1)}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
