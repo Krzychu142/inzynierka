@@ -34,7 +34,6 @@ export const employeeSchema = new Schema<IEmployee>({
   },
   employedAt: {
     type: Date,
-    required: true,
     default: Date.now
   },
   email: {

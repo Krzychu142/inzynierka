@@ -3,16 +3,19 @@ import { IEmployee } from '../models/employee.model'
 import AuthService from '../services/Auth.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import Joi from 'joi'
+import { ContractType } from '../types/contractType.enum'
 
 class AuthController {
     private static employeeValidator = Joi.object({
         name: Joi.string().required().min(3).max(255),
         surname: Joi.string().required().min(3).max(255),
-        employedAt: Joi.date().required(),
+        employedAt: Joi.date(),
         email: Joi.string().required().email(),
         password: Joi.string().required().min(6),
         role: Joi.string().required(),
         salary: Joi.number().required(),
+        contractType: Joi.string().valid(...Object.values(ContractType)).required(),
+        currency: Joi.string(),
         address: Joi.string().required(),
         city: Joi.string().required(),
         country: Joi.string().required(),
