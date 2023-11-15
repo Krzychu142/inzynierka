@@ -51,6 +51,35 @@ class OrderService {
         const result = await Order.deleteMany({ client: clientId });
         return result.deletedCount || 0;
     }
+
+    static async getSingleOrder(orderId: string, session?: mongoose.ClientSession): Promise<IOrder | null> {
+        const query = Order.findById(orderId);
+        if (session) {
+            query.session(session);
+        }
+        const result = await query;
+        return result;
+    }
+
+    static async deleteOrder(orderId: mongoose.Types.ObjectId, session?: mongoose.ClientSession): Promise<mongoose.mongo.DeleteResult> {
+        const options = session ? { session } : {};
+        const result = await Order.deleteOne({_id: orderId}, options)
+        return result
+    }
+
+    static async editOrderStatus(orderId: string, newStatus: OrderStatus, session?: mongoose.ClientSession): Promise<IOrder | null> {
+        const options = { new: true } as mongoose.QueryOptions;
+        if (session) {
+            options.session = session;
+        }
+
+        const result = await Order.findByIdAndUpdate(
+            orderId, 
+            { status: newStatus }, 
+            options
+        );
+        return result;
+    }
 }
 
 export default OrderService;

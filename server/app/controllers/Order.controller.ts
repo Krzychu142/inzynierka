@@ -7,6 +7,16 @@ import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
 
 class OrderController {
+    private static validateOrderId(req: Request) {
+        if (!req.body.orderId) {
+            throw new Error("Order id is missing.");
+        }
+    }
+
+    private static isValidOrderStatus(status: any): status is OrderStatus {
+        return Object.values(OrderStatus).includes(status);
+    }
+
     static async createOrder(req: Request, res: Response): Promise<void> {
         const session = await mongoose.startSession();
         try {
@@ -28,7 +38,7 @@ class OrderController {
             }
 
             const orderProducts = [];
-
+            //TODO: every item should be unique 
             for (const item of items) {
                 // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
                 const product = await ProductService.getSingleProductBySKU(item.productSKU);
@@ -44,7 +54,7 @@ class OrderController {
                     throw new Error(`Insufficient stock for product SKU: ${item.productSKU}.`);
                 }
 
-                await ProductService.updateProductStock(item.productSKU, item.quantity, session);
+                await ProductService.decrementProductStock(item.productSKU, item.quantity, session);
 
                 const priceAtOrder = product.isOnSale && product.promotionalPrice != null
                                     ? product.promotionalPrice
@@ -109,6 +119,62 @@ class OrderController {
 
         } catch (error: unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
+
+    static async deleteOrder(req: Request, res: Response): Promise<void> {
+        try {
+            OrderController.validateOrderId(req);
+
+            const result = OrderService.deleteOrder(req.body.orderId)
+            if (!result) {
+                throw new Error("Can't delete this order")
+            }
+
+            res.status(204).send(); 
+
+        } catch (error: unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+    }
+
+    static async editOrderStatus(req: Request, res: Response): Promise<void> {
+        const session = await mongoose.startSession();
+        try {
+            session.startTransaction(); 
+            OrderController.validateOrderId(req);
+
+            const orderId = req.body.orderId;
+
+            if (!req.body.newStatus || !OrderController.isValidOrderStatus(req.body.newStatus)) {
+                throw new Error("Invalid or missing new status.");
+            }
+
+            if (req.body.newStatus === OrderStatus.CANCELED) {
+                const order = await OrderService.getSingleOrder(orderId, session);
+                if (!order) {
+                    throw new Error("Order not found.");
+                }
+
+                for (const item of order.products) {
+                    await ProductService.incrementProductStock(item.product, item.quantity, session);
+                }
+
+                await ClientService.decrementOrderCount(order.client, session)
+
+                await OrderService.editOrderStatus(orderId, OrderStatus.CANCELED, session);
+            } else {
+                await OrderService.editOrderStatus(orderId, req.body.newStatus, session);
+            }
+
+            await session.commitTransaction();
+            res.status(200).json({ message: "Order status updated successfully." });
+        } catch (error: unknown) {
+            await session.abortTransaction();
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+        }
+        finally {
+            await session.endSession();
         }
     }
 }

@@ -227,7 +227,13 @@ const EmployeesListing = () => {
                       </li>
                       <li>
                         <span className="main bold">
-                          <b>Salary:</b> {employee.salary}PLN
+                          <b>Salary:</b> {employee.salary}
+                          {employee.currency ? employee.currency : "PLN"}
+                        </span>
+                      </li>
+                      <li>
+                        <span>
+                          <b>Contract type:</b> {employee.contractType}
                         </span>
                       </li>
                       <li>

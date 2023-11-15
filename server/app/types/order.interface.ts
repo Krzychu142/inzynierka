@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { IClient } from "./client.interface";
 import { IOrderProduct } from "./orderProduct.interface";
 import { OrderStatus } from "./orderStatus.enum";

@@ -57,10 +57,6 @@ const ClientsListing = () => {
   const [open, setOpen] = useState(false);
   const [clientToDelete, setClientToDelete] = useState<string | null>(null);
 
-  // const handleCancel = () => {
-  //   setOpen(false);
-  // };
-
   const showDeleteModal = (clientId: string) => {
     setOpen(true);
     setClientToDelete(clientId);
@@ -220,20 +216,16 @@ const ClientsListing = () => {
                     disabled={decodedToken.email === client.email}
                   >
                     Delete
-                  </Button>
+                  </Button>,
+                  <Link
+                    to={`/clients/orders/${btoa(client.email)}`}
+                    key="list-loadmore-orders"
+                    className="link darker action-element"
+                    title={`Orders: ${client.countOfOrder}`}
+                  >
+                    Orders
+                  </Link>
                 );
-
-                if (client.countOfOrder > 0) {
-                  actions.push(
-                    <Link
-                      to={`/clients/orders/${btoa(client.email)}`}
-                      key="list-loadmore-orders"
-                      className="link darker action-element"
-                    >
-                      Orders
-                    </Link>
-                  );
-                }
               }
               return (
                 <List.Item actions={actions} key={client._id}>
