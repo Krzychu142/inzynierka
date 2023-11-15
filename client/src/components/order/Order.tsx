@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { IOrder } from "../../types/order.interface";
+import { IOrder, OrderStatus } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import { Button, List, message } from "antd";
+import { Button, List, Modal, message } from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
@@ -12,6 +12,7 @@ import {
   CloseOutlined,
   DeleteOutlined,
   DownloadOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
@@ -100,9 +101,67 @@ const Order: React.FC<OrderProps> = ({ order }) => {
       });
   };
 
+  const changeOrderStatus = (orderId: string, newStatus: OrderStatus) => {
+    axios
+      .put(
+        `${baseUrl}orders/changeStatus`,
+        { orderId, newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        refetch();
+        messageApi.open({
+          type: "success",
+          content: res.data.message || "Order edited successfully",
+        });
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
+  };
+
+  const [open, setOpen] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+
+  const showCancelModal = (orderId: string) => {
+    setOpen(true);
+    setOrderToCancel(orderId);
+  };
+
+  const handleConfirmCancel = () => {
+    if (orderToCancel) {
+      changeOrderStatus(orderToCancel, OrderStatus.CANCELED);
+      setOpen(false);
+    }
+  };
+
   return (
     <>
       {contextHolder}
+      <Modal
+        title={
+          <span>
+            <WarningOutlined />
+            Be careful!
+          </span>
+        }
+        open={open}
+        okText="Confirm"
+        onOk={handleConfirmCancel}
+        onCancel={() => setOpen(false)}
+      >
+        <p>Canceling an order will undo all items.</p>
+      </Modal>
       <List.Item key={order._id}>
         <section className="order">
           <div>
@@ -120,7 +179,9 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                 <span className="block">
                   {order.client.name} {order.client.surname}
                 </span>
-                <span>{order.client.email}</span>
+                <a href={`mailto:${order.client.email}`} className="darker">
+                  {order.client.email}
+                </a>
               </div>
               <div>
                 <h4>Shipping info:</h4>
@@ -175,11 +236,15 @@ const Order: React.FC<OrderProps> = ({ order }) => {
           )}
           {order.status === "pending" && (
             <div className="order__actions">
-              <Button>
+              <Button onClick={() => showCancelModal(order._id)}>
                 <CloseOutlined />
                 Cancel
               </Button>
-              <Button>
+              <Button
+                onClick={() =>
+                  changeOrderStatus(order._id, OrderStatus.COMPLETED)
+                }
+              >
                 <CheckOutlined />
                 Complete
               </Button>
