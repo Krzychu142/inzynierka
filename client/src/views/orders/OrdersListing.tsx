@@ -24,6 +24,21 @@ const OrdersListing = () => {
   const decodedToken = useAppSelector((state) => state.auth.decodedToken);
 
   const [searchValue, setSearchValue] = useState("");
+  const filteredData = orders?.filter((order: IOrder) => {
+    const searchLower = searchValue.toLowerCase();
+
+    const isClientMatch =
+      order.client.name.toLowerCase().includes(searchLower) ||
+      order.client.surname.toLowerCase().includes(searchLower);
+
+    const isProductMatch = order.products.some(
+      (product) =>
+        product.product.name.toLowerCase().includes(searchLower) ||
+        product.product.sku.toLowerCase().includes(searchLower)
+    );
+
+    return isClientMatch || isProductMatch;
+  });
 
   return (
     <>
@@ -37,7 +52,7 @@ const OrdersListing = () => {
       )}
       <section className="search-section">
         <Search
-          placeholder="type name or sku"
+          placeholder="search by client name, surname, products name or sku"
           enterButton
           onChange={(e) => setSearchValue(e.target.value)}
         />
@@ -55,7 +70,7 @@ const OrdersListing = () => {
         <List
           className="orders-list"
           loading={isLoading}
-          dataSource={orders}
+          dataSource={filteredData}
           pagination={{
             align: "center",
             pageSize: 2,

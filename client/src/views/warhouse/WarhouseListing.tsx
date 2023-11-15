@@ -157,18 +157,17 @@ const WarhouseListing = () => {
         )}
       </section>
       <SortSelect
-        value={sortOrder ?? ""}
-        onChange={setSortOrder}
-        options={sortOptions}
-        label="Sort:"
-      />
-      <SortSelect
         value={availabilitySort ?? ""}
         onChange={setAvailabilitySort}
         options={availabilityOptions}
         label="Availability:"
       />
-
+      <SortSelect
+        value={sortOrder ?? ""}
+        onChange={setSortOrder}
+        options={sortOptions}
+        label="Sort:"
+      />
       {products && (
         <List
           className="products__list"
