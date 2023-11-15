@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { IOrder } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import { Button, List } from "antd";
+import { Button, List, message } from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
@@ -13,6 +13,10 @@ import {
   DeleteOutlined,
   DownloadOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
+import useBaseURL from "../../customHooks/useBaseURL";
+import { useAppSelector } from "../../hooks";
+import { useGetAllOrdersQuery } from "../../features/orderSlice";
 
 interface OrderProps {
   order: IOrder;
@@ -64,88 +68,126 @@ const Order: React.FC<OrderProps> = ({ order }) => {
     return fullShippingAddress;
   };
 
+  const [messageApi, contextHolder] = message.useMessage();
+  const baseUrl = useBaseURL();
+  const token = useAppSelector((state) => state.auth.token);
+  const decodedToken = useAppSelector((state) => state.auth.decodedToken);
+  const { refetch } = useGetAllOrdersQuery("");
+
+  const deleteOrder = (orderId: string) => {
+    axios
+      .delete(`${baseUrl}orders/delete`, {
+        data: { orderId: orderId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        refetch();
+        messageApi.open({
+          type: "success",
+          content: "Order deleted successfully!",
+        });
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
+  };
+
   return (
-    <List.Item key={order._id}>
-      <section className="order">
-        <div>
-          <h2 className="main">Order id:</h2>
-          <span>{order._id}</span>
-        </div>
-        <div>
-          <h4>Ordered at:</h4>
-          <span>{dayjs(order.orderDate).format("MM/DD/YYYY")}</span>
-        </div>
-        {showClientInfo && (
-          <>
-            <div className="order__client-info">
-              <h4>Client:</h4>
-              <span className="block">
-                {order.client.name} {order.client.surname}
-              </span>
-              <span>{order.client.email}</span>
-            </div>
-            <div>
-              <h4>Shipping info:</h4>
-              <span>{getShippingInfo(order.client)}</span>
-            </div>
-          </>
-        )}
-        <div>
-          <h4>Status:</h4>
-          <b className={order.status.toLowerCase()}>
-            {order.status.toUpperCase()}
-          </b>
-        </div>
-        <h3 className="main">Products:</h3>
-        <div className="order__products-grid">
-          {order.products.map((product, index) => {
-            const key = `${order._id}-${index}`;
-            return (
-              <div key={key} className="order__product">
-                <h4>{product.product.name}</h4>
-                <span className="block">SKU: {product.product.sku}</span>
-                <span className="block">
-                  Ordered quantity: {product.quantity}
-                </span>
-                <span className="block">
-                  Price when ordering: {product.priceAtOrder}{" "}
-                  {product.currencyAtOrder}
-                </span>
-                <span className="block">
-                  Cost of position: {product.quantity * product.priceAtOrder}{" "}
-                  {product.currencyAtOrder}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-        <div>
-          <h3>Total cost:</h3> <b>{getTotalCostOfOrder(order.products)}</b>
-        </div>
-        <div className="order__actions">
-          <Button type="primary">
-            <DeleteOutlined />
-            Delete
-          </Button>
-          <Button type="primary">
-            <DownloadOutlined />
-            PDF
-          </Button>
-        </div>
-        {order.status === "pending" && (
-          <div className="order__actions">
-            <Button>
-              <CloseOutlined />
-              Cancel
-            </Button>
-            <Button>
-              <CheckOutlined />
-              Complete
-            </Button>
+    <>
+      {contextHolder}
+      <List.Item key={order._id}>
+        <section className="order">
+          <div>
+            <h2 className="main">Order id:</h2>
+            <span>{order._id}</span>
           </div>
-        )}
-      </section>
-    </List.Item>
+          <div>
+            <h4>Ordered at:</h4>
+            <span>{dayjs(order.orderDate).format("MM/DD/YYYY")}</span>
+          </div>
+          {showClientInfo && (
+            <>
+              <div className="order__client-info">
+                <h4>Client:</h4>
+                <span className="block">
+                  {order.client.name} {order.client.surname}
+                </span>
+                <span>{order.client.email}</span>
+              </div>
+              <div>
+                <h4>Shipping info:</h4>
+                <span>{getShippingInfo(order.client)}</span>
+              </div>
+            </>
+          )}
+          <div>
+            <h4>Status:</h4>
+            <b className={order.status.toLowerCase()}>
+              {order.status.toUpperCase()}
+            </b>
+          </div>
+          <h3 className="main">Products:</h3>
+          <div className="order__products-grid">
+            {order.products.map((product, index) => {
+              const key = `${order._id}-${index}`;
+              return (
+                <div key={key} className="order__product">
+                  <h4>{product.product.name}</h4>
+                  <span className="block">SKU: {product.product.sku}</span>
+                  <span className="block">
+                    Ordered quantity: {product.quantity}
+                  </span>
+                  <span className="block">
+                    Price when ordering: {product.priceAtOrder}{" "}
+                    {product.currencyAtOrder}
+                  </span>
+                  <span className="block">
+                    Cost of position: {product.quantity * product.priceAtOrder}{" "}
+                    {product.currencyAtOrder}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <div>
+            <h3>Total cost:</h3> <b>{getTotalCostOfOrder(order.products)}</b>
+          </div>
+          {(decodedToken?.role === "manager" ||
+            decodedToken?.role === "salesman") && (
+            <div className="order__actions">
+              <Button type="primary" onClick={() => deleteOrder(order._id)}>
+                <DeleteOutlined />
+                Delete
+              </Button>
+              <Button type="primary">
+                <DownloadOutlined />
+                PDF
+              </Button>
+            </div>
+          )}
+          {order.status === "pending" && (
+            <div className="order__actions">
+              <Button>
+                <CloseOutlined />
+                Cancel
+              </Button>
+              <Button>
+                <CheckOutlined />
+                Complete
+              </Button>
+            </div>
+          )}
+        </section>
+      </List.Item>
+    </>
   );
 };
 
