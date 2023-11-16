@@ -179,7 +179,7 @@ const EmployeesListing = () => {
             value={roleFilter ?? ""}
             onChange={setRoleFilter}
             options={roleOptions}
-            label="Filter by Role:"
+            label="Role:"
           />
           <SortSelect
             value={sortOrder ?? ""}

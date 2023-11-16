@@ -56,11 +56,11 @@ const Navbar = () => {
       key: "clients",
     },
     {
-      title: "Go to warhouse module.",
+      title: "Go to warehouse module.",
       icon: <DatabaseOutlined />,
-      titleToDisplay: "Warhouse",
-      to: "/warhouse",
-      key: "warhouse",
+      titleToDisplay: "Warehouse",
+      to: "/warehouse",
+      key: "warehouse",
     },
     {
       title: "Back to home page.",
