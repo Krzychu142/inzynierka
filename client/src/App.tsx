@@ -6,8 +6,8 @@ import Home from "./views/home/Home";
 import Login from "./views/login/Login";
 import Dashboard from "./views/dashboard/Dashboard";
 import Navbar from "./components/navbar/Navbar";
-import WarhouseListing from "./views/warhouse/WarhouseListing";
-import AddNewItem from "./views/warhouse/AddNewItem";
+import WarehouseListing from "./views/warehouse/WarehouseListing";
+import AddNewItem from "./views/warehouse/AddNewItem";
 import Footer from "./components/footer/Footer";
 import EmployeesListing from "./views/employees/EmployeesListing";
 import ForgotPassword from "./views/forgotPassword/ForgotPassword";
@@ -49,11 +49,11 @@ const App: React.FC = () => {
                   }
                 ></Route>
                 <Route
-                  path="/warhouse"
+                  path="/warehouse"
                   element={
                     <>
                       <Navbar />
-                      <WarhouseListing />
+                      <WarehouseListing />
                     </>
                   }
                 ></Route>
@@ -93,7 +93,7 @@ const App: React.FC = () => {
                 {role !== "cart operator" && (
                   <>
                     <Route
-                      path="/warhouse/addNew"
+                      path="/warehouse/addNew"
                       element={
                         <>
                           <Navbar />
@@ -103,7 +103,7 @@ const App: React.FC = () => {
                       }
                     ></Route>
                     <Route
-                      path="/warhouse/:id"
+                      path="/warehouse/:id"
                       element={
                         <>
                           <Navbar />

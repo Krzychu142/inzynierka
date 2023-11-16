@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import "./warhouseListing.css";
+import "./warehouseListing.css";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { Button, List, Result, Skeleton, Space, message, Image } from "antd";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   </Space>
 );
 
-const WarhouseListing = () => {
+const WarehouseListing = () => {
   // const baseUrl = useBaseURL();
   // const [messageApi, contextHolder] = message.useMessage();
 
@@ -149,7 +149,7 @@ const WarhouseListing = () => {
         />
         {decodedToken?.role != "cart operator" && (
           <Link
-            to="/warhouse/addNew"
+            to="/warehouse/addNew"
             className="link darker search-section--add-new"
           >
             Add new
@@ -190,7 +190,7 @@ const WarhouseListing = () => {
                 ...(decodedToken?.role !== "cart operator"
                   ? [
                       <Link
-                        to={`/warhouse/${item._id}`}
+                        to={`/warehouse/${item._id}`}
                         className="link darker"
                       >
                         <IconText
@@ -276,4 +276,4 @@ const WarhouseListing = () => {
   );
 };
 
-export default WarhouseListing;
+export default WarehouseListing;
