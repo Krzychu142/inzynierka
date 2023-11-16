@@ -4,7 +4,7 @@ import { Avatar, Button, List, Result, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
-import { IEmployee } from "../../types/employee.interface";
+import { IEmployee, Role } from "../../types/employee.interface";
 import { useAppSelector } from "../../hooks";
 import axios from "axios";
 import Search from "antd/es/input/Search";
@@ -12,6 +12,7 @@ import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import SortSelect from "../../components/sortSection/SortSelect";
+import { ContractType } from "../../types/contractType.enum";
 
 const EmployeesListing = () => {
   const decodedToken = useAppSelector((store) => store.auth.decodedToken);
@@ -75,11 +76,29 @@ const EmployeesListing = () => {
   );
 
   const [sortOrder, setSortOrder] = useState<string | null>(null);
+  const [contractTypeFilter, setContractTypeFilter] = useState<string | null>(
+    null
+  );
+  const [roleFilter, setRoleFilter] = useState<string | null>(null);
 
-  const sortedData = useMemo(() => {
+  const sortedAndFilteredData = useMemo(() => {
     if (!filteredData) return [];
 
-    return [...filteredData].sort((a: IEmployee, b: IEmployee) => {
+    let filteredByRole = filteredData;
+    if (roleFilter && roleFilter !== "") {
+      filteredByRole = filteredData.filter(
+        (employee: IEmployee) => employee.role === roleFilter
+      );
+    }
+
+    let filteredByContractType = filteredByRole;
+    if (contractTypeFilter && contractTypeFilter !== "") {
+      filteredByContractType = filteredByRole.filter(
+        (employee: IEmployee) => employee.contractType === contractTypeFilter
+      );
+    }
+
+    return filteredByContractType.sort((a: IEmployee, b: IEmployee) => {
       switch (sortOrder) {
         case "ascending":
           return a.salary - b.salary;
@@ -97,7 +116,7 @@ const EmployeesListing = () => {
           return 0;
       }
     });
-  }, [filteredData, sortOrder]);
+  }, [filteredData, sortOrder, contractTypeFilter, roleFilter]);
 
   const sortOptions = [
     { value: "", label: "Default" },
@@ -105,6 +124,21 @@ const EmployeesListing = () => {
     { value: "descending", label: "Highest Salary" },
     { value: "oldest", label: "Oldest Employee" },
     { value: "newest", label: "Newest Employee" },
+  ];
+
+  const contractTypeOptions = [
+    { value: "", label: "Default" },
+    { value: ContractType.EMPLOYMENTCONTRACT, label: "Employment Contract" },
+    { value: ContractType.CONTRACTOFMANDATE, label: "Contract of Mandate" },
+    { value: ContractType.B2B, label: "B2B" },
+  ];
+
+  const roleOptions = [
+    { value: "", label: "Default" },
+    { value: Role.CARTOPERATOR, label: "Cart Operator" },
+    { value: Role.WAREHOUSEMAN, label: "Warehouseman" },
+    { value: Role.SALESMAN, label: "Salesman" },
+    { value: Role.MANAGER, label: "Manager" },
   ];
 
   return (
@@ -134,7 +168,19 @@ const EmployeesListing = () => {
                 Add new
               </Link>
             )}
-          </section>
+          </section>{" "}
+          <SortSelect
+            value={contractTypeFilter ?? ""}
+            onChange={setContractTypeFilter}
+            options={contractTypeOptions}
+            label="Contract Type:"
+          />
+          <SortSelect
+            value={roleFilter ?? ""}
+            onChange={setRoleFilter}
+            options={roleOptions}
+            label="Role:"
+          />
           <SortSelect
             value={sortOrder ?? ""}
             onChange={setSortOrder}
@@ -145,7 +191,7 @@ const EmployeesListing = () => {
             <List
               itemLayout={windowWidth > 900 ? "horizontal" : "vertical"}
               loading={isLoading}
-              dataSource={sortedData}
+              dataSource={sortedAndFilteredData}
               pagination={{
                 align: "center",
                 pageSize: 3,
