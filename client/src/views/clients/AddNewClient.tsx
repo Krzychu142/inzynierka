@@ -10,6 +10,8 @@ import { IClient, Priority } from "../../types/client.interface";
 import "./addNewClient.css";
 import dayjs from "dayjs";
 
+const { TextArea } = Input;
+
 const AddNewClient = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
@@ -99,7 +101,7 @@ const AddNewClient = () => {
 
   return (
     <>
-      <RenderSpinner />
+      {RenderSpinner()}
       <section className="add-new-client">
         <Form
           labelCol={{ span: 24 }}
@@ -191,7 +193,7 @@ const AddNewClient = () => {
           </Form.Item>
 
           <Form.Item label="Description" name="description">
-            <Input.TextArea />
+            <TextArea rows={4} />
           </Form.Item>
 
           <Form.Item
