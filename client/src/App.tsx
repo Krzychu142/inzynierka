@@ -17,6 +17,7 @@ import ClientsListing from "./views/clients/ClientsListing";
 import AddNewClient from "./views/clients/AddNewClient";
 import OrdersListing from "./views/orders/OrdersListing";
 import SingleClientOrders from "./views/clients/SingleClientOrders";
+import AddNewOrder from "./views/orders/AddNewOrder";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -160,6 +161,16 @@ const App: React.FC = () => {
                         <>
                           <Navbar />
                           <SingleClientOrders />
+                          <Footer />
+                        </>
+                      }
+                    ></Route>
+                    <Route
+                      path="/orders/addNew"
+                      element={
+                        <>
+                          <Navbar />
+                          <AddNewOrder />
                           <Footer />
                         </>
                       }

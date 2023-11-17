@@ -110,7 +110,7 @@ const AddNewEmployee = () => {
 
   return (
     <>
-      <RenderSpinner />
+      {RenderSpinner()}
       <section className="add-new-employee">
         <Form
           labelCol={{ span: 24 }}
