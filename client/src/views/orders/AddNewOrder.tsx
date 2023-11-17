@@ -38,6 +38,9 @@ const AddNewOrder = () => {
   const [productQuantities, setProductQuantities] = useState<
     Record<number, number>
   >({});
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
+    new Set()
+  );
 
   const handleProductChange = (productId: string, index: number) => {
     const selectedProduct = products.find(
@@ -49,6 +52,16 @@ const AddNewOrder = () => {
         [index]: selectedProduct.stockQuantity,
       }));
     }
+    const newSelectedProducts = new Set(selectedProducts);
+    newSelectedProducts.add(productId);
+    setSelectedProducts(newSelectedProducts);
+  };
+
+  const handleRemoveProduct = (index: number) => {
+    const productToRemove = form.getFieldValue(["products", index, "product"]);
+    const newSelectedProducts = new Set(selectedProducts);
+    newSelectedProducts.delete(productToRemove);
+    setSelectedProducts(newSelectedProducts);
   };
 
   const onFinish = (values: Store) => {
@@ -133,7 +146,9 @@ const AddNewOrder = () => {
                         {products
                           ?.filter(
                             (product: IProduct) =>
-                              product.isAvailable && product.stockQuantity > 0
+                              product.isAvailable &&
+                              product.stockQuantity > 0 &&
+                              !selectedProducts.has(product._id)
                           )
                           .map((product: IProduct) => (
                             <Option key={product._id} value={product._id}>
@@ -158,7 +173,10 @@ const AddNewOrder = () => {
                     <Button
                       className="link"
                       type="link"
-                      onClick={() => remove(name)}
+                      onClick={() => {
+                        handleRemoveProduct(name);
+                        remove(name);
+                      }}
                     >
                       <MinusCircleOutlined />
                       Delete product
