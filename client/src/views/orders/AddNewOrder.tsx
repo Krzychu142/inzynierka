@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Form, InputNumber, Select } from "antd";
+import { Button, Form, InputNumber, Select, message } from "antd";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import { useLoading } from "../../customHooks/useLoading";
 import { IClient } from "../../types/client.interface";
@@ -8,6 +8,10 @@ import { useGetAllProductsQuery } from "../../features/productsApi";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { IProduct } from "../../types/product.interface";
 import { Store } from "antd/es/form/interface";
+import axios from "axios";
+import useBaseURL from "../../customHooks/useBaseURL";
+import { useAppSelector } from "../../hooks";
+import { useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -18,6 +22,10 @@ const AddNewOrder = () => {
   const { data: products, isLoading: isProductsLoading } =
     useGetAllProductsQuery("");
   const { startLoading, stopLoading, RenderSpinner } = useLoading();
+  const [messageApi, contextHolder] = message.useMessage();
+  const baseUrl = useBaseURL();
+  const token = useAppSelector((state) => state.auth.token);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isClientsLoading) {
@@ -44,11 +52,42 @@ const AddNewOrder = () => {
   };
 
   const onFinish = (values: Store) => {
-    console.log("Received values of form:", values);
+    startLoading();
+    axios
+      .post(
+        `${baseUrl}orders/create`,
+        {
+          clientId: values.clientId,
+          products: values.products,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        if (res.status === 201) {
+          navigate("/orders");
+        }
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      })
+      .finally(() => {
+        stopLoading();
+      });
   };
 
   return (
     <>
+      {contextHolder}
       {RenderSpinner()}
       <section className="add-new-order">
         <Form
@@ -83,7 +122,7 @@ const AddNewOrder = () => {
                     <Form.Item
                       label="Product:"
                       {...restField}
-                      name={[name, "product"]}
+                      name={[name, "productId"]}
                       rules={[{ required: true, message: "Missing product" }]}
                     >
                       <Select

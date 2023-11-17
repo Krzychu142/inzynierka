@@ -21,40 +21,40 @@ class OrderController {
         const session = await mongoose.startSession();
         try {
             session.startTransaction(); 
-            const { clientEmail, items, status } = req.body;
+            const { clientId, products, status } = req.body;
 
             // that will be changed to _id 
-            if (!clientEmail) {
+            if (!clientId) {
                 throw new Error("Client email is missing.")
             }
 
-            if (!Array.isArray(items) || items.length === 0) { 
+            if (!Array.isArray(products) || products.length === 0) { 
                 throw new Error("Order must have at least one item.");
             }
 
-            const client = await ClientService.getClientByEmail(clientEmail);
+            const client = await ClientService.getSingleClient(clientId);
             if (!client) {
                 throw new Error("Client not found.");
             }
 
             const orderProducts = [];
             //TODO: every item should be unique 
-            for (const item of items) {
+            for (const item of products) {
                 // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
-                const product = await ProductService.getSingleProductBySKU(item.productSKU);
+                const product = await ProductService.getSingleProduct(item.productId);
                 if (!product) {
-                    throw new Error(`Product with SKU ${item.productSKU} was not found.`);
+                    throw new Error(`Product with id: ${item.productId} was not found.`);
                 }
 
                 if (!product.isAvailable) {
-                    throw new Error(`Product ${item.productSKU} is not available.`);
+                    throw new Error(`Product ${product.name} is not available.`);
                 }
 
                 if (product.stockQuantity < item.quantity) {
-                    throw new Error(`Insufficient stock for product SKU: ${item.productSKU}.`);
+                    throw new Error(`Insufficient stock for product ${product.name}.`);
                 }
 
-                await ProductService.decrementProductStock(item.productSKU, item.quantity, session);
+                await ProductService.decrementProductStock(item.productId, item.quantity, session);
 
                 const priceAtOrder = product.isOnSale && product.promotionalPrice != null
                                     ? product.promotionalPrice
