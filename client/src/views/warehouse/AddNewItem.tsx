@@ -11,6 +11,8 @@ import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useLoading } from "../../customHooks/useLoading";
 
+const { TextArea } = Input;
+
 const AddNewItem = () => {
   const [form] = Form.useForm();
   const { id } = useParams();
@@ -109,7 +111,7 @@ const AddNewItem = () => {
 
   return (
     <>
-      <RenderSpinner />
+      {RenderSpinner()}
       <section className="add-new-product">
         <Form
           labelCol={{ span: 24 }}
@@ -139,7 +141,7 @@ const AddNewItem = () => {
           </Form.Item>
 
           <Form.Item label="Description" name="description">
-            <Input.TextArea />
+            <TextArea rows={4} />
           </Form.Item>
 
           <Form.Item
