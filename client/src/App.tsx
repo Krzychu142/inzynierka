@@ -31,8 +31,8 @@ const App: React.FC = () => {
           token: {
             colorPrimary: "#514AA8",
             fontSize: 16,
-            borderRadius: 16,
-            controlOutlineWidth: 2,
+            borderRadius: 8,
+            controlOutlineWidth: 1,
           },
         }}
       >

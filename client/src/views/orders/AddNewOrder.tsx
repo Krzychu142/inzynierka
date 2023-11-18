@@ -38,9 +38,19 @@ const AddNewOrder = () => {
   const [productQuantities, setProductQuantities] = useState<
     Record<number, number>
   >({});
-  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(
-    new Set()
-  );
+  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+
+  const updateSelectedProducts = (index: number, productId: string) => {
+    const newSelectedProducts = [...selectedProductIds];
+    newSelectedProducts[index] = productId;
+    setSelectedProductIds(newSelectedProducts.filter(Boolean));
+  };
+
+  const handleRemoveProduct = (index: number) => {
+    const newSelectedProducts = [...selectedProductIds];
+    newSelectedProducts.splice(index, 1);
+    setSelectedProductIds(newSelectedProducts);
+  };
 
   const handleProductChange = (productId: string, index: number) => {
     const selectedProduct = products.find(
@@ -52,16 +62,7 @@ const AddNewOrder = () => {
         [index]: selectedProduct.stockQuantity,
       }));
     }
-    const newSelectedProducts = new Set(selectedProducts);
-    newSelectedProducts.add(productId);
-    setSelectedProducts(newSelectedProducts);
-  };
-
-  const handleRemoveProduct = (index: number) => {
-    const productToRemove = form.getFieldValue(["products", index, "product"]);
-    const newSelectedProducts = new Set(selectedProducts);
-    newSelectedProducts.delete(productToRemove);
-    setSelectedProducts(newSelectedProducts);
+    updateSelectedProducts(index, productId);
   };
 
   const onFinish = (values: Store) => {
@@ -146,13 +147,18 @@ const AddNewOrder = () => {
                         {products
                           ?.filter(
                             (product: IProduct) =>
-                              product.isAvailable &&
-                              product.stockQuantity > 0 &&
-                              !selectedProducts.has(product._id)
+                              product.isAvailable && product.stockQuantity > 0
                           )
                           .map((product: IProduct) => (
-                            <Option key={product._id} value={product._id}>
+                            <Option
+                              key={product._id}
+                              value={product._id}
+                              disabled={selectedProductIds.includes(
+                                product._id
+                              )}
+                            >
                               {product.name}
+                              <span className="block">{product.sku}</span>
                             </Option>
                           ))}
                       </Select>
@@ -164,7 +170,11 @@ const AddNewOrder = () => {
                       rules={[{ required: true, message: "Missing quantity" }]}
                     >
                       <InputNumber
-                        placeholder={`Quantity max ${productQuantities[name]}`}
+                        placeholder={
+                          form.getFieldValue(["products", name, "productId"])
+                            ? `Quantity max ${productQuantities[name] || ""}`
+                            : "Set product"
+                        }
                         min={1}
                         max={productQuantities[name]}
                       />
