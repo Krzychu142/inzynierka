@@ -6,6 +6,11 @@ import mongoose from 'mongoose';
 import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
 
+interface IProductForOrder {
+    productId: string,
+    quantity: number
+}
+
 class OrderController {
     private static validateOrderId(req: Request) {
         if (!req.body.orderId) {
@@ -17,13 +22,27 @@ class OrderController {
         return Object.values(OrderStatus).includes(status);
     }
 
+
+    private static aggregateProducts = (products: IProductForOrder[]) => {
+        const productMap = new Map();
+
+        for (const item of products) {
+            if (productMap.has(item.productId)) {
+                productMap.get(item.productId).quantity += item.quantity;
+            } else {
+                productMap.set(item.productId, { ...item });
+            }
+        }
+
+        return Array.from(productMap.values());
+    };
+
     static async createOrder(req: Request, res: Response): Promise<void> {
         const session = await mongoose.startSession();
         try {
             session.startTransaction(); 
             const { clientId, products, status } = req.body;
 
-            // that will be changed to _id 
             if (!clientId) {
                 throw new Error("Client email is missing.")
             }
@@ -31,16 +50,17 @@ class OrderController {
             if (!Array.isArray(products) || products.length === 0) { 
                 throw new Error("Order must have at least one item.");
             }
-
+            
             const client = await ClientService.getSingleClient(clientId);
             if (!client) {
                 throw new Error("Client not found.");
             }
 
             const orderProducts = [];
-            //TODO: every item should be unique 
-            for (const item of products) {
-                // that will be changed to _id ---- mayyyybe, bcs we still need to change is it avilable 
+            const aggregatedProducts = OrderController.aggregateProducts(products);
+
+            for (const item of aggregatedProducts) {
+
                 const product = await ProductService.getSingleProduct(item.productId);
                 if (!product) {
                     throw new Error(`Product with id: ${item.productId} was not found.`);
