@@ -61,6 +61,14 @@ class OrderService {
         return result;
     }
 
+    static async getFullOrderDetails(orderId: string): Promise<IOrder | null> {
+        return Order.findById(orderId)
+            .populate('client')
+            .populate({
+                path: 'products.product',
+            });
+    }
+
     static async deleteOrder(orderId: mongoose.Types.ObjectId, session?: mongoose.ClientSession): Promise<mongoose.mongo.DeleteResult> {
         const options = session ? { session } : {};
         const result = await Order.deleteOne({_id: orderId}, options)
