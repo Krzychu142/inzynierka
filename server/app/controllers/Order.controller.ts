@@ -5,6 +5,10 @@ import ProductService from '../services/Product.service';
 import mongoose from 'mongoose';
 import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
+import ensureIdExists from '../utils/helpers/ensureIdExists';
+import PdfGenerator from "../utils/pdf/PdfGenerator"
+import { PdfData } from '../types/pdfData.interface';
+import { PdfOrderData } from '../types/pdfORderData.interface';
 
 interface IProductForOrder {
     productId: string,
@@ -195,6 +199,34 @@ class OrderController {
         }
         finally {
             await session.endSession();
+        }
+    }
+
+    static async getOrderPdf(req: Request, res: Response): Promise<void> {
+        try {
+            ensureIdExists(req)
+
+            const order = await OrderService.getFullOrderDetails(req.params.id)
+            
+            if (!order) {
+                throw new Error(`Order with id: ${req.params.id} doesn't found.`)
+            }
+
+            const pdfData: PdfOrderData = {
+                title: `Order id: ${req.params.id} Details`,
+                order: order
+            }
+
+            const pdfGenerator = new PdfGenerator('Roboto-Regular');
+            const pdfBuffer = await pdfGenerator.createOrderPdf(pdfData);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=order_${req.params.id}.pdf`);
+            res.setHeader('Content-Length', pdfBuffer.length);
+
+            res.end(pdfBuffer, 'binary');
+
+        } catch (error:unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 }

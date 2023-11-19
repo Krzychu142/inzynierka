@@ -145,6 +145,32 @@ const Order: React.FC<OrderProps> = ({ order }) => {
     }
   };
 
+  const getOrderPdf = (id: string) => {
+    axios
+      .get(`${baseUrl}orders/getOrderPdf/${id}`, {
+        // so important, we send binary stream
+        responseType: "blob",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        window.open(pdfUrl, "_blank");
+      })
+      .catch((err) => {
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
+  };
+
   return (
     <>
       {contextHolder}
@@ -228,7 +254,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                 <DeleteOutlined />
                 Delete
               </Button>
-              <Button type="primary">
+              <Button type="primary" onClick={() => getOrderPdf(order._id)}>
                 <DownloadOutlined />
                 PDF
               </Button>
