@@ -10,5 +10,6 @@ router.get('/getOrdersByClient/:email', AuthMiddleware.checkIsEmployeeLoggedIn, 
 router.get('/get', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN, Role.WAREHOUSEMAN, Role.CARTOPERATOR]), OrderController.getAllOrders)
 router.delete('/delete', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), OrderController.deleteOrder)
 router.put('/changeStatus', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), OrderController.editOrderStatus)
+router.get('/getOrderPdf/:id', AuthMiddleware.checkIsEmployeeLoggedIn, AuthMiddleware.checkIsEmployeeHaveCorrectPermission([Role.MANAGER, Role.SALESMAN]), OrderController.getOrderPdf)
 
 export default router

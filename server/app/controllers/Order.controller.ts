@@ -5,6 +5,7 @@ import ProductService from '../services/Product.service';
 import mongoose from 'mongoose';
 import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
+import ensureIdExists from '../utils/helpers/ensureIdExists';
 
 interface IProductForOrder {
     productId: string,
@@ -195,6 +196,15 @@ class OrderController {
         }
         finally {
             await session.endSession();
+        }
+    }
+
+    static async getOrderPdf(req: Request, res: Response): Promise<void> {
+        try {
+            ensureIdExists(req)
+            
+        } catch (error:unknown) {
+            res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }
     }
 }
