@@ -203,6 +203,7 @@ class OrderController {
         try {
             ensureIdExists(req)
             
+            res.status(200).json("OK")
         } catch (error:unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }

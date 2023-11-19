@@ -145,6 +145,22 @@ const Order: React.FC<OrderProps> = ({ order }) => {
     }
   };
 
+  const getOrderPdf = (id: string) => {
+    axios
+      .get(`${baseUrl}orders/getOrderPdf/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
+  };
+
   return (
     <>
       {contextHolder}
@@ -228,7 +244,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                 <DeleteOutlined />
                 Delete
               </Button>
-              <Button type="primary">
+              <Button type="primary" onClick={() => getOrderPdf(order._id)}>
                 <DownloadOutlined />
                 PDF
               </Button>
