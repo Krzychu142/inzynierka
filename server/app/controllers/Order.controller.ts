@@ -8,6 +8,7 @@ import { OrderStatus } from '../types/orderStatus.enum';
 import ensureIdExists from '../utils/helpers/ensureIdExists';
 import PdfGenerator from "../utils/pdf/PdfGenerator"
 import { PdfData } from '../types/pdfData.interface';
+import { PdfOrderData } from '../types/pdfORderData.interface';
 
 interface IProductForOrder {
     productId: string,
@@ -211,12 +212,13 @@ class OrderController {
                 throw new Error(`Order with id: ${req.params.id} doesn't found.`)
             }
 
-            const pdfData: PdfData = {
-                title: "Order Details",
-                items: ["example 1", "example 2", "example 3"]
+            const pdfData: PdfOrderData = {
+                title: `Order id: ${req.params.id} Details`,
+                order: order
             }
 
-            const pdfBuffer = await PdfGenerator.createPdfDocument(pdfData);
+            const pdfGenerator = new PdfGenerator('Roboto-Regular');
+            const pdfBuffer = await pdfGenerator.createOrderPdf(pdfData);
             res.setHeader('Content-Type', 'application/pdf');
             res.setHeader('Content-Disposition', `attachment; filename=order_${req.params.id}.pdf`);
             res.setHeader('Content-Length', pdfBuffer.length);
