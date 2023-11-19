@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
 import ensureIdExists from '../utils/helpers/ensureIdExists';
+import PdfGenerator from "../utils/pdf/PdfGenerator"
+import { PdfData } from '../types/pdfData.interface';
 
 interface IProductForOrder {
     productId: string,
@@ -202,8 +204,25 @@ class OrderController {
     static async getOrderPdf(req: Request, res: Response): Promise<void> {
         try {
             ensureIdExists(req)
+
+            const order = await OrderService.getFullOrderDetails(req.params.id)
             
-            res.status(200).json("OK")
+            if (!order) {
+                throw new Error(`Order with id: ${req.params.id} doesn't found.`)
+            }
+
+            const pdfData: PdfData = {
+                title: "Order Details",
+                items: ["example 1", "example 2", "example 3"]
+            }
+
+            const pdfBuffer = await PdfGenerator.createPdfDocument(pdfData);
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', `attachment; filename=order_${req.params.id}.pdf`);
+            res.setHeader('Content-Length', pdfBuffer.length);
+
+            res.end(pdfBuffer, 'binary');
+
         } catch (error:unknown) {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         }

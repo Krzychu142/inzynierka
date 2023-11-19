@@ -148,17 +148,27 @@ const Order: React.FC<OrderProps> = ({ order }) => {
   const getOrderPdf = (id: string) => {
     axios
       .get(`${baseUrl}orders/getOrderPdf/${id}`, {
+        // so important, we send binary stream
+        responseType: "blob",
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        console.log(res);
+        const pdfBlob = new Blob([res.data], { type: "application/pdf" });
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+
+        window.open(pdfUrl, "_blank");
       })
       .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {});
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
+      });
   };
 
   return (
