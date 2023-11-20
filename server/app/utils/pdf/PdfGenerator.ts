@@ -24,7 +24,7 @@ class PdfGenerator {
                 });
                 this.doc.on('error', reject);
 
-                this.preparePdfContent(data);
+                this.prepareOrderPdfContent(data);
 
                 this.doc.end();
             } catch (error: unknown) {
@@ -34,13 +34,21 @@ class PdfGenerator {
         });
     }
 
-    private preparePdfContent(data: PdfOrderData): void {
+    private prepareOrderPdfContent(data: PdfOrderData): void {
         this.doc.fontSize(15).text(data.title, { align: 'center' });
+        this.doc.fontSize(14).text("Client: ")
+        this.doc.moveDown()
         this.doc.fontSize(12);
-        this.doc.text("Client: ")
-        this.doc.moveDown()
         this.doc.text(data.order.client.name + " " + data.order.client.surname);
+        this.doc.moveDown(0.2)
+        this.doc.text(data.order.client.email)
+        this.doc.moveDown(0.2)
+        this.doc.text(data.order.client.phoneNumber)
+        this.doc.moveDown(0.2)
+        this.doc.text(data.order.client.shippingAddress ? data.order.client.shippingAddress : data.order.client.address + " " + data.order.client.postalCode + " " + data.order.client.city + " " + data.order.client.country)
         this.doc.moveDown()
+        this.doc.fontSize(14).text("Productc/s: ")
+        this.doc.fontSize(12);
     }
 }
 
