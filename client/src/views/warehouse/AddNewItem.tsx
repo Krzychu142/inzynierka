@@ -91,7 +91,7 @@ const AddNewItem = () => {
     axios[method](url, id ? { id, ...values } : values, config)
       .then((res) => {
         if (res.status == 201) {
-          navigate("/warhouse");
+          navigate("/warehouse");
         }
         if (res.status == 202) {
           setSuccessMessage("Product updated!");

@@ -7,8 +7,7 @@ import OrderService from '../services/Order.service';
 import { OrderStatus } from '../types/orderStatus.enum';
 import ensureIdExists from '../utils/helpers/ensureIdExists';
 import PdfGenerator from "../utils/pdf/PdfGenerator"
-import { PdfData } from '../types/pdfData.interface';
-import { PdfOrderData } from '../types/pdfORderData.interface';
+import { PdfOrderData } from '../types/pdfOrderData.interface';
 
 interface IProductForOrder {
     productId: string,
