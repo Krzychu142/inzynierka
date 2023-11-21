@@ -18,6 +18,7 @@ import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useAppSelector } from "../../hooks";
 import { useGetAllOrdersQuery } from "../../features/orderSlice";
+import { useLoading } from "../../customHooks/useLoading";
 
 interface OrderProps {
   order: IOrder;
@@ -26,6 +27,7 @@ interface OrderProps {
 const Order: React.FC<OrderProps> = ({ order }) => {
   let location = useLocation();
   const [showClientInfo, setShowClientInfo] = useState(true);
+  const { startLoading, stopLoading, RenderSpinner } = useLoading();
 
   useEffect(() => {
     if (location.pathname.includes("/clients")) {
@@ -146,6 +148,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
   };
 
   const getOrderPdf = (id: string) => {
+    startLoading();
     axios
       .get(`${baseUrl}orders/getOrderPdf/${id}`, {
         // so important, we send binary stream
@@ -168,11 +171,15 @@ const Order: React.FC<OrderProps> = ({ order }) => {
               ? err.response.data.message
               : "Something goes wrong",
         });
+      })
+      .finally(() => {
+        stopLoading();
       });
   };
 
   return (
     <>
+      {RenderSpinner()}
       {contextHolder}
       <Modal
         title={
