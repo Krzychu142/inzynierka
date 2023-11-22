@@ -44,13 +44,25 @@ class Email {
     }
   }
 
-  public emailOptions(from: string, to: string, subject: string, text: string): SendMailOptions {
-    return {
-      from: from,
+  public emailOptions(
+    from: string,
+    to: string,
+    subject: string,
+    text: string,
+    attachments?: { filename: string; path: string }[]
+  ): SendMailOptions {
+    const mailOptions: SendMailOptions = {
+      from: from ?? process.env.EMAIL_ADDRESS,
       to: to,
       subject: subject,
-      text: text
+      text: text,
+    };
+
+    if (attachments) {
+      mailOptions.attachments = attachments;
     }
+
+    return mailOptions;
   }
 }
 

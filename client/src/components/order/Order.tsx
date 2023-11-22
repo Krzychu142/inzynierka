@@ -78,6 +78,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
   const { refetch } = useGetAllOrdersQuery("");
 
   const deleteOrder = (orderId: string) => {
+    startLoading();
     axios
       .delete(`${baseUrl}orders/delete`, {
         data: { orderId: orderId },
@@ -100,10 +101,14 @@ const Order: React.FC<OrderProps> = ({ order }) => {
               ? err.response.data.message
               : "Something goes wrong",
         });
+      })
+      .finally(() => {
+        stopLoading();
       });
   };
 
   const changeOrderStatus = (orderId: string, newStatus: OrderStatus) => {
+    startLoading();
     axios
       .put(
         `${baseUrl}orders/changeStatus`,
@@ -129,6 +134,9 @@ const Order: React.FC<OrderProps> = ({ order }) => {
               ? err.response.data.message
               : "Something goes wrong",
         });
+      })
+      .finally(() => {
+        stopLoading();
       });
   };
 
