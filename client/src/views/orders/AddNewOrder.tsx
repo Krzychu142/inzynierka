@@ -27,14 +27,6 @@ const AddNewOrder = () => {
   const token = useAppSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isClientsLoading) {
-      startLoading();
-    } else {
-      stopLoading();
-    }
-  }, [isClientsLoading, startLoading, stopLoading]);
-
   const [productQuantities, setProductQuantities] = useState<
     Record<number, number>
   >({});
@@ -86,6 +78,7 @@ const AddNewOrder = () => {
         }
       })
       .catch((err) => {
+        stopLoading();
         messageApi.open({
           type: "error",
           content:
@@ -93,17 +86,14 @@ const AddNewOrder = () => {
               ? err.response.data.message
               : "Something goes wrong",
         });
-      })
-      .finally(() => {
-        stopLoading();
       });
   };
 
   return (
     <>
       {contextHolder}
-      {RenderSpinner()}
       <section className="add-new-order">
+        {RenderSpinner()}
         <Form
           form={form}
           layout="vertical"

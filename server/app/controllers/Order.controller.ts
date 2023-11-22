@@ -8,6 +8,9 @@ import { OrderStatus } from '../types/orderStatus.enum';
 import ensureIdExists from '../utils/helpers/ensureIdExists';
 import PdfGenerator from "../utils/pdf/PdfGenerator"
 import { PdfOrderData } from '../types/pdfOrderData.interface';
+import fs from "fs";
+import Email from '../utils/email/Email';
+import { IOrder } from '../types/order.interface';
 
 interface IProductForOrder {
     productId: string,
@@ -102,9 +105,9 @@ class OrderController {
             );
 
             await ClientService.incrementOrderCount(client._id, session);
-
             await session.commitTransaction();
 
+            await OrderController.sendOrderSummary(order._id)
             res.status(201).json(order);
 
         } catch (error: unknown) {
@@ -112,6 +115,59 @@ class OrderController {
             res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
         } finally {
             await session.endSession();
+        }
+    }
+
+    private static async getOrderData(orderId: string) {
+        const orderData = await OrderService.getFullOrderDetails(orderId)
+        if (!orderData) { 
+            throw new Error("Order not found")
+        }
+        return orderData;
+    }
+
+    private static async generatePdf(orderData: IOrder) {
+        const pdfData: PdfOrderData = {
+            title: `Order id: ${orderData._id} Details`,
+            order: orderData
+        };
+
+        const pdfGenerator = new PdfGenerator('Roboto-Regular');
+        return await pdfGenerator.createOrderPdf(pdfData);
+    }
+
+    private static async sendEmailWithPdf(orderData: IOrder, pdfPath: string) {
+        const email = Email.getInstance();
+        const emailOptions = email.emailOptions(
+            process.env.EMAIL_ADDRESS ?? "krzysztofradzieta@outlook.com",
+            orderData.client.email,
+            'Your Order Summary',
+            'Here is the summary of your order.',
+            [{ filename: `order_${orderData._id}.pdf`, path: pdfPath }]
+        );
+        await email.sendEmail(emailOptions);
+    }
+
+    private static deletePdfFile(pdfPath: string) {
+        fs.unlink(pdfPath, (err) => {
+            if (err) {
+                console.error(`Error deleting PDF: ${err}`);
+            }
+        });
+    }
+
+    private static async sendOrderSummary(orderId: string) {
+        try {
+            const orderData = await this.getOrderData(orderId);
+            const pdfBuffer = await this.generatePdf(orderData);
+
+            const pdfPath = `order_${orderData._id}.pdf`;
+            fs.writeFileSync(pdfPath, pdfBuffer);
+
+            await this.sendEmailWithPdf(orderData, pdfPath);
+            this.deletePdfFile(pdfPath);
+        } catch (error: unknown) {
+            ErrorsHandlers.errorMessageHandler(error);
         }
     }
 
