@@ -91,8 +91,8 @@ const AddNewItem = () => {
   const [isOnSale, setIsOnSale] = useState(false);
 
   const onFinish = (values: Store) => {
-    startLoading();
-    clearMessages();
+    // startLoading();
+    // clearMessages();
 
     if (values.initialStockQuantity === undefined) {
       values.initialStockQuantity = values.stockQuantity;
@@ -105,7 +105,7 @@ const AddNewItem = () => {
       };
     }
 
-    // console.log(values, "values");
+    console.log(values, "values");
 
     const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
@@ -126,10 +126,10 @@ const AddNewItem = () => {
         } else {
           setErrorMessage("Something went wrong!");
         }
-      })
-      .finally(() => {
-        stopLoading();
       });
+    // .finally(() => {
+    //   stopLoading();
+    // });
   };
 
   // state for files

@@ -15,12 +15,14 @@ class ProductController {
 
   static async createProduct(req: Request, res: Response): Promise<void> {
     try {
-      const product = await ProductService.createProduct(req.body)
-      if (product) {
-        res.status(201).json({ message: 'Product created successfully' })
-      } else {
-        throw Error("The user was not created")
-      }
+      console.log(req.body, "req.body")
+
+      // const product = await ProductService.createProduct(req.body)
+      // if (product) {
+      //   res.status(201).json({ message: 'Product created successfully' })
+      // } else {
+      //   throw Error("The user was not created")
+      // }
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
