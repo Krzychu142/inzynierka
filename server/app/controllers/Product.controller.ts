@@ -2,6 +2,8 @@ import { Request, Response } from 'express'
 import ProductService from '../services/Product.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
+import S3StorageManager from '../utils/S3StorageManager'
+import fs from "fs"
 
 class ProductController {
   static async getAllProduct(req: Request, res: Response): Promise<void> {
@@ -16,13 +18,35 @@ class ProductController {
   static async createProduct(req: Request, res: Response): Promise<void> {
     try {
       console.log(req.body, "req.body")
+      console.log(req.files, "req.files")
+      const bucketName = process.env.AWS_S3_BUCKET_NAME ?? "yourwarehouse";
 
-      // const product = await ProductService.createProduct(req.body)
-      // if (product) {
-      //   res.status(201).json({ message: 'Product created successfully' })
-      // } else {
-      //   throw Error("The user was not created")
-      // }
+      if (!req.files || !Array.isArray(req.files)) {
+        throw new Error("No files uploaded");
+      }
+      const s3Manager = S3StorageManager.getInstance();
+      const uploadedImages = [];
+
+      for (const file of req.files) {
+        const fileContent = fs.readFileSync(file.path);
+
+        const fileName = `uploads/${file.originalname}`;
+
+        const uploadResult = await s3Manager.uploadFile(bucketName, fileName, fileContent, file.mimetype);
+
+        uploadedImages.push(uploadResult.Location);
+
+        fs.unlinkSync(file.path);
+      }
+
+      const productData = {
+        ...req.body,
+        images: uploadedImages,
+      };
+
+      const product = await ProductService.createProduct(productData);
+
+      res.status(201).json({ message: 'Product created successfully', product });
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }

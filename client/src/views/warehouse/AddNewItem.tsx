@@ -92,26 +92,33 @@ const AddNewItem = () => {
 
   const onFinish = (values: Store) => {
     // startLoading();
-    // clearMessages();
+    clearMessages();
+
+    const formData = new FormData();
 
     if (values.initialStockQuantity === undefined) {
       values.initialStockQuantity = values.stockQuantity;
     }
 
-    if (!id) {
-      values = {
-        ...values,
-        photos: fileList,
-      };
-    }
+    fileList.forEach((file) => {
+      if (file.originFileObj) {
+        formData.append("photos", file.originFileObj, file.name);
+      }
+    });
 
-    console.log(values, "values");
+    Object.keys(values).forEach((key) => {
+      if (key !== "photos") {
+        formData.append(key, values[key]);
+      }
+    });
 
     const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
     const method = id ? "put" : "post";
 
-    axios[method](url, id ? { id, ...values } : values, config)
+    console.log(formData, "formData");
+
+    axios[method](url, formData, config)
       .then((res) => {
         if (res.status == 201) {
           navigate("/warehouse");
