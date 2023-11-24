@@ -91,8 +91,8 @@ const AddNewItem = () => {
   const [isOnSale, setIsOnSale] = useState(false);
 
   const onFinish = (values: Store) => {
-    // startLoading();
-    // clearMessages();
+    startLoading();
+    clearMessages();
 
     if (values.initialStockQuantity === undefined) {
       values.initialStockQuantity = values.stockQuantity;
@@ -105,31 +105,31 @@ const AddNewItem = () => {
       };
     }
 
-    console.log(values, "values");
+    // console.log(values, "values");
 
-    // const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
+    const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
 
-    // const method = id ? "put" : "post";
+    const method = id ? "put" : "post";
 
-    // axios[method](url, id ? { id, ...values } : values, config)
-    //   .then((res) => {
-    //     if (res.status == 201) {
-    //       navigate("/warehouse");
-    //     }
-    //     if (res.status == 202) {
-    //       setSuccessMessage("Product updated!");
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     if (err.response.data.message) {
-    //       setErrorMessage(err.response.data.message);
-    //     } else {
-    //       setErrorMessage("Something went wrong!");
-    //     }
-    //   })
-    //   .finally(() => {
-    //     stopLoading();
-    //   });
+    axios[method](url, id ? { id, ...values } : values, config)
+      .then((res) => {
+        if (res.status == 201) {
+          navigate("/warehouse");
+        }
+        if (res.status == 202) {
+          setSuccessMessage("Product updated!");
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.message) {
+          setErrorMessage(err.response.data.message);
+        } else {
+          setErrorMessage("Something went wrong!");
+        }
+      })
+      .finally(() => {
+        stopLoading();
+      });
   };
 
   // state for files
@@ -298,6 +298,7 @@ const AddNewItem = () => {
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
+                accept=".jpg,.jpeg,.png"
               >
                 {fileList.length >= 3 ? null : uploadButton}
               </Upload>
