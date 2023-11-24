@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, InputNumber, Switch } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Switch,
+  Upload,
+  UploadFile,
+} from "antd";
 import "./addNewItem.css";
 import { useParams } from "react-router-dom";
 import { Store } from "antd/lib/form/interface";
@@ -10,8 +20,11 @@ import dayjs from "dayjs";
 import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useLoading } from "../../customHooks/useLoading";
+import { PlusOutlined } from "@ant-design/icons";
+import { RcFile, UploadProps } from "antd/es/upload";
 
 const { TextArea } = Input;
+type FileListType = UploadFile[];
 
 const AddNewItem = () => {
   const [form] = Form.useForm();
@@ -25,6 +38,7 @@ const AddNewItem = () => {
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
+      ...(id ? {} : { "Content-Type": "multipart/form-data" }),
     },
   };
 
@@ -77,37 +91,98 @@ const AddNewItem = () => {
   const [isOnSale, setIsOnSale] = useState(false);
 
   const onFinish = (values: Store) => {
-    startLoading();
-    clearMessages();
+    // startLoading();
+    // clearMessages();
 
     if (values.initialStockQuantity === undefined) {
       values.initialStockQuantity = values.stockQuantity;
     }
 
-    const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
+    if (!id) {
+      values = {
+        ...values,
+        photos: fileList,
+      };
+    }
 
-    const method = id ? "put" : "post";
+    console.log(values, "values");
 
-    axios[method](url, id ? { id, ...values } : values, config)
-      .then((res) => {
-        if (res.status == 201) {
-          navigate("/warehouse");
-        }
-        if (res.status == 202) {
-          setSuccessMessage("Product updated!");
-        }
-      })
-      .catch((err) => {
-        if (err.response.data.message) {
-          setErrorMessage(err.response.data.message);
-        } else {
-          setErrorMessage("Something went wrong!");
-        }
-      })
-      .finally(() => {
-        stopLoading();
-      });
+    // const url = id ? `${baseUrl}products/${id}` : `${baseUrl}products/create`;
+
+    // const method = id ? "put" : "post";
+
+    // axios[method](url, id ? { id, ...values } : values, config)
+    //   .then((res) => {
+    //     if (res.status == 201) {
+    //       navigate("/warehouse");
+    //     }
+    //     if (res.status == 202) {
+    //       setSuccessMessage("Product updated!");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     if (err.response.data.message) {
+    //       setErrorMessage(err.response.data.message);
+    //     } else {
+    //       setErrorMessage("Something went wrong!");
+    //     }
+    //   })
+    //   .finally(() => {
+    //     stopLoading();
+    //   });
   };
+
+  // state for files
+  const [fileList, setFileList] = useState<FileListType>([]);
+
+  const uploadProps = {
+    onRemove: (file: UploadFile) => {
+      const index = fileList.indexOf(file);
+      const newFileList = fileList.slice();
+      newFileList.splice(index, 1);
+      setFileList(newFileList);
+    },
+    beforeUpload: (file: UploadFile) => {
+      setFileList([...fileList, file]);
+      return false;
+    },
+    fileList,
+  };
+
+  const getBase64 = (file: RcFile): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(
+      file.name || file.url!.substring(file.url!.lastIndexOf("/") + 1)
+    );
+  };
+
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+    setFileList(newFileList);
+
+  const handleCancel = () => setPreviewOpen(false);
 
   return (
     <>
@@ -208,6 +283,38 @@ const AddNewItem = () => {
           <Form.Item label="Images (comma separated URLs)" name="images">
             <Input placeholder="e.g., http://example.com/image1.jpg, http://example.com/image2.jpg" />
           </Form.Item>
+
+          {!id && (
+            <Form.Item label="Upload Images">
+              {/* <Upload {...uploadProps} listType="picture-card">
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Upload</div>
+              </div>
+            </Upload> */}
+              <Upload
+                {...uploadProps}
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleChange}
+              >
+                {fileList.length >= 3 ? null : uploadButton}
+              </Upload>
+              <Modal
+                open={previewOpen}
+                title={previewTitle}
+                footer={null}
+                onCancel={handleCancel}
+              >
+                <img
+                  alt="example"
+                  style={{ width: "100%" }}
+                  src={previewImage}
+                />
+              </Modal>
+            </Form.Item>
+          )}
 
           {id && (
             <Form.Item
