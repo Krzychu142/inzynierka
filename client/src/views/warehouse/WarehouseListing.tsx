@@ -30,6 +30,8 @@ const WarehouseListing = () => {
     refetch,
   } = useGetAllProductsQuery("");
 
+  console.log(products, "products");
+
   useEffect(() => {
     refetch();
   }, [refetch]);

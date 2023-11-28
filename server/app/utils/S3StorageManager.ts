@@ -34,6 +34,39 @@ class S3StorageManager {
         return this.s3.upload(params).promise();
     }
 
+    public async deleteFileByName(bucketName: string, fileName: string): Promise<AWS.S3.DeleteObjectOutput> {
+        const params = {
+            Bucket: bucketName,
+            Key: fileName,
+        };
+
+        return this.s3.deleteObject(params).promise();
+    }
+
+    
+    public async deleteFileByUrl(imageUrl: string, bucketName: string): Promise<AWS.S3.DeleteObjectOutput> {
+        const key = this.extractKeyFromUrl(imageUrl, bucketName);
+
+        if (!key) {
+            throw new Error('Invalid URL');
+        }
+
+        const params = {
+            Bucket: bucketName,
+            Key: key,
+        };
+
+        return this.s3.deleteObject(params).promise();
+    }
+
+    private extractKeyFromUrl(url: string, bucketName: string): string | null {
+        const pattern = new RegExp(`https://${bucketName}\.s3\..+\.amazonaws\.com/`);
+        if (pattern.test(url)) {
+            return url.replace(pattern, '');
+        }
+        return null;
+    }
+    
 }
 
 export default S3StorageManager;

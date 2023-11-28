@@ -61,6 +61,14 @@ class ProductService {
       }
   }
 
+  static async updateProductImages(id: string, images: string[]) {
+    return Product.findByIdAndUpdate(
+      id, 
+      { $set: { images: images } }, 
+      { new: true }
+    );
+  }
+
 }
 
 export default ProductService
