@@ -145,7 +145,7 @@ const EditItem = () => {
   return (
     <section className="add-new-product">
       {contextHolder}
-      {RenderSpinner()}
+      <RenderSpinner fullscreen={true} />
       <Form
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
@@ -251,6 +251,16 @@ const EditItem = () => {
             </Row>
           </Form.Item>
         )}
+
+        {productsImages &&
+          productsImages.length < 3 &&
+          productsImages.length > 0 && (
+            <h2>
+              here we will be able to upload images next step, extract to
+              separate component
+            </h2>
+          )}
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Edit Product
