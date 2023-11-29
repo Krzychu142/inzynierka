@@ -10,7 +10,7 @@ class ErrorsHandlers {
 
   static handleMongoError(error: unknown): never {
     if (error instanceof MongoError && error.code === 11000) {
-        throw new Error('Email already exists');
+        throw new Error('Duplicate key error');
     } else {
         throw new Error(ErrorsHandlers.errorMessageHandler(error).message);
     }

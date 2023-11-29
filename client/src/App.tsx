@@ -18,6 +18,7 @@ import AddNewClient from "./views/clients/AddNewClient";
 import OrdersListing from "./views/orders/OrdersListing";
 import SingleClientOrders from "./views/clients/SingleClientOrders";
 import AddNewOrder from "./views/orders/AddNewOrder";
+import EditItem from "./views/warehouse/EditItem";
 
 const App: React.FC = () => {
   const isAuthenticated = useAppSelector((store) => store.auth.isAuthenticated);
@@ -108,7 +109,7 @@ const App: React.FC = () => {
                       element={
                         <>
                           <Navbar />
-                          <AddNewItem />
+                          <EditItem />
                           <Footer />
                         </>
                       }

@@ -2,11 +2,15 @@ import React from "react";
 import { Spin } from "antd";
 import "./loadingSpinner.css";
 
-const LoadingSpinner: React.FC = () => (
-  <div className="loading-spin">
-    <Spin size="large">
-      <div />
-    </Spin>
+interface LoadingSpinnerProps {
+  fullscreen?: boolean;
+}
+
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  fullscreen = false,
+}) => (
+  <div className={fullscreen ? "fullscreen-loading" : "normal-loading"}>
+    <Spin size="large" />
   </div>
 );
 
