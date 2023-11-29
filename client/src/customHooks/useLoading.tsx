@@ -7,9 +7,9 @@ export const useLoading = () => {
   const startLoading = () => setIsLoading(true);
   const stopLoading = () => setIsLoading(false);
 
-  const RenderSpinner = () => {
+  const RenderSpinner = ({ fullscreen = false } = {}) => {
     if (!isLoading) return null;
-    return <LoadingSpinner />;
+    return <LoadingSpinner fullscreen={fullscreen} />;
   };
 
   return { startLoading, stopLoading, RenderSpinner };
