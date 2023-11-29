@@ -118,17 +118,6 @@ const EditItem = () => {
     startLoading();
     if (id) {
       fetchProductData();
-      // axios
-      //   .get(`${baseUrl}products/${id}`, config)
-      //   .then((res) => {
-      //     getSingleProduct(res);
-      //   })
-      //   .catch(() => {
-      //     navigate("/warehouse");
-      //   })
-      //   .finally(() => {
-      //     stopLoading();
-      //   });
     }
   }, []);
 
@@ -254,7 +243,7 @@ const EditItem = () => {
         {productsImages && productsImages.length > 0 && (
           <Form.Item
             className="images__container"
-            label={productsImages.length >= 1 ? "Images" : "Image"}
+            label={productsImages.length > 1 ? "Images" : "Image"}
             name="images"
           >
             <Row align="middle" gutter={16}>
@@ -282,39 +271,37 @@ const EditItem = () => {
           </Form.Item>
         )}
 
-        {productsImages &&
-          productsImages.length < 3 &&
-          productsImages.length > 0 && (
-            <Form.Item>
-              <Upload
-                name="image"
-                method="PUT"
-                headers={{
-                  Authorization: `Bearer ${token}`,
-                }}
-                accept=".jpg,.jpeg,.png"
-                maxCount={1}
-                action={`${baseUrl}products/uploadImageToProduct/${productId}`}
-                showUploadList={false}
-                onChange={(info) => {
-                  if (info.file.status === "done") {
-                    messageApi.open({
-                      type: "success",
-                      content: "Image uploaded successfully",
-                    });
-                    fetchProductData();
-                  } else if (info.file.status === "error") {
-                    messageApi.open({
-                      type: "error",
-                      content: "Can't upload image to product",
-                    });
-                  }
-                }}
-              >
-                <Button icon={<UploadOutlined />}>Upload Image</Button>
-              </Upload>
-            </Form.Item>
-          )}
+        {productsImages && productsImages.length < 3 && (
+          <Form.Item>
+            <Upload
+              name="image"
+              method="PUT"
+              headers={{
+                Authorization: `Bearer ${token}`,
+              }}
+              accept=".jpg,.jpeg,.png"
+              maxCount={1}
+              action={`${baseUrl}products/uploadImageToProduct/${productId}`}
+              showUploadList={false}
+              onChange={(info) => {
+                if (info.file.status === "done") {
+                  messageApi.open({
+                    type: "success",
+                    content: "Image uploaded successfully",
+                  });
+                  fetchProductData();
+                } else if (info.file.status === "error") {
+                  messageApi.open({
+                    type: "error",
+                    content: "Can't upload image to product",
+                  });
+                }
+              }}
+            >
+              <Button icon={<UploadOutlined />}>Upload Image</Button>
+            </Upload>
+          </Form.Item>
+        )}
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
