@@ -169,7 +169,14 @@ const Order: React.FC<OrderProps> = ({ order }) => {
         const pdfBlob = new Blob([res.data], { type: "application/pdf" });
         const pdfUrl = URL.createObjectURL(pdfBlob);
 
-        window.open(pdfUrl, "_blank");
+        const link = document.createElement("a");
+        link.href = pdfUrl;
+        link.download = `order-${id}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        URL.revokeObjectURL(pdfUrl);
       })
       .catch((err) => {
         messageApi.open({

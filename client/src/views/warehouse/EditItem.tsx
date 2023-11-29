@@ -13,13 +13,14 @@ import {
   InputNumber,
   Row,
   Switch,
+  Upload,
   message,
 } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import "./addNewItem.css";
 import dayjs from "dayjs";
 import { Store } from "antd/es/form/interface";
-import { CloseCircleOutlined } from "@ant-design/icons";
+import { CloseCircleOutlined, UploadOutlined } from "@ant-design/icons";
 
 const EditItem = () => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ const EditItem = () => {
   const baseUrl = useBaseURL();
   const [isOnSale, setIsOnSale] = useState(false);
   const [productsImages, setProductsImages] = useState<string[] | null>(null);
+  const [productId, setProductId] = useState("");
 
   const config = {
     headers: {
@@ -40,6 +42,7 @@ const EditItem = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const getSingleProduct = (res: AxiosResponse) => {
     const product = res.data;
+    setProductId(product._id);
     form.setFieldsValue({
       sku: product.sku,
       name: product.name,
@@ -96,20 +99,36 @@ const EditItem = () => {
       });
   };
 
+  const fetchProductData = () => {
+    startLoading();
+    axios
+      .get(`${baseUrl}products/${id}`, config)
+      .then((res) => {
+        getSingleProduct(res);
+      })
+      .catch(() => {
+        navigate("/warehouse");
+      })
+      .finally(() => {
+        stopLoading();
+      });
+  };
+
   useEffect(() => {
     startLoading();
     if (id) {
-      axios
-        .get(`${baseUrl}products/${id}`, config)
-        .then((res) => {
-          getSingleProduct(res);
-        })
-        .catch(() => {
-          navigate("/warehouse");
-        })
-        .finally(() => {
-          stopLoading();
-        });
+      fetchProductData();
+      // axios
+      //   .get(`${baseUrl}products/${id}`, config)
+      //   .then((res) => {
+      //     getSingleProduct(res);
+      //   })
+      //   .catch(() => {
+      //     navigate("/warehouse");
+      //   })
+      //   .finally(() => {
+      //     stopLoading();
+      //   });
     }
   }, []);
 
@@ -188,31 +207,42 @@ const EditItem = () => {
               <InputNumber min={0} precision={2} />
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item label="Currency" name="currency" extra="PLN by default">
+          <Col span={8}>
+            <Form.Item
+              label="Currency"
+              name="currency"
+              extra="PLN by default"
+              rules={[
+                { required: true, message: "Please provide the currency!" },
+              ]}
+            >
               <Input />
             </Form.Item>
           </Col>
         </Row>
-
-        <Form.Item label="On Sale" name="isOnSale" valuePropName="checked">
-          <Switch onChange={(checked) => setIsOnSale(checked)} />
-        </Form.Item>
-
-        {isOnSale && (
-          <Form.Item
-            label="Promotional Price"
-            name="promotionalPrice"
-            rules={[
-              {
-                required: isOnSale,
-                message: "Please provide the promotial price",
-              },
-            ]}
-          >
-            <InputNumber min={0} precision={2} />
-          </Form.Item>
-        )}
+        <Row gutter={16}>
+          <Col span={12}>
+            <Form.Item label="On Sale" name="isOnSale" valuePropName="checked">
+              <Switch onChange={(checked) => setIsOnSale(checked)} />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            {isOnSale && (
+              <Form.Item
+                label="Promotional Price"
+                name="promotionalPrice"
+                rules={[
+                  {
+                    required: isOnSale,
+                    message: "Please provide the promotial price",
+                  },
+                ]}
+              >
+                <InputNumber min={0} precision={2} />
+              </Form.Item>
+            )}
+          </Col>
+        </Row>
 
         <Form.Item label="Available" name="isAvailable" valuePropName="checked">
           <Switch />
@@ -255,10 +285,35 @@ const EditItem = () => {
         {productsImages &&
           productsImages.length < 3 &&
           productsImages.length > 0 && (
-            <h2>
-              here we will be able to upload images next step, extract to
-              separate component
-            </h2>
+            <Form.Item>
+              <Upload
+                name="image"
+                method="PUT"
+                headers={{
+                  Authorization: `Bearer ${token}`,
+                }}
+                accept=".jpg,.jpeg,.png"
+                maxCount={1}
+                action={`${baseUrl}products/uploadImageToProduct/${productId}`}
+                showUploadList={false}
+                onChange={(info) => {
+                  if (info.file.status === "done") {
+                    messageApi.open({
+                      type: "success",
+                      content: "Image uploaded successfully",
+                    });
+                    fetchProductData();
+                  } else if (info.file.status === "error") {
+                    messageApi.open({
+                      type: "error",
+                      content: "Can't upload image to product",
+                    });
+                  }
+                }}
+              >
+                <Button icon={<UploadOutlined />}>Upload Image</Button>
+              </Upload>
+            </Form.Item>
           )}
 
         <Form.Item>
