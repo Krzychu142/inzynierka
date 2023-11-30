@@ -3,6 +3,7 @@
     padding-bottom: 12px;
 }
 
+
 .clients-listing__list li {
     list-style-type: none;
     position: relative;
@@ -14,6 +15,10 @@
     .clients-listing__list li {
         width: auto;
     }
+
+    .clients-listing ul {
+        padding-inline-start: 0px;
+    }
 }
 
 .clients-listing__list li p {
@@ -24,7 +29,7 @@
     content: "•";
     position: absolute;
     left: 0;
-    color: var(--main-color);
+    color: var(--main-color-dark);
     font-size: 1.5em;
     line-height: 1;
     top: 50%;

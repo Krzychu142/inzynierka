@@ -7,8 +7,11 @@
     height: 160px;
     border-bottom: var(--border-size) solid var(--main-color-dark);
     padding: 0px 80px;
-    background-color: var(--main-color-dark);
+    background-color: #474A48;
     margin-bottom: 2rem;
+    box-shadow: 1px 4px 18px 2px rgba(154, 225, 157, 0.31);
+    -webkit-box-shadow: 1px 4px 18px 2px rgba(154, 225, 157, 0.31);
+    -moz-box-shadow: 1px 4px 18px 2px rgba(154, 225, 157, 0.31);
 }
 
 .navbar__nav__ul {

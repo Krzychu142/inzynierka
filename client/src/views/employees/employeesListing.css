@@ -3,6 +3,10 @@
     padding-bottom: 12px;
 }
 
+.employees-listing ul {
+    padding-inline-start: 0px;
+}
+
 .employees-listing__description li {
     list-style-type: none;
     position: relative;
@@ -20,7 +24,7 @@
     content: "•";
     position: absolute;
     left: 0;
-    color: var(--main-color);
+    color: var(--main-color-dark);
     font-size: 1.5em;
     line-height: 1;
     top: 50%;
