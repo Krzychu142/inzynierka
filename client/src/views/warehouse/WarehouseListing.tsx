@@ -260,7 +260,8 @@ const WarehouseListing = () => {
                 </li>
                 {item.soldAt && (
                   <li>
-                    Last time sold at: {new Date(item.soldAt).toLocaleString()}
+                    <b>Last time sold at:</b>{" "}
+                    {new Date(item.addedAt).toLocaleString().split(",")[0]}
                   </li>
                 )}
                 {!item.isOnSale ? (

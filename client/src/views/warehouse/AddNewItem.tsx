@@ -2,10 +2,12 @@ import { useState } from "react";
 import "./addNewItem.css";
 import {
   Button,
+  Col,
   Form,
   Input,
   InputNumber,
   Modal,
+  Row,
   Switch,
   Upload,
   UploadFile,
@@ -112,47 +114,54 @@ const AddNewItem = () => {
   const handleCancel = () => setPreviewOpen(false);
 
   return (
-    <>
+    <section className="add-new-item">
       {contextHolder}
       <RenderSpinner fullscreen={true} />
-      <section className="add-new-product">
-        <Form
-          disabled={isFormDisabled}
-          labelCol={{ span: 24 }}
-          wrapperCol={{ span: 24 }}
-          form={form}
-          onFinish={onFinish}
-          initialValues={{
-            isAvailable: true,
-            currency: "PLN",
-          }}
+      <Form
+        labelCol={{ span: 24 }}
+        wrapperCol={{ span: 24 }}
+        disabled={isFormDisabled}
+        form={form}
+        onFinish={onFinish}
+        initialValues={{
+          isAvailable: true,
+          currency: "PLN",
+        }}
+        className="box-shadow"
+      >
+        <Form.Item
+          label="SKU"
+          name="sku"
+          rules={[{ required: true, message: "Please provide the SKU!" }]}
         >
-          <Form.Item
-            label="SKU"
-            name="sku"
-            rules={[{ required: true, message: "Please provide the SKU!" }]}
-          >
-            <Input />
-          </Form.Item>
+          <Input />
+        </Form.Item>
 
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please provide the name!" }]}
-          >
-            <Input />
-          </Form.Item>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please provide the name!" }]}
+        >
+          <Input />
+        </Form.Item>
 
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[
+            { required: true, message: "Please provide the description!" },
+          ]}
+        >
+          <TextArea rows={5} />
+        </Form.Item>
+        <Row>
           <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              { required: true, message: "Please provide the description!" },
-            ]}
+            label="Available"
+            name="isAvailable"
+            valuePropName="checked"
           >
-            <TextArea rows={5} />
+            <Switch />
           </Form.Item>
-
           <Form.Item
             label="Stock Quantity"
             name="stockQuantity"
@@ -165,6 +174,8 @@ const AddNewItem = () => {
           >
             <InputNumber min={0} />
           </Form.Item>
+        </Row>
+        <Row>
           <Form.Item
             label="Price"
             name="price"
@@ -175,74 +186,72 @@ const AddNewItem = () => {
           <Form.Item label="Currency" name="currency" extra="PLN by default">
             <Input />
           </Form.Item>
-
-          <Form.Item label="On Sale" name="isOnSale" valuePropName="checked">
-            <Switch onChange={(checked) => setIsOnSale(checked)} />
-          </Form.Item>
-          {isOnSale && (
-            <Form.Item
-              label="Promotional Price"
-              name="promotionalPrice"
-              rules={[
-                {
-                  required: isOnSale,
-                  message: "Please provide the promotial price",
-                },
-              ]}
-            >
-              <InputNumber min={0} precision={2} />
+        </Row>
+        <Row>
+          <Col>
+            <Form.Item label="On Sale" name="isOnSale" valuePropName="checked">
+              <Switch onChange={(checked) => setIsOnSale(checked)} />
             </Form.Item>
-          )}
+          </Col>
+          <Col>
+            {isOnSale && (
+              <Form.Item
+                label="Promotional Price"
+                name="promotionalPrice"
+                rules={[
+                  {
+                    required: isOnSale,
+                    message: "Please provide the promotional price",
+                  },
+                ]}
+              >
+                <InputNumber min={0} precision={2} />
+              </Form.Item>
+            )}
+          </Col>
+        </Row>
 
-          <Form.Item
-            label="Available"
-            name="isAvailable"
-            valuePropName="checked"
-          >
-            <Switch />
+        {!canAddImages && (
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Add Product
+            </Button>
           </Form.Item>
-          {!canAddImages && (
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add Product
-              </Button>
-            </Form.Item>
-          )}
-        </Form>
-        {canAddImages && (
-          <section className="add-new-product">
-            <h3>Add some images of product</h3>
-            <Upload
-              name="image"
-              method="PUT"
-              headers={{
-                Authorization: `Bearer ${token}`,
-              }}
-              action={`${baseUrl}products/uploadImageToProduct/${newAddedItemId}`}
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
-              accept=".jpg,.jpeg,.png"
-            >
-              {fileList.length >= 3 ? null : uploadButton}
-            </Upload>
-            <Modal
-              open={previewOpen}
-              title={previewTitle}
-              footer={null}
-              onCancel={handleCancel}
-            >
-              <img
-                alt={`preview ${previewTitle}`}
-                style={{ width: "100%" }}
-                src={previewImage}
-              />
-            </Modal>
-          </section>
         )}
-      </section>
-    </>
+      </Form>
+      {canAddImages && (
+        <>
+          <h3>Add some images of product</h3>
+          <Upload
+            name="image"
+            method="PUT"
+            headers={{
+              Authorization: `Bearer ${token}`,
+            }}
+            action={`${baseUrl}products/uploadImageToProduct/${newAddedItemId}`}
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={handleChange}
+            accept=".jpg,.jpeg,.png"
+          >
+            {fileList.length >= 3 ? null : uploadButton}
+          </Upload>
+          <Modal
+            open={previewOpen}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <img
+              alt={`preview ${previewTitle}`}
+              style={{ width: "100%" }}
+              src={previewImage}
+            />
+          </Modal>
+        </>
+      )}
+    </section>
   );
 };
 

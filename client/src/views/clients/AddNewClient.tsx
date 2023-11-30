@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { Button, Form, Input, Switch, Select, DatePicker } from "antd";
+import {
+  Button,
+  Form,
+  Input,
+  Switch,
+  Select,
+  DatePicker,
+  Row,
+  Col,
+} from "antd";
 import axios from "axios";
 import { useAppSelector } from "../../hooks";
 import { useNavigate, useParams } from "react-router-dom";
@@ -109,106 +118,145 @@ const AddNewClient = () => {
           form={form}
           onFinish={onFinish}
           initialValues={{ priority: Priority.NORMAL }}
+          className="box-shadow"
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
-            <Input />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[{ required: true, message: "Please input the name!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Surname"
+                name="surname"
+                rules={[
+                  { required: true, message: "Please input the surname!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Col span={16}>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input the email!",
+                  type: "email",
+                },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Address"
+                name="address"
+                rules={[
+                  { required: true, message: "Please input the address!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Shipping Address"
+                name="shippingAddress"
+                extra="Only if difrent than address"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item
+                label="City"
+                name="city"
+                rules={[{ required: true, message: "Please input the city!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                label="Country"
+                name="country"
+                rules={[
+                  { required: true, message: "Please input the country!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
 
-          <Form.Item
-            label="Surname"
-            name="surname"
-            rules={[{ required: true, message: "Please input the surname!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-                message: "Please input the email!",
-                type: "email",
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[{ required: true, message: "Please input the address!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Shipping Address"
-            name="shippingAddress"
-            extra="Provide if the shipping address is different from the customer's address."
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="City"
-            name="city"
-            rules={[{ required: true, message: "Please input the city!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Country"
-            name="country"
-            rules={[{ required: true, message: "Please input the country!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Postal Code"
-            name="postalCode"
-            rules={[
-              { required: true, message: "Please input the postal code!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Phone Number"
-            name="phoneNumber"
-            rules={[
-              { required: true, message: "Please input the phone number!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
+            <Col span={8}>
+              <Form.Item
+                label="Postal Code"
+                name="postalCode"
+                rules={[
+                  { required: true, message: "Please input the postal code!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Col span={16}>
+            <Form.Item
+              label="Phone Number"
+              name="phoneNumber"
+              rules={[
+                { required: true, message: "Please input the phone number!" },
+              ]}
+            >
+              <Input />
+            </Form.Item>
+          </Col>
 
           <Form.Item label="Description" name="description">
             <TextArea rows={4} />
           </Form.Item>
-
-          <Form.Item
-            label="Priority"
-            name="priority"
-            rules={[{ required: true, message: "Please select the priority!" }]}
-          >
-            <Select>
-              {Object.values(Priority).map((priority) => (
-                <Select.Option key={priority} value={priority}>
-                  {priority.charAt(0) + priority.slice(1)}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={16}>
+            <Col>
+              <Form.Item
+                label="Priority"
+                name="priority"
+                rules={[
+                  { required: true, message: "Please select the priority!" },
+                ]}
+              >
+                <Select>
+                  {Object.values(Priority).map((priority) => (
+                    <Select.Option key={priority} value={priority}>
+                      {priority.charAt(0) + priority.slice(1)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item
+                label="Regular Client"
+                name="regular"
+                valuePropName="checked"
+                extra="Automatically, one becomes regular after 5 orders."
+              >
+                <Switch />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item
             label="Added at"
@@ -216,15 +264,6 @@ const AddNewClient = () => {
             extra="If you don't specify any the default will be today."
           >
             <DatePicker />
-          </Form.Item>
-
-          <Form.Item
-            label="Regular Client"
-            name="regular"
-            valuePropName="checked"
-            extra="Automatically, one becomes regular after 5 orders."
-          >
-            <Switch />
           </Form.Item>
 
           {/* <Form.Item label="Count of order" name="countOfOrder">

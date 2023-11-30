@@ -78,3 +78,10 @@ body {
 .normal, .pending {
     color: var(--secondary-color);
 }
+
+.box-shadow {
+    border: var(--border-size) solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: var(--padding);
+    box-shadow: var(--box-shadow);
+}
