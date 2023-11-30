@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useGetAllEmployeesQuery } from "../../features/employeesApi";
-import { Avatar, Button, List, Result, message } from "antd";
+import { Avatar, Button, Divider, List, Result, message } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import "./employeesListing.css";
@@ -187,9 +187,14 @@ const EmployeesListing = () => {
             options={sortOptions}
             label="Sort:"
           />
+          <Divider
+            style={{
+              borderBlockColor: "#537A5A",
+            }}
+          />
           <section className="employees-listing">
             <List
-              itemLayout={windowWidth > 900 ? "horizontal" : "vertical"}
+              itemLayout={"vertical"}
               loading={isLoading}
               dataSource={sortedAndFilteredData}
               pagination={{
@@ -235,44 +240,37 @@ const EmployeesListing = () => {
                   <>
                     <List.Item.Meta
                       avatar={
-                        <Avatar
-                          size={64}
-                          shape="square"
-                          icon={<UserOutlined />}
-                        />
-                      }
-                      title={employee.name + " " + employee.surname}
-                      description={
                         windowWidth > 400 ? (
-                          <a
-                            className="darker"
-                            href={`mailto:${employee.email}`}
-                          >
-                            {employee.email}
-                          </a>
+                          <Avatar
+                            size={64}
+                            shape="square"
+                            icon={<UserOutlined />}
+                          />
                         ) : (
                           ""
                         )
                       }
-                    />
-                    <ul className="employees-listing__description">
-                      {windowWidth < 400 && (
-                        <li>
+                      title={employee.name + " " + employee.surname}
+                      description={
+                        <>
                           <a
+                            className="darker block"
                             href={`mailto:${employee.email}`}
-                            className="main bold break-word"
                           >
                             {employee.email}
                           </a>
-                        </li>
-                      )}
+                          <span className="darker">{employee.phoneNumber}</span>
+                        </>
+                      }
+                    />
+                    <ul className="employees-listing__description">
                       <li>
-                        <span className="main bold">
+                        <span className="darker">
                           <b>Role:</b> {employee.role}
                         </span>
                       </li>
                       <li>
-                        <span className="main bold">
+                        <span className="darker">
                           <b>Salary:</b> {employee.salary}
                           {employee.currency ? employee.currency : "PLN"}
                         </span>
@@ -290,9 +288,6 @@ const EmployeesListing = () => {
                             .toLocaleString()
                             .split(",")[0]
                         }
-                      </li>
-                      <li>
-                        <b>Phon number:</b> {employee.phoneNumber}
                       </li>
                       <li>
                         <b>Country:</b> {employee.country}

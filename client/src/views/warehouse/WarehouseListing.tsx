@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./warehouseListing.css";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Button, List, Result, Skeleton, Space, message, Image } from "antd";
+import { DownOutlined, EditOutlined } from "@ant-design/icons";
+import { List, Result, Skeleton, Space, Image, Divider, Button } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
 import { useGetAllProductsQuery } from "../../features/productsApi";
 import { IProduct } from "../../types/product.interface";
 import { useAppSelector } from "../../hooks";
-// import axios from "axios";
-// import useBaseURL from "../../customHooks/useBaseURL";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import SortSelect from "../../components/sortSection/SortSelect";
 
@@ -20,17 +18,12 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
 );
 
 const WarehouseListing = () => {
-  // const baseUrl = useBaseURL();
-  // const [messageApi, contextHolder] = message.useMessage();
-
   const {
     data: products,
     isLoading,
     isError,
     refetch,
   } = useGetAllProductsQuery("");
-
-  console.log(products, "products");
 
   useEffect(() => {
     refetch();
@@ -45,32 +38,6 @@ const WarehouseListing = () => {
       item.sku.toLowerCase().includes(searchValue.toLowerCase()) ||
       item.description.toLowerCase().includes(searchValue.toLowerCase())
   );
-
-  // const token = useAppSelector((state) => state.auth.token);
-
-  // const deleteProduct = (id: string) => {
-  //   axios
-  //     .delete(`${baseUrl}products/delete`, {
-  //       data: { id },
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       if (res.status) {
-  //         refetch();
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       messageApi.open({
-  //         type: "error",
-  //         content:
-  //           err.response && err.response.data.message
-  //             ? err.response.data.message
-  //             : "Something goes wrong",
-  //       });
-  //     });
-  // };
 
   const [sortOrder, setSortOrder] = useState<string | null>(null);
 
@@ -134,7 +101,6 @@ const WarehouseListing = () => {
 
   return (
     <>
-      {/* {contextHolder} */}
       {isLoading && <LoadingSpinner />}
       {isError && (
         <Result
@@ -170,6 +136,11 @@ const WarehouseListing = () => {
         options={sortOptions}
         label="Sort:"
       />
+      <Divider
+        style={{
+          borderBlockColor: "#537A5A",
+        }}
+      />
       {products && (
         <List
           className="products__list"
@@ -177,10 +148,6 @@ const WarehouseListing = () => {
           size="large"
           pagination={{
             align: "center",
-            // can be usefull later
-            // onChange: (page) => {
-            //   console.log(page);
-            // },
             pageSize: 2,
           }}
           dataSource={sortedData}
@@ -201,17 +168,6 @@ const WarehouseListing = () => {
                           key="id-list-iteam"
                         />
                       </Link>,
-                      // <Button
-                      //   type="link"
-                      //   className="link darker"
-                      //   onClick={() => deleteProduct(item._id)}
-                      // >
-                      //   <IconText
-                      //     icon={DeleteOutlined}
-                      //     text="Delete"
-                      //     key="id-list-iteam"
-                      //   />
-                      // </Button>,
                     ]
                   : []),
               ]}
@@ -229,15 +185,37 @@ const WarehouseListing = () => {
             >
               <List.Item.Meta
                 title={item.name}
-                description={item.description}
+                description={
+                  <>
+                    <Divider
+                      orientation="left"
+                      style={{ borderColor: "#DDDDDD" }}
+                    >
+                      <h5>Description</h5>
+                    </Divider>
+                    <p className="normal-text">{item.description}</p>
+                    <Divider
+                      style={{ borderColor: "#537A5A" }}
+                      orientation="right"
+                    >
+                      <Button type="text" className="link" title="Show more">
+                        {/* <span>more</span> */}
+                        <DownOutlined />
+                      </Button>
+                    </Divider>
+                    {/* maybe here some button to "show more/show less" */}
+                  </>
+                }
               />
-              <ul>
+              <ul style={{ listStyle: "none", paddingInlineStart: 0 }}>
                 <li>
                   <b>Stock quantity:</b> {item.stockQuantity}
                 </li>
-                <li>Initial stock quantiti: {item.initialStockQuantity}</li>
                 <li>
-                  Added at:{" "}
+                  <b>Initial stock quantiti:</b> {item.initialStockQuantity}
+                </li>
+                <li>
+                  <b>Added at:</b>{" "}
                   {new Date(item.addedAt).toLocaleString().split(",")[0]}
                 </li>
                 {item.soldAt && (
@@ -261,7 +239,9 @@ const WarehouseListing = () => {
                     {item.currency}
                   </li>
                 )}
-                <li>SKU: {item.sku}</li>
+                <li>
+                  <b>SKU:</b> {item.sku}
+                </li>
                 {item.isAvailable ? (
                   <li className="success">
                     <b>Available</b>

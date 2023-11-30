@@ -107,7 +107,6 @@ const Navbar = () => {
           </li>
         </ul>
         <Button
-          ghost
           className="navbar__nav__ul__li--show"
           title="Click to show/hide navbar."
           onClick={() =>

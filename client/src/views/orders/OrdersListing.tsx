@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useGetAllOrdersQuery } from "../../features/orderSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { List, Result } from "antd";
+import { Divider, List, Result } from "antd";
 import { IOrder } from "../../types/order.interface";
 import Order from "../../components/order/Order";
 import "./ordersListing.css";
@@ -133,6 +133,11 @@ const OrdersListing = () => {
         onChange={setSortOrder}
         options={sortOrderOptions}
         label="Sort:"
+      />
+      <Divider
+        style={{
+          borderBlockColor: "#537A5A",
+        }}
       />
       {orders && (
         <List

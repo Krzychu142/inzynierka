@@ -3,7 +3,16 @@ import dayjs from "dayjs";
 import { IOrder, OrderStatus } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import { Button, List, Modal, message } from "antd";
+import {
+  Button,
+  Col,
+  Divider,
+  List,
+  Modal,
+  Row,
+  Segmented,
+  message,
+} from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
@@ -213,7 +222,10 @@ const Order: React.FC<OrderProps> = ({ order }) => {
       <List.Item key={order._id}>
         <section className="order">
           <div>
-            <h2 className="main">Order id:</h2>
+            <Divider orientation="left" style={{ borderColor: "#DDDDDD" }}>
+              <h2 className="">Order</h2>
+            </Divider>
+            <h4>Order id:</h4>
             <span>{order._id}</span>
           </div>
           <div>
@@ -221,8 +233,8 @@ const Order: React.FC<OrderProps> = ({ order }) => {
             <span>{dayjs(order.orderDate).format("MM/DD/YYYY")}</span>
           </div>
           {showClientInfo && (
-            <>
-              <div className="order__client-info">
+            <Row>
+              <Col span={4}>
                 <h4>Client:</h4>
                 <span className="block">
                   {order.client.name} {order.client.surname}
@@ -230,12 +242,12 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                 <a href={`mailto:${order.client.email}`} className="darker">
                   {order.client.email}
                 </a>
-              </div>
-              <div>
+              </Col>
+              <Col>
                 <h4>Shipping info:</h4>
                 <span>{getShippingInfo(order.client)}</span>
-              </div>
-            </>
+              </Col>
+            </Row>
           )}
           <div>
             <h4>Status:</h4>
@@ -243,7 +255,9 @@ const Order: React.FC<OrderProps> = ({ order }) => {
               {order.status.toUpperCase()}
             </b>
           </div>
-          <h3 className="main">Products:</h3>
+          <Divider orientation="left" style={{ borderColor: "#DDDDDD" }}>
+            {order.products.length > 1 ? "Products" : "Product"}
+          </Divider>
           <div className="order__products-grid">
             {order.products.map((product, index) => {
               const key = `${order._id}-${index}`;
@@ -267,7 +281,8 @@ const Order: React.FC<OrderProps> = ({ order }) => {
             })}
           </div>
           <div>
-            <h3>Total cost:</h3> <b>{getTotalCostOfOrder(order.products)}</b>
+            <h3>Total cost:</h3>{" "}
+            <b className="darker">{getTotalCostOfOrder(order.products)}</b>
           </div>
           {(decodedToken?.role === "manager" ||
             decodedToken?.role === "salesman") && (

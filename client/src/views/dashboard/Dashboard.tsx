@@ -91,7 +91,7 @@ const Dashboard: React.FC = () => {
             Hello <span className="darker bold">{userName}</span>
           </h2>
           <h2>
-            Your role: <span className="main">{userRole}</span>
+            Your role: <span className="secondary">{userRole}</span>
           </h2>
           <h2>
             Your email: <span className="secondary">{formattedEmail}</span>
@@ -122,20 +122,18 @@ const Dashboard: React.FC = () => {
                 >
                   <List.Item.Meta
                     title={
-                      <span className="success">
-                        {operation.nameOfOperation}
-                      </span>
+                      <span className="">{operation.nameOfOperation}</span>
                     }
                     description={
                       <>
-                        <span className="date-display bold">
+                        <span className="date-display normal-text">
                           {`${dayjs(operation.dateExecution).format(
                             "DD-MM-YYYY HH:mm:ss"
                           )}`}
                         </span>
                         {operation.nameOfOperation === "Added new client" && (
-                          <span className="operation-performed">
-                            new client email:
+                          <span className="operation-performed normal-text">
+                            New client email:
                           </span>
                         )}
                         <span className="operation-performed">
