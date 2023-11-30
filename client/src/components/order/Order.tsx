@@ -3,16 +3,7 @@ import dayjs from "dayjs";
 import { IOrder, OrderStatus } from "../../types/order.interface";
 import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
-import {
-  Button,
-  Col,
-  Divider,
-  List,
-  Modal,
-  Row,
-  Segmented,
-  message,
-} from "antd";
+import { Button, Col, Divider, List, Modal, Row, message } from "antd";
 import "./order.css";
 import { useLocation } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
@@ -273,7 +264,8 @@ const Order: React.FC<OrderProps> = ({ order }) => {
                     {product.currencyAtOrder}
                   </span>
                   <span className="block">
-                    Cost of position: {product.quantity * product.priceAtOrder}{" "}
+                    Cost of position:{" "}
+                    {(product.quantity * product.priceAtOrder).toFixed(2)}{" "}
                     {product.currencyAtOrder}
                   </span>
                 </div>

@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import "./warehouseListing.css";
-import { DownOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  DownOutlined,
+  EditOutlined,
+  ExclamationOutlined,
+  UpOutlined,
+} from "@ant-design/icons";
 import { List, Result, Skeleton, Space, Image, Divider, Button } from "antd";
 import { Link } from "react-router-dom";
 import Search from "antd/es/input/Search";
@@ -17,7 +23,29 @@ const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
   </Space>
 );
 
+interface ShowDescriptionState {
+  [key: string]: boolean;
+}
+
 const WarehouseListing = () => {
+  const [showFullDescription, setShowFullDescription] =
+    useState<ShowDescriptionState>({});
+
+  function truncateText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    return text.substring(0, maxLength - 3) + "...";
+  }
+
+  const handleChange = (id: string) => {
+    setShowFullDescription((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
   const {
     data: products,
     isLoading,
@@ -193,17 +221,29 @@ const WarehouseListing = () => {
                     >
                       <h5>Description</h5>
                     </Divider>
-                    <p className="normal-text">{item.description}</p>
+
+                    <p className="normal-text">
+                      {showFullDescription[item._id]
+                        ? item.description
+                        : truncateText(item.description, 200)}
+                    </p>
                     <Divider
                       style={{ borderColor: "#537A5A" }}
                       orientation="right"
                     >
-                      <Button type="text" className="link" title="Show more">
-                        {/* <span>more</span> */}
-                        <DownOutlined />
+                      <Button
+                        type="text"
+                        className="link"
+                        title={showFullDescription ? "show less" : "show more"}
+                        onClick={() => handleChange(item._id)}
+                      >
+                        {showFullDescription[item._id] ? (
+                          <UpOutlined />
+                        ) : (
+                          <DownOutlined />
+                        )}
                       </Button>
                     </Divider>
-                    {/* maybe here some button to "show more/show less" */}
                   </>
                 }
               />
@@ -244,10 +284,12 @@ const WarehouseListing = () => {
                 </li>
                 {item.isAvailable ? (
                   <li className="success">
-                    <b>Available</b>
+                    Available <CheckOutlined />
                   </li>
                 ) : (
-                  <li className="error">Temporary not available</li>
+                  <li className="error">
+                    Temporary not available <ExclamationOutlined />
+                  </li>
                 )}
               </ul>
             </List.Item>

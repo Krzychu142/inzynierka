@@ -8,4 +8,10 @@
 
 .footer > button {
     font-size: 1.2em;
+    border: var(--border-size) solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

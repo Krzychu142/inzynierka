@@ -25,13 +25,13 @@ body {
 }
 
 .link {
-    color: var(--secondary-color);
+    color: var(--main-color-dark);
     text-decoration: none;
     transition: 0.2s ease-in-out;
 }
 
 .link:hover {
-    color: var(--main-color-light) !important;
+    color: var(--secondary-color) !important;
 }
 
 .darker {
@@ -39,11 +39,11 @@ body {
 }
 
 .error, .canceled {
-    color: #9c141b;
+    color: #ca1d26;
 }
 
 .success, .completed {
-    color: #234e0e;
+    color: #4a9e20;
 }
 
 .main {
@@ -72,9 +72,9 @@ body {
 }
 
 .important, .vip {
-    color: var(--secondary-color);
+    color: var(--main-color-dark);
 }
 
 .normal, .pending {
-    color: var(--main-color-dark);
+    color: var(--secondary-color);
 }
