@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import "./addNewEmployee.css";
-import { Button, DatePicker, Form, Input, InputNumber, Select } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+} from "antd";
 import { Role } from "../../types/employee.interface";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
@@ -121,22 +130,30 @@ const AddNewEmployee = () => {
             currency: "PLN",
             employedAt: dayjs(),
           }}
+          className="box-shadow"
         >
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input the name!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Surname"
-            name="surname"
-            rules={[{ required: true, message: "Please input the surname!" }]}
-          >
-            <Input />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Name"
+                name="name"
+                rules={[{ required: true, message: "Please input the name!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Surname"
+                name="surname"
+                rules={[
+                  { required: true, message: "Please input the surname!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item
             label="Email"
@@ -172,25 +189,33 @@ const AddNewEmployee = () => {
               ))}
             </Select>
           </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Salary"
+                name="salary"
+                rules={[
+                  { required: true, message: "Please input the salary!" },
+                ]}
+                extra="brutto"
+              >
+                <InputNumber min={0} />
+              </Form.Item>
+            </Col>
 
-          <Form.Item
-            label="Salary"
-            name="salary"
-            rules={[{ required: true, message: "Please input the salary!" }]}
-            extra="brutto"
-          >
-            <InputNumber min={0} />
-          </Form.Item>
-
-          <Form.Item
-            label="Currency"
-            name="currency"
-            rules={[{ required: true, message: "Please input the currency!" }]}
-            extra="Default is PLN"
-          >
-            <Input />
-          </Form.Item>
-
+            <Col span={6}>
+              <Form.Item
+                label="Currency"
+                name="currency"
+                rules={[
+                  { required: true, message: "Please input the currency!" },
+                ]}
+                extra="Default is PLN"
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
           <Form.Item
             label="Contract type"
             name="contractType"
@@ -232,40 +257,48 @@ const AddNewEmployee = () => {
           >
             <Input />
           </Form.Item>
+          <Row gutter={16}>
+            <Col>
+              <Form.Item
+                label="Country"
+                name="country"
+                rules={[
+                  { required: true, message: "Please input the country!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Form.Item
-            label="Country"
-            name="country"
-            rules={[{ required: true, message: "Please input the country!" }]}
-          >
-            <Input />
-          </Form.Item>
+              <Form.Item
+                label="City"
+                name="city"
+                rules={[{ required: true, message: "Please input the city!" }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+            <Col>
+              <Form.Item
+                label="Postal Code"
+                name="postalCode"
+                rules={[
+                  { required: true, message: "Please input the postal code!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-          <Form.Item
-            label="City"
-            name="city"
-            rules={[{ required: true, message: "Please input the city!" }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Postal Code"
-            name="postalCode"
-            rules={[
-              { required: true, message: "Please input the postal code!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[{ required: true, message: "Please input the address!" }]}
-          >
-            <Input />
-          </Form.Item>
+              <Form.Item
+                label="Address"
+                name="address"
+                rules={[
+                  { required: true, message: "Please input the address!" },
+                ]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">

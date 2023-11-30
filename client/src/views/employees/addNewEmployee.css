@@ -6,12 +6,8 @@
     padding: 0px 15px;
 }
 
-.add-new-employee div {
-    width: 450px;
-}
-
-@media screen and (max-width: 450px) {
+/* @media screen and (max-width: 450px) {
     .add-new-employee div {
         width: auto;
     }
-}
+} */

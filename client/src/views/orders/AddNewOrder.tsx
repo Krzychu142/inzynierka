@@ -100,6 +100,7 @@ const AddNewOrder = () => {
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           onFinish={onFinish}
+          className="box-shadow"
         >
           <Form.Item
             name="clientId"

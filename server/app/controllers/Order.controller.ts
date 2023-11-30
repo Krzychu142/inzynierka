@@ -83,8 +83,8 @@ class OrderController {
                 await ProductService.decrementProductStock(item.productId, item.quantity, session);
 
                 const priceAtOrder = product.isOnSale && product.promotionalPrice != null
-                                    ? product.promotionalPrice
-                                    : product.price;
+                                    ? parseFloat(product.promotionalPrice.toFixed(2))
+                                    : parseFloat(product.price.toFixed(2));
 
                 orderProducts.push({
                     product: product._id,

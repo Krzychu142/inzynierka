@@ -152,17 +152,17 @@ const EditItem = () => {
 
   return (
     <section className="add-new-product">
-      {contextHolder}
       <RenderSpinner fullscreen={true} />
+      {contextHolder}
       <Form
         labelCol={{ span: 24 }}
         wrapperCol={{ span: 24 }}
         form={form}
         onFinish={onFinish}
-        className="form__container"
+        className="form__container box-shadow"
       >
         <Row gutter={16}>
-          <Col span={12}>
+          <Col span={24}>
             <Form.Item
               label="Name"
               name="name"
@@ -174,20 +174,21 @@ const EditItem = () => {
         </Row>
 
         <Form.Item label="Description" name="description">
-          <TextArea rows={5} />
-        </Form.Item>
-
-        <Form.Item
-          label="Stock Quantity"
-          name="stockQuantity"
-          rules={[
-            { required: true, message: "Please input the stock quantity!" },
-          ]}
-        >
-          <InputNumber min={0} />
+          <TextArea rows={8} />
         </Form.Item>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col>
+            <Form.Item
+              label="Stock Quantity"
+              name="stockQuantity"
+              rules={[
+                { required: true, message: "Please input the stock quantity!" },
+              ]}
+            >
+              <InputNumber min={0} />
+            </Form.Item>
+          </Col>
+          <Col>
             <Form.Item
               label="Price"
               name="price"
@@ -196,7 +197,7 @@ const EditItem = () => {
               <InputNumber min={0} precision={2} />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col>
             <Form.Item
               label="Currency"
               name="currency"

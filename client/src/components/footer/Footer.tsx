@@ -8,14 +8,12 @@ const Footer = () => {
       <Button
         type="link"
         className="link"
-        onClick={() => {
-          window.history.back();
-        }}
+        onClick={() => window.history.back()}
       >
-        <span className="darker">
+        <span className="darker link">
           <RollbackOutlined />
+          <span style={{ marginLeft: "8px" }}>Go back</span>
         </span>
-        Go back
       </Button>
     </footer>
   );

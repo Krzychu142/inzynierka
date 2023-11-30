@@ -44,7 +44,7 @@
 }
 
 .login__home-icon:hover {
-    color: var(--main-color);
+    color: var(--secondary-color);
 }
 
 #form__link-reset {

@@ -6,6 +6,29 @@
     padding: 0px 15px;
 }
 
+/* .add-new-product div {
+    width: 550px;
+} */
+
+/* @media screen and (max-width: 620px) {
+    .add-new-product div {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 300px) {
+    .add-new-product div {
+        max-width: 200px;
+        width: auto;
+    }
+}  */
+
+.add-new-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
 .image-container {
     position: relative;
@@ -19,6 +42,6 @@
     z-index: 10;
 }
 
-.form__container{
+/* .form__container{
     width: 550px;
-}
+} */
