@@ -8,15 +8,15 @@ body {
 
 :root {
     font-family: 'Inter', sans-serif;
-    background-color: #777777;
-    color: white;
+    background-color: #2C302E;
     font-size: 16px;
-    --main-color: #5f59bb;
-    --main-color-light: #A8A4D4;
-    --main-color-dark: #2D2A4A;
-    --secondary-color: #b1aca8;
+    color: rgb(221, 221, 221);
+    --main-color: #2C302E;
+    --main-color-light: #909590;
+    --main-color-dark: #9AE19D;
+    --secondary-color: #537A5A;
     --contrast-color: #5A8F51;
-    --backgroud-color: #777777;
+    --backgroud-color: #2C302E;
     --border-size: 2px;
     --border-radius: 16px;
     --padding: 16px;
@@ -25,7 +25,7 @@ body {
 }
 
 .link {
-    color: var(--main-color);
+    color: var(--secondary-color);
     text-decoration: none;
     transition: 0.2s ease-in-out;
 }
@@ -39,11 +39,11 @@ body {
 }
 
 .error, .canceled {
-    color: #d32029;
+    color: #9c141b;
 }
 
 .success, .completed {
-    color: #49aa19;
+    color: #234e0e;
 }
 
 .main {
@@ -52,6 +52,10 @@ body {
 
 .bold {
     font-weight: 600;
+}
+
+.normal-text {
+    color: #DDDDDD;
 }
 
 .secondary {
@@ -68,7 +72,7 @@ body {
 }
 
 .important, .vip {
-    color: var(--main-color);
+    color: var(--secondary-color);
 }
 
 .normal, .pending {

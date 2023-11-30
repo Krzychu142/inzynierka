@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useGetAllClientsQuery } from "../../features/clientsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
-import { Avatar, Button, List, Modal, Result, message } from "antd";
+import { Avatar, Button, Divider, List, Modal, Result, message } from "antd";
 import useWindowWidth from "../../customHooks/useWindowWidth";
 import { IClient } from "../../types/client.interface";
 import { UserOutlined, WarningOutlined } from "@ant-design/icons";
@@ -167,6 +167,11 @@ const ClientsListing = () => {
         options={sortOptions}
         label="Sort:"
       />
+      <Divider
+        style={{
+          borderBlockColor: "#537A5A",
+        }}
+      />
       {clients && (
         <section className="clients-listing">
           <Modal
@@ -210,6 +215,7 @@ const ClientsListing = () => {
                     type="link"
                     key="list-loadmore-delete"
                     className="link darker action-element"
+                    style={{ padding: "0" }}
                     onClick={() => {
                       showDeleteModal(client._id);
                     }}
@@ -231,47 +237,55 @@ const ClientsListing = () => {
                 <List.Item actions={actions} key={client._id}>
                   <List.Item.Meta
                     avatar={
-                      <Avatar
-                        size={64}
-                        shape="square"
-                        icon={<UserOutlined />}
-                      />
+                      windowWidth > 400 ? (
+                        <Avatar
+                          size={64}
+                          shape="square"
+                          icon={<UserOutlined />}
+                        />
+                      ) : (
+                        ""
+                      )
                     }
                     title={client.name + " " + client.surname}
                     description={
-                      <span>
-                        Priority:{" "}
-                        <b className={client.priority}>
-                          {client.priority.toUpperCase()}
-                        </b>
-                      </span>
+                      <>
+                        <a
+                          href={`mailto:${client.email}`}
+                          className="block darker break-word"
+                        >
+                          {client.email}
+                        </a>
+                        <span className="block darker">
+                          {client.phoneNumber}
+                        </span>
+                        <Divider orientation="left" orientationMargin="0">
+                          <span>Notes:</span>
+                        </Divider>
+                        <p className="normal-text">{client.description}</p>
+                      </>
                     }
                   />
                   <ul className="clients-listing__list">
                     <li>
-                      <a href={`mailto:${client.email}`} className="darker">
-                        <b className="break-word">{client.email}</b>
-                      </a>
+                      <b className="normal-text">Priority: </b>
+                      <b className={client.priority}>
+                        {client.priority.toUpperCase()}
+                      </b>
                     </li>
-                    {client.description && (
+                    {client.regular && (
                       <li>
-                        <p className="client__description">
-                          {client.description}
-                        </p>
+                        <b
+                          className="darker"
+                          style={{ textTransform: "uppercase" }}
+                        >
+                          Regular
+                        </b>
                       </li>
                     )}
                     <li>
                       <b>Added at: </b>
                       {new Date(client.addedAt).toLocaleString().split(",")[0]}
-                    </li>
-                    {/* maybe here how many orders for this client, end his last order or click to generate his all orders? */}
-                    {client.regular && (
-                      <li>
-                        <b className="darker">Regular client</b>
-                      </li>
-                    )}
-                    <li>
-                      <b>Phon number:</b> {client.phoneNumber}
                     </li>
                     <li>
                       <b>Address:</b> {client.country} {client.city}{" "}
