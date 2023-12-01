@@ -45,3 +45,12 @@
 /* .form__container{
     width: 550px;
 } */
+
+.add-new-item__images {
+    padding: 15px;
+}
+
+.steps { 
+    padding: 15px;
+    max-width: 550px;
+}
