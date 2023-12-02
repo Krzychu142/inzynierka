@@ -4,31 +4,72 @@ import "./chart.css";
 import { useGetAllOrdersQuery } from "../../features/orderSlice";
 import LoadingSpinner from "../loading/LoadingSpinner";
 import { Result } from "antd";
+import { IOrder } from "../../types/order.interface";
+import { MonthlyOrderCount } from "../../types/monthlyOrderCount.interface";
 
 const Chart = () => {
-  const {
-    data: orders,
-    isLoading,
-    isError,
-    refetch,
-  } = useGetAllOrdersQuery("");
+  const { data: orders, isLoading, isError } = useGetAllOrdersQuery("");
 
-  console.log(orders, "orders");
+  const [chartData, setChartData] = useState<MonthlyOrderCount[]>([]);
 
-  const data = [
-    { year: "1991", value: 3 },
-    { year: "1992", value: 4 },
-    { year: "1995", value: 23 },
-    { year: "1997", value: 4 },
-    { year: "2001", value: 12 },
-    { year: "2002", value: 17 },
-    { year: "2009", value: 2 },
-    { year: "2011", value: 29 },
-  ];
+  const getLatestOrderDate = (orders: IOrder[]): Date => {
+    const sortedOrders = [...orders].sort(
+      (a, b) =>
+        new Date(b.orderDate).getTime() - new Date(a.orderDate).getTime()
+    );
+
+    return new Date(sortedOrders[0].orderDate);
+  };
+
+  const getTwelveLatestDates = (orders: IOrder[]): string[] => {
+    if (orders.length === 0) {
+      return [];
+    }
+
+    const latestDate: Date = getLatestOrderDate(orders);
+    const dates: string[] = [];
+    let date = new Date(latestDate);
+
+    for (let i = 0; i < 12; i++) {
+      dates.push(date.toISOString().slice(0, 7));
+      date.setMonth(date.getMonth() - 1);
+    }
+
+    return dates.reverse();
+  };
+
+  const sumOrdersByMonth = (orders: IOrder[]): MonthlyOrderCount[] => {
+    const months: string[] = getTwelveLatestDates(orders);
+    const orderCounts: { [key: string]: number } = {};
+
+    months.forEach((month) => (orderCounts[month] = 0));
+
+    orders.forEach((order) => {
+      const orderDate = new Date(order.orderDate);
+      const orderMonth: string = orderDate.toISOString().slice(0, 7);
+
+      if (months.includes(orderMonth)) {
+        orderCounts[orderMonth]++;
+      }
+    });
+
+    return months.map((month) => ({
+      month,
+      value: orderCounts[month],
+    }));
+  };
+
+  useEffect(() => {
+    if (orders) {
+      const processedData = sumOrdersByMonth(orders);
+      console.log(processedData);
+      setChartData(processedData);
+    }
+  }, [orders]);
 
   const config = {
-    data,
-    xField: "year",
+    data: chartData,
+    xField: "month",
     yField: "value",
     point: {
       size: 6,
