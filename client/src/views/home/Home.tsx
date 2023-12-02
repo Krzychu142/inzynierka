@@ -29,7 +29,7 @@ const Home: React.FC<HomeProps> = ({ isAuthenticated }) => {
             {isAuthenticated ? (
               <>
                 <p className="break-word">
-                  Welcome! Go to dashboard
+                  Welcome! Go to
                   <Link
                     className="link home__navigation--spacing"
                     to="/dashboard"

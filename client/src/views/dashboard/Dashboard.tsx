@@ -9,6 +9,7 @@ import { useGetAllOperationsQuery } from "../../features/operationsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import dayjs from "dayjs";
 import { ILastOperation } from "../../types/operation.interface";
+import Chart from "../../components/chart/Chart";
 
 const Dashboard: React.FC = () => {
   const [displayedOperations, setDisplayedOperations] = useState(3);
@@ -106,50 +107,54 @@ const Dashboard: React.FC = () => {
               subTitle="Please try later"
             ></Result>
           )}
+          {<Chart />}
           {operations && (
-            <List
-              className="operation-list"
-              itemLayout="horizontal"
-              loadMore={loadMore}
-              dataSource={sortOperationsByDate(operations).slice(
-                0,
-                displayedOperations
-              )}
-              renderItem={(operation: ILastOperation) => (
-                <List.Item
-                  key={operation._id}
-                  className="operation-list__single-item"
-                >
-                  <List.Item.Meta
-                    title={
-                      <span className="">{operation.nameOfOperation}</span>
-                    }
-                    description={
-                      <>
-                        <span className="date-display normal-text">
-                          {`${dayjs(operation.dateExecution).format(
-                            "DD-MM-YYYY HH:mm:ss"
-                          )}`}
-                        </span>
-                        {operation.nameOfOperation === "Added new client" && (
-                          <span className="operation-performed normal-text">
-                            New client email:
+            <>
+              <h2>Last operations</h2>
+              <List
+                className="operation-list"
+                itemLayout="horizontal"
+                loadMore={loadMore}
+                dataSource={sortOperationsByDate(operations).slice(
+                  0,
+                  displayedOperations
+                )}
+                renderItem={(operation: ILastOperation) => (
+                  <List.Item
+                    key={operation._id}
+                    className="operation-list__single-item"
+                  >
+                    <List.Item.Meta
+                      title={
+                        <span className="">{operation.nameOfOperation}</span>
+                      }
+                      description={
+                        <>
+                          <span className="date-display normal-text">
+                            {`${dayjs(operation.dateExecution).format(
+                              "DD-MM-YYYY HH:mm:ss"
+                            )}`}
                           </span>
-                        )}
-                        <span className="operation-performed">
-                          <a
-                            className="darker bold"
-                            href={`mailto:${operation.operationPerformedBy}`}
-                          >
-                            {operation.operationPerformedBy}
-                          </a>
-                        </span>
-                      </>
-                    }
-                  />
-                </List.Item>
-              )}
-            />
+                          {operation.nameOfOperation === "Added new client" && (
+                            <span className="operation-performed normal-text">
+                              New client email:
+                            </span>
+                          )}
+                          <span className="operation-performed">
+                            <a
+                              className="darker bold"
+                              href={`mailto:${operation.operationPerformedBy}`}
+                            >
+                              {operation.operationPerformedBy}
+                            </a>
+                          </span>
+                        </>
+                      }
+                    />
+                  </List.Item>
+                )}
+              />
+            </>
           )}
         </section>
       </main>
