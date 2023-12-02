@@ -97,7 +97,7 @@ class ProductController {
       }
 
       const fileContent = req.file.buffer;
-      const fileName = req.file.originalname;
+      const fileName = req.file.originalname + new Date().getTime();
       const contentType = req.file.mimetype;
 
       const s3StorageManager = S3StorageManager.getInstance();
