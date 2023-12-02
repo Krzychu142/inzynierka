@@ -80,7 +80,7 @@ class PdfGenerator {
             this.doc.moveDown(0.2)
             this.doc.text("Price per one: " + product.priceAtOrder + ` ${product.currencyAtOrder}`)
             this.doc.moveDown(0.2)
-            this.doc.text("Total cost of product: " + (product.priceAtOrder * product.quantity) + ` ${product.currencyAtOrder}`)
+            this.doc.text("Total cost of product: " + (product.priceAtOrder * product.quantity).toFixed(2) + ` ${product.currencyAtOrder}`);
             this.doc.moveDown()
         })
     }

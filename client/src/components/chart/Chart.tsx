@@ -1,9 +1,19 @@
 import { useEffect, useState } from "react";
 import { Line } from "@ant-design/plots";
 import "./chart.css";
+import { useGetAllOrdersQuery } from "../../features/orderSlice";
+import LoadingSpinner from "../loading/LoadingSpinner";
+import { Result } from "antd";
 
 const Chart = () => {
-  const [title, setTitle] = useState("Number of orders per month");
+  const {
+    data: orders,
+    isLoading,
+    isError,
+    refetch,
+  } = useGetAllOrdersQuery("");
+
+  console.log(orders, "orders");
 
   const data = [
     { year: "1991", value: 3 },
@@ -26,19 +36,25 @@ const Chart = () => {
       color: "#9AE19D",
     },
     color: "#537A5A",
-    theme: {
-      styleSheet: {
-        // backgroundColor: "#909590",
-        // borderColor: "#909590",
-      },
-    },
   };
 
-  return (
+  if (isLoading) return <LoadingSpinner />;
+  if (isError)
+    return (
+      <Result
+        status="error"
+        title="Somthing goes wrong"
+        subTitle="Please try later"
+      ></Result>
+    );
+
+  return orders ? (
     <section className="chart">
-      <h2>{title}</h2>
+      <h2>Number of orders per month</h2>
       <Line {...config} />
     </section>
+  ) : (
+    <p>No data available</p>
   );
 };
 

@@ -63,11 +63,11 @@ const Navbar = () => {
       key: "warehouse",
     },
     {
-      title: "Back to home page.",
+      title: "Back to dashboard page.",
       icon: <HomeOutlined />,
-      titleToDisplay: "Home",
+      titleToDisplay: "Dashboard",
       to: "/dashboard",
-      key: "home",
+      key: "dashboard",
     },
   ];
 

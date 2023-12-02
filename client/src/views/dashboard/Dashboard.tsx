@@ -107,7 +107,7 @@ const Dashboard: React.FC = () => {
               subTitle="Please try later"
             ></Result>
           )}
-          <Chart />
+          {<Chart />}
           {operations && (
             <>
               <h2>Last operations</h2>
