@@ -91,7 +91,7 @@ const Chart = () => {
 
   return orders ? (
     <section className="chart">
-      <h2>Number of orders per month</h2>
+      <h2>Count of orders per month</h2>
       <Line {...config} />
     </section>
   ) : (
