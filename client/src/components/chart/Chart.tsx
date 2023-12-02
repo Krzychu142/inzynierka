@@ -62,7 +62,6 @@ const Chart = () => {
   useEffect(() => {
     if (orders) {
       const processedData = sumOrdersByMonth(orders);
-      console.log(processedData);
       setChartData(processedData);
     }
   }, [orders]);
