@@ -38,7 +38,7 @@ class Email {
 
   public async sendEmail(options: SendMailOptions): Promise<SentMessageInfo> {
     try {
-      return await this.transporter.sendMail(options)
+      await this.transporter.sendMail(options)
     } catch (error: unknown) {
       throw new Error(error as string)
     }
