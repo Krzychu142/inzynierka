@@ -12,5 +12,5 @@ export const useLoading = () => {
     return <LoadingSpinner fullscreen={fullscreen} />;
   };
 
-  return { startLoading, stopLoading, RenderSpinner };
+  return { isLoading, startLoading, stopLoading, RenderSpinner };
 };

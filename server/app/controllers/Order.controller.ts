@@ -145,27 +145,24 @@ class OrderController {
             'Here is the summary of your order.',
             [{ filename: `order_${orderData._id}.pdf`, path: pdfPath }]
         );
-        await email.sendEmail(emailOptions);
-    }
-
-    private static deletePdfFile(pdfPath: string) {
-        fs.unlink(pdfPath, (err) => {
-            if (err) {
-                console.error(`Error deleting PDF: ${err}`);
-            }
-        });
+        await email.sendEmail(emailOptions)
     }
 
     private static async sendOrderSummary(orderId: string) {
         try {
-            const orderData = await this.getOrderData(orderId);
-            const pdfBuffer = await this.generatePdf(orderData);
+            const orderData = await OrderController.getOrderData(orderId);
+            const pdfBuffer = await OrderController.generatePdf(orderData);
 
             const pdfPath = `order_${orderData._id}.pdf`;
-            fs.writeFileSync(pdfPath, pdfBuffer);
 
-            await this.sendEmailWithPdf(orderData, pdfPath);
-            this.deletePdfFile(pdfPath);
+            fs.writeFileSync(pdfPath, pdfBuffer);
+            // WARRNING: in out DB for now we have few test emails - @example.com 
+            // if we try to send email for email like that we will get error
+            // OrderController.sendEmailWithPdf(orderData, pdfPath).finally(() => {
+            //     fs.unlinkSync(pdfPath);
+            // })
+            await OrderController.sendEmailWithPdf(orderData, pdfPath)
+            fs.unlinkSync(pdfPath);
         } catch (error: unknown) {
             ErrorsHandlers.errorMessageHandler(error);
         }
