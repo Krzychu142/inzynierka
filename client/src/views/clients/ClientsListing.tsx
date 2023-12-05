@@ -259,9 +259,11 @@ const ClientsListing = () => {
                         <span className="block darker">
                           {client.phoneNumber}
                         </span>
-                        <Divider orientation="left" orientationMargin="0">
-                          <span>Notes:</span>
-                        </Divider>
+                        {client.description && (
+                          <Divider orientation="left" orientationMargin="0">
+                            <span>Notes:</span>
+                          </Divider>
+                        )}
                         <p className="normal-text">{client.description}</p>
                       </>
                     }
