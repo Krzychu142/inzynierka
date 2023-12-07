@@ -1,6 +1,10 @@
 import ProductController from '../../app/controllers/Product.controller'
 import ProductService from '../../app/services/Product.service'
 import { Request, Response } from 'express'
+import supertest from 'supertest'
+import jwt from 'jsonwebtoken'
+import App from '../../app/app'
+import { Types } from 'mongoose'
 
 jest.mock('../../app/services/Product.service')
 
@@ -60,6 +64,41 @@ describe('ProductController', () => {
       expect(res.status).toHaveBeenCalledWith(500)
       expect(res.json).toHaveBeenCalledWith({
         message: errorMessage,
+      })
+    })
+  })
+
+  // integration
+  describe('get product route', () => {
+    describe('given the user is not logged in', () => {
+      it('should return status 500 with message Unauthorized', async () => {
+        const fakeProductId = new Types.ObjectId()
+        const fakeUserId = new Types.ObjectId()
+
+        const userPayload = {
+          id: fakeUserId,
+          role: 'MANAGER',
+        }
+
+        const secretKey = process.env.JWT_SECRET_KEY
+        if (!secretKey) {
+          throw new Error('JWT_SECRET_KEY is not defined')
+        }
+
+        const token = jwt.sign(userPayload, secretKey)
+
+        const app = App.getInstance()
+        app.start()
+
+        const response = await supertest(app.getExpressApp())
+          .get(`/products/${fakeProductId}`)
+          .set('Authorization', `Bearer ${token}`)
+
+        console.log('Response status:', response.status)
+        console.log('Response headers:', response.headers)
+        console.log('Response body:', response.body)
+
+        expect(response.status).toBe(404)
       })
     })
   })

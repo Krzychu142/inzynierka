@@ -1,8 +1,8 @@
 import PDFDocument from 'pdfkit'
-import { PdfOrderData } from '../../types/pdfOrderData.interface'
 import path from 'path'
 import { IOrderProduct } from '../../types/orderProduct.interface'
 import { IClient } from '../../types/client.interface'
+import { PdfOrderData } from '../../types/pdfOrderData.interface'
 
 class PdfGenerator {
   private doc: PDFKit.PDFDocument

@@ -39,4 +39,8 @@ export default class App {
       process.exit(1)
     }
   }
+
+  public getExpressApp(): Express {
+    return this.app
+  }
 }
