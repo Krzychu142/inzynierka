@@ -126,7 +126,7 @@ class OrderController {
   private static async getOrderData(orderId: string) {
     const orderData = await OrderService.getFullOrderDetails(orderId)
     if (!orderData) {
-      throw new Error('Order not found')
+      throw new CustomError('Order not found', 404);
     }
     return orderData
   }

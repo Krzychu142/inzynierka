@@ -3,6 +3,7 @@ import ProductService from '../services/Product.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
 import S3StorageManager from '../utils/S3StorageManager'
+import CustomError from '../utils/helpers/CustomError'
 
 class ProductController {
   private static readonly BUCKET_NAME =
@@ -13,7 +14,7 @@ class ProductController {
       const products = await ProductService.getAllProducts()
       res.status(201).json(products)
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -21,31 +22,29 @@ class ProductController {
     try {
       const product = await ProductService.createProduct(req.body)
       if (!product) {
-        throw new Error('Product was not created.')
+        throw new CustomError('Product was not created.');
       }
 
       res.status(201).json({ message: 'Product created successfully', product })
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
   static async deleteProduct(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.id) {
-        res.status(400).json({ message: 'The id parameter is missing' })
+        throw new CustomError('The id parameter is missing', 400);
       } else {
         const result = await ProductService.deleteProduct(req.body.id)
         if (result.deletedCount !== 0) {
-          res.status(201).json({ message: 'The product has been removed' })
+          res.status(200).json({ message: 'The product has been removed' })
         } else {
-          res.status(404).json({
-            message: 'The product was not found',
-          })
+          throw new CustomError('The product was not found', 404);
         }
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -53,15 +52,14 @@ class ProductController {
     try {
       ensureIdExists(req)
       const product = await ProductService.getSingleProduct(req.params.id)
-      if (product) {
-        res.status(201).json(product)
-      } else {
-        res.status(404).json({
-          message: 'The product was not found',
-        })
+
+      if(!product) {
+        throw new CustomError('The product was not found', 404);
       }
+      
+      res.status(200).json(product);
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -73,30 +71,28 @@ class ProductController {
         req.params.id,
         editedProductWithoutId,
       )
-      if (updatedProduct) {
-        res.status(202).json(updatedProduct)
-      } else {
-        res.status(404).json({ message: 'The product was not found' })
+
+      if (!updatedProduct) {
+        throw new CustomError('The product was not found', 404);
       }
+
+      res.status(200).json(updatedProduct);
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
-  static async uploadImageToProduct(
-    req: Request,
-    res: Response,
-  ): Promise<void> {
+  static async uploadImageToProduct(req: Request, res: Response): Promise<void> {
     try {
       ensureIdExists(req)
 
       if (!req.file) {
-        throw new Error('Image is missing.')
+        throw new CustomError('Image is missing.', 400);
       }
 
       const product = await ProductService.getSingleProduct(req.params.id)
       if (!product) {
-        throw new Error('The product was not found')
+        throw new CustomError('The product was not found', 404);
       }
 
       const fileContent = req.file.buffer
@@ -122,14 +118,14 @@ class ProductController {
         product: updatedProduct,
       })
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
   static async deleteImageByURL(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.url) {
-        throw new Error('URL parameter is missing.')
+        throw new CustomError('URL parameter is missing.', 400);
       }
 
       const s3StorageManager = S3StorageManager.getInstance()
@@ -139,14 +135,12 @@ class ProductController {
       )
 
       if (!deleteResult) {
-        throw new Error("Can't delete this image.")
+        throw new CustomError("Can't delete this image.", 500);
       }
 
-      res
-        .status(200)
-        .json({ message: 'Image deleted successfully', data: deleteResult })
+      res.status(200).json({ message: 'Image deleted successfully', data: deleteResult })
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 }
