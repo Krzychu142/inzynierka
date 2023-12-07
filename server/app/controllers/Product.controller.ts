@@ -3,7 +3,6 @@ import ProductService from '../services/Product.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
 import S3StorageManager from '../utils/S3StorageManager'
-import fs from "fs"
 
 class ProductController {
 
