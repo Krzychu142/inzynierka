@@ -7,7 +7,7 @@ class RequestLoggerController {
     try {
       res.status(201).json(await RequestLoggerService.getAllOperations())
     } catch (error) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 }

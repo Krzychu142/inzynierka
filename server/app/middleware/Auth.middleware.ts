@@ -5,6 +5,7 @@ import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import EmployeeService from '../services/Employee.service'
 import IRequestWithEmployee from '../types/requestWithEmployee.interface'
 import RolesArray from '../types/rolesArray.type'
+import CustomError from '../utils/helpers/CustomError'
 
 class AuthMiddleware {
   static async checkIsEmployeeLoggedIn(
@@ -16,11 +17,11 @@ class AuthMiddleware {
       const token = req.header('Authorization')?.replace('Bearer ', '')
 
       if (!token) {
-        throw new Error('Unauthorized')
+        throw new CustomError('Unauthorized', 403)
       }
 
       if (!process.env.JWT_SECRET_KEY) {
-        throw new Error('JWT_SECRET_KEY is not defined')
+        throw new CustomError('JWT_SECRET_KEY is not defined')
       }
 
       const decoded = jwt.verify(
@@ -32,13 +33,13 @@ class AuthMiddleware {
       )
 
       if (!isEmpolyeeExist) {
-        throw new Error("Employee doesn't exist")
+        throw new CustomError("Employee doesn't exist", 404)
       }
 
       req.employee = isEmpolyeeExist
       next()
     } catch (e: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(e))
+      ErrorsHandlers.handleCustomError(e, res)
     }
   }
 
@@ -50,16 +51,16 @@ class AuthMiddleware {
     ) => {
       try {
         if (!req.employee) {
-          throw new Error("Employee doesn't provided")
+          throw new CustomError("Employee doesn't provided", 401)
         }
 
         if (rolesWithAccess.includes(req.employee.role)) {
           next()
         } else {
-          throw new Error("You don't have permission to do this")
+          throw new CustomError("You don't have permission to do this", 403)
         }
       } catch (e: unknown) {
-        res.status(500).json(ErrorsHandlers.errorMessageHandler(e))
+        ErrorsHandlers.handleCustomError(e, res)
       }
     }
   }

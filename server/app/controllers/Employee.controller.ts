@@ -2,14 +2,15 @@ import { Request, Response } from 'express'
 import EmployeeService from '../services/Employee.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
+import CustomError from '../utils/helpers/CustomError'
 
 class EmployeeController {
   static async getAllEmployees(req: Request, res: Response): Promise<void> {
     try {
       const employees = await EmployeeService.getAllEmployees()
-      res.json(employees)
+      res.status(201).json(employees)
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -18,31 +19,31 @@ class EmployeeController {
       ensureIdExists(req)
       const result = await EmployeeService.getSingleEmployee(req.params.id)
       if (!result) {
-        res.status(404).json({ message: "Employee doesn't exist" })
+        throw new CustomError("Employee doesn't exist", 404);
       } else {
-        res.status(200).json(result)
+        res.status(200).json(result);
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
   static async deleteEmployee(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.email) {
-        res.status(400).json({ message: 'The email parameter is missing' })
+        throw new CustomError('The email parameter is missing', 400);
       } else {
         const result = await EmployeeService.deleteSingleEmployee(
           req.body.email,
         )
         if (result.deletedCount === 0) {
-          res.status(404).json({ message: 'Employee not found' })
+          throw new CustomError('Employee not found', 404);
         } else {
-          res.status(201).json({ message: 'Employee deleted successful' })
+          res.status(200).json({ message: 'Employee deleted successful' });
         }
       }
     } catch (error) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -50,7 +51,7 @@ class EmployeeController {
     try {
       ensureIdExists(req)
       if (!req.body) {
-        res.status(400).json({ message: 'Employee data is missing' })
+        throw new CustomError('Employee data is missing', 400);
       } else {
         const result = await EmployeeService.editEmployee(
           req.params.id,
@@ -59,7 +60,7 @@ class EmployeeController {
         res.status(202).json(result)
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 }

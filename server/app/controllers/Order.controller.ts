@@ -11,6 +11,7 @@ import { PdfOrderData } from '../types/pdfOrderData.interface'
 import fs from 'fs'
 import Email from '../utils/email/Email'
 import { IOrder } from '../types/order.interface'
+import CustomError from '../utils/helpers/CustomError'
 
 interface IProductForOrder {
   productId: string
@@ -20,7 +21,7 @@ interface IProductForOrder {
 class OrderController {
   private static validateOrderId(req: Request) {
     if (!req.body.orderId) {
-      throw new Error('Order id is missing.')
+      throw new CustomError('Order id is missing.', 400)
     }
   }
 
@@ -49,16 +50,16 @@ class OrderController {
       const { clientId, products, status } = req.body
 
       if (!clientId) {
-        throw new Error('Client email is missing.')
+        throw new CustomError('Client email is missing.', 400);
       }
 
       if (!Array.isArray(products) || products.length === 0) {
-        throw new Error('Order must have at least one item.')
+        throw new CustomError('Order must have at least one item.', 400);
       }
 
       const client = await ClientService.getSingleClient(clientId)
       if (!client) {
-        throw new Error('Client not found.')
+        throw new CustomError('Client not found.', 404);
       }
 
       const orderProducts = []
@@ -67,15 +68,15 @@ class OrderController {
       for (const item of aggregatedProducts) {
         const product = await ProductService.getSingleProduct(item.productId)
         if (!product) {
-          throw new Error(`Product with id: ${item.productId} was not found.`)
+          throw new CustomError(`Product with id: ${item.productId} was not found.`, 404);
         }
 
         if (!product.isAvailable) {
-          throw new Error(`Product ${product.name} is not available.`)
+          throw new CustomError(`Product ${product.name} is not available.`, 400);
         }
 
         if (product.stockQuantity < item.quantity) {
-          throw new Error(`Insufficient stock for product ${product.name}.`)
+          throw new CustomError(`Insufficient stock for product ${product.name}.`, 400);
         }
 
         await ProductService.decrementProductStock(
@@ -116,7 +117,7 @@ class OrderController {
       res.status(201).json(order)
     } catch (error: unknown) {
       await session.abortTransaction()
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     } finally {
       await session.endSession()
     }
@@ -125,7 +126,7 @@ class OrderController {
   private static async getOrderData(orderId: string) {
     const orderData = await OrderService.getFullOrderDetails(orderId)
     if (!orderData) {
-      throw new Error('Order not found')
+      throw new CustomError('Order not found', 404);
     }
     return orderData
   }
@@ -187,7 +188,7 @@ class OrderController {
       const orders = await OrderService.findOrdersByClient(client._id)
       res.status(200).json(orders)
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -196,7 +197,7 @@ class OrderController {
       const orders = await OrderService.getAllOrders()
       res.status(200).json(orders)
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -211,7 +212,7 @@ class OrderController {
 
       res.status(204).send()
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 
@@ -259,7 +260,7 @@ class OrderController {
       res.status(200).json({ message: 'Order status updated successfully.' })
     } catch (error: unknown) {
       await session.abortTransaction()
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     } finally {
       await session.endSession()
     }
@@ -291,7 +292,7 @@ class OrderController {
 
       res.end(pdfBuffer, 'binary')
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res);
     }
   }
 }

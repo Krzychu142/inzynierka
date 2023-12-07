@@ -1,4 +1,6 @@
 import { MongoError } from 'mongodb'
+import CustomError from './CustomError'
+import { Response } from 'express'
 
 class ErrorsHandlers {
   static errorMessageHandler(error: unknown): { message: string } {
@@ -13,6 +15,16 @@ class ErrorsHandlers {
       throw new Error('Duplicate key error')
     } else {
       throw new Error(ErrorsHandlers.errorMessageHandler(error).message)
+    }
+  }
+
+  static handleCustomError(error: unknown, res: Response): void {
+    if (error instanceof CustomError) {
+      res
+        .status(error.getStatusCode())
+        .json(ErrorsHandlers.errorMessageHandler(error))
+    } else {
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 }
