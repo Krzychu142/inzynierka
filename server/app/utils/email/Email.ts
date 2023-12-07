@@ -49,20 +49,20 @@ class Email {
     to: string,
     subject: string,
     text: string,
-    attachments?: { filename: string; path: string }[]
+    attachments?: { filename: string; path: string }[],
   ): SendMailOptions {
     const mailOptions: SendMailOptions = {
       from: from ?? process.env.EMAIL_ADDRESS,
       to: to,
       subject: subject,
       text: text,
-    };
-
-    if (attachments) {
-      mailOptions.attachments = attachments;
     }
 
-    return mailOptions;
+    if (attachments) {
+      mailOptions.attachments = attachments
+    }
+
+    return mailOptions
   }
 }
 

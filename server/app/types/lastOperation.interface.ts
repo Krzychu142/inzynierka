@@ -1,7 +1,7 @@
-import { Operation } from "./operation.enum";
+import { Operation } from './operation.enum'
 
 export interface ILastOperation {
-    nameOfOperation: Operation,
-    dateExecution: Date,
-    operationPerformedBy: string
+  nameOfOperation: Operation
+  dateExecution: Date
+  operationPerformedBy: string
 }
