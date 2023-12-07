@@ -1,5 +1,5 @@
-import { Role } from "./role.enum";
+import { Role } from './role.enum'
 
-type RolesArray = Array<typeof Role[keyof typeof Role]>;
+type RolesArray = Array<(typeof Role)[keyof typeof Role]>
 
 export default RolesArray

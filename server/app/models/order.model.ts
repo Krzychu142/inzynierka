@@ -1,44 +1,44 @@
-import { Schema, model } from 'mongoose';
-import { OrderStatus } from '../types/orderStatus.enum';
-import { IOrderProduct } from '../types/orderProduct.interface';
-import { IOrder } from '../types/order.interface';
+import { Schema, model } from 'mongoose'
+import { OrderStatus } from '../types/orderStatus.enum'
+import { IOrderProduct } from '../types/orderProduct.interface'
+import { IOrder } from '../types/order.interface'
 
 const orderProductSchema = new Schema<IOrderProduct>({
   product: {
     type: Schema.Types.ObjectId,
     ref: 'Product',
-    required: true
+    required: true,
   },
   quantity: {
     type: Number,
-    required: true
+    required: true,
   },
   priceAtOrder: {
     type: Number,
-    required: true
+    required: true,
   },
   currencyAtOrder: {
     type: String,
-    default: "PLN"
-  }
-});
+    default: 'PLN',
+  },
+})
 
 const orderSchema = new Schema<IOrder>({
   client: {
     type: Schema.Types.ObjectId,
     ref: 'Client',
-    required: true
+    required: true,
   },
   products: [orderProductSchema],
   orderDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   status: {
     type: String,
     enum: Object.values(OrderStatus),
-    default: OrderStatus.PENDING
+    default: OrderStatus.PENDING,
   },
-});
+})
 
-export default model<IOrder>('Order', orderSchema);
+export default model<IOrder>('Order', orderSchema)

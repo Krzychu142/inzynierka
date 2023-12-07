@@ -34,7 +34,7 @@ export const employeeSchema = new Schema<IEmployee>({
   },
   employedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   email: {
     type: String,
@@ -59,11 +59,11 @@ export const employeeSchema = new Schema<IEmployee>({
   contractType: {
     type: String,
     enum: Object.values(ContractType),
-    required: true
+    required: true,
   },
   currency: {
     type: String,
-    default: "PLN"
+    default: 'PLN',
   },
   address: {
     type: String,
@@ -82,7 +82,7 @@ export const employeeSchema = new Schema<IEmployee>({
     required: true,
   },
   phoneNumber: {
-    // it's string because a phone number can have a prefix e.x. +48 
+    // it's string because a phone number can have a prefix e.x. +48
     type: String,
     required: true,
   },

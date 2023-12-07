@@ -1,4 +1,4 @@
 export interface PdfData {
-    title: string;
-    items: string[];
+  title: string
+  items: string[]
 }
