@@ -45,11 +45,9 @@ class ClientController {
       if (result.deletedCount === 0) {
         res.status(404).json({ message: 'Client not found' })
       } else {
-        res
-          .status(201)
-          .json({
-            message: `Client and ${deletedOrdersCount} orders deleted successful`,
-          })
+        res.status(201).json({
+          message: `Client and ${deletedOrdersCount} orders deleted successful`,
+        })
       }
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))

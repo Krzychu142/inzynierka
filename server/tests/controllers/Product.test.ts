@@ -46,20 +46,21 @@ describe('ProductController', () => {
       })
     })
   })
+  describe('given the IProduct object with SKU which is already in database', () => {
+    it('should send a status code of 500 and error message when creation fails', async () => {
+      const errorMessage = 'Product was not created.'
+      ProductService.createProduct = jest
+        .fn()
+        .mockRejectedValue(new Error(errorMessage))
+      const req = { body: mockProduct } as Request
+      const res = createMockResponse()
 
-  it('should send a status code of 500 and error message when creation fails', async () => {
-    const errorMessage = 'Product was not created.'
-    ProductService.createProduct = jest
-      .fn()
-      .mockRejectedValue(new Error(errorMessage))
-    const req = { body: mockProduct } as Request
-    const res = createMockResponse()
+      await ProductController.createProduct(req, res)
 
-    await ProductController.createProduct(req, res)
-
-    expect(res.status).toHaveBeenCalledWith(500)
-    expect(res.json).toHaveBeenCalledWith({
-      message: errorMessage,
+      expect(res.status).toHaveBeenCalledWith(500)
+      expect(res.json).toHaveBeenCalledWith({
+        message: errorMessage,
+      })
     })
   })
 })

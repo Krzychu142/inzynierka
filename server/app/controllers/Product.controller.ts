@@ -117,12 +117,10 @@ class ProductController {
         updatedImages,
       )
 
-      res
-        .status(200)
-        .json({
-          message: 'Image uploaded and product updated successfully',
-          product: updatedProduct,
-        })
+      res.status(200).json({
+        message: 'Image uploaded and product updated successfully',
+        product: updatedProduct,
+      })
     } catch (error: unknown) {
       res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
