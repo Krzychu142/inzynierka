@@ -1,6 +1,10 @@
 import ProductController from '../../app/controllers/Product.controller'
 import ProductService from '../../app/services/Product.service'
 import { Request, Response } from 'express'
+import supertest from 'supertest'
+import jwt from 'jsonwebtoken'
+import App from '../../app/app'
+import { Types } from 'mongoose'
 
 jest.mock('../../app/services/Product.service')
 
@@ -46,20 +50,50 @@ describe('ProductController', () => {
       })
     })
   })
+  describe('given the IProduct object with SKU which is already in database', () => {
+    it('should send a status code of 500 and error message when creation fails', async () => {
+      const errorMessage = 'Product was not created.'
+      ProductService.createProduct = jest
+        .fn()
+        .mockRejectedValue(new Error(errorMessage))
+      const req = { body: mockProduct } as Request
+      const res = createMockResponse()
 
-  it('should send a status code of 500 and error message when creation fails', async () => {
-    const errorMessage = 'Product was not created.'
-    ProductService.createProduct = jest
-      .fn()
-      .mockRejectedValue(new Error(errorMessage))
-    const req = { body: mockProduct } as Request
-    const res = createMockResponse()
+      await ProductController.createProduct(req, res)
 
-    await ProductController.createProduct(req, res)
+      expect(res.status).toHaveBeenCalledWith(500)
+      expect(res.json).toHaveBeenCalledWith({
+        message: errorMessage,
+      })
+    })
+  })
 
-    expect(res.status).toHaveBeenCalledWith(500)
-    expect(res.json).toHaveBeenCalledWith({
-      message: errorMessage,
+  // integration
+  describe('get product route', () => {
+    describe('given the user is not logged in', () => {
+      it('should return status 500 with message Unauthorized', async () => {
+        const fakeProductId = new Types.ObjectId()
+        const fakeUserId = new Types.ObjectId()
+
+        const userPayload = {
+          id: fakeUserId,
+          role: 'MANAGER',
+        }
+
+        const secretKey = process.env.JWT_SECRET_KEY
+        if (!secretKey) {
+          throw new Error('JWT_SECRET_KEY is not defined')
+        }
+
+        const token = jwt.sign(userPayload, secretKey)
+
+        const app = App.getInstance()
+        app.start()
+
+        const {} = await supertest(app.getExpressApp())
+          .get(`/products/${fakeProductId}`)
+          .set('Authorization', `Bearer ${token}`)
+      })
     })
   })
 })
