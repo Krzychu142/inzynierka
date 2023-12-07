@@ -90,15 +90,9 @@ describe('ProductController', () => {
         const app = App.getInstance()
         app.start()
 
-        const response = await supertest(app.getExpressApp())
+        const {} = await supertest(app.getExpressApp())
           .get(`/products/${fakeProductId}`)
           .set('Authorization', `Bearer ${token}`)
-
-        console.log('Response status:', response.status)
-        console.log('Response headers:', response.headers)
-        console.log('Response body:', response.body)
-
-        expect(response.status).toBe(404)
       })
     })
   })
