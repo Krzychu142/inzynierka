@@ -9,7 +9,7 @@ class TokenService {
       id: user._id,
       email: user.email,
       role: user.role,
-      name: user.name
+      name: user.name,
     }
 
     if (!process.env.JWT_SECRET_KEY) {
@@ -19,7 +19,9 @@ class TokenService {
     return jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn })
   }
 
-  static generateTokenForEmailVerificationOrPasswordReset(email: string): string {
+  static generateTokenForEmailVerificationOrPasswordReset(
+    email: string,
+  ): string {
     const expiresIn = process.env.JWT_EXPIRES_IN || '1d'
     const payload = {
       email: email,

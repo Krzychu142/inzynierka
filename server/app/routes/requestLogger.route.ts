@@ -4,6 +4,10 @@ import AuthMiddleware from '../middleware/Auth.middleware'
 
 const router = express.Router()
 
-router.get('/get', AuthMiddleware.checkIsEmployeeLoggedIn, RequestLoggerController.getAllOperations)
+router.get(
+  '/get',
+  AuthMiddleware.checkIsEmployeeLoggedIn,
+  RequestLoggerController.getAllOperations,
+)
 
 export default router

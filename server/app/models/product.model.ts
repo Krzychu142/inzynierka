@@ -53,8 +53,8 @@ export const productSchema = new Schema<IProduct>({
   },
   currency: {
     type: String,
-    default: "PLN"
-  }
+    default: 'PLN',
+  },
 })
 
 export default model<IProduct>('Product', productSchema)
