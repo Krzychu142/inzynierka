@@ -51,13 +51,13 @@ class AuthMiddleware {
     ) => {
       try {
         if (!req.employee) {
-          throw new Error("Employee doesn't provided")
+          throw new CustomError("Employee doesn't provided", 401)
         }
 
         if (rolesWithAccess.includes(req.employee.role)) {
           next()
         } else {
-          throw new Error("You don't have permission to do this")
+          throw new CustomError("You don't have permission to do this", 403)
         }
       } catch (e: unknown) {
         ErrorsHandlers.handleCustomError(e, res)

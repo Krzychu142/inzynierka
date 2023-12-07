@@ -3,6 +3,7 @@ import ClientService from '../services/Client.service'
 import ErrorsHandlers from '../utils/helpers/ErrorsHandlers'
 import ensureIdExists from '../utils/helpers/ensureIdExists'
 import OrderService from '../services/Order.service'
+import CustomError from '../utils/helpers/CustomError'
 
 class ClientController {
   static async getAllClients(req: Request, res: Response): Promise<void> {
@@ -11,10 +12,10 @@ class ClientController {
       if (result) {
         res.status(201).json(result)
       } else {
-        throw new Error('Clients not found')
+        throw new CustomError('Clients not found', 404)
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -24,17 +25,17 @@ class ClientController {
       if (result) {
         res.status(201).json({ message: 'New client added' })
       } else {
-        throw Error('The client was not created')
+        throw new CustomError('The client was not created', 400)
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
   static async deleteClient(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.clientId) {
-        throw new Error('Client id is missing')
+        throw new CustomError('Client id is missing', 400)
       }
 
       const deletedOrdersCount = await OrderService.deleteOrdersByClientId(
@@ -43,14 +44,14 @@ class ClientController {
 
       const result = await ClientService.deleteClient(req.body.clientId)
       if (result.deletedCount === 0) {
-        res.status(404).json({ message: 'Client not found' })
+        throw new CustomError('Client not found', 404)
       } else {
         res.status(201).json({
           message: `Client and ${deletedOrdersCount} orders deleted successful`,
         })
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -59,12 +60,12 @@ class ClientController {
       ensureIdExists(req)
       const result = await ClientService.getSingleClient(req.params.id)
       if (!result) {
-        res.status(404).json({ message: "Client doesn't exist" })
+        throw new CustomError("Client doesn't exist", 404)
       } else {
         res.status(200).json(result)
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -72,13 +73,13 @@ class ClientController {
     try {
       ensureIdExists(req)
       if (!req.body) {
-        res.status(400).json({ message: 'Client data is missing' })
+        throw new CustomError('Client data is missing', 400)
       } else {
         const result = await ClientService.editClient(req.params.id, req.body)
         res.status(202).json(result)
       }
     } catch (error: unknown) {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 }
