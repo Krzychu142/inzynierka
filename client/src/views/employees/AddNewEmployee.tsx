@@ -310,14 +310,14 @@ const AddNewEmployee = () => {
           <MessageDisplayer
             message={errorMessage}
             type="error"
-            className="error"
+            className="error margin-vertical"
           />
         )}
         {successMessage && (
           <MessageDisplayer
             message={successMessage}
             type="success"
-            className="success"
+            className="success margin-vertical"
           />
         )}
       </section>
