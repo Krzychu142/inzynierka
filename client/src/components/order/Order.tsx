@@ -5,7 +5,7 @@ import { IOrderProduct } from "../../types/orderProduct.interface";
 import { ICostByCurrency } from "../../types/costByCurrency.interface";
 import { Button, Col, Divider, List, Modal, Row, message } from "antd";
 import "./order.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { IClient } from "../../types/client.interface";
 import {
   CheckOutlined,
@@ -17,7 +17,10 @@ import {
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useAppSelector } from "../../hooks";
-import { useGetAllOrdersQuery } from "../../features/orderSlice";
+import {
+  useGetAllOrdersQuery,
+  useGetOrdersByClientQuery,
+} from "../../features/orderSlice";
 import { useLoading } from "../../customHooks/useLoading";
 
 interface OrderProps {
@@ -25,6 +28,11 @@ interface OrderProps {
 }
 
 const Order: React.FC<OrderProps> = ({ order }) => {
+  const { email } = useParams();
+  const { refetch: refetchSingleClientOrders } = useGetOrdersByClientQuery(
+    email && atob(email)
+  );
+
   let location = useLocation();
   const [showClientInfo, setShowClientInfo] = useState(true);
   const { startLoading, stopLoading, RenderSpinner } = useLoading();
@@ -77,6 +85,14 @@ const Order: React.FC<OrderProps> = ({ order }) => {
   const decodedToken = useAppSelector((state) => state.auth.decodedToken);
   const { refetch } = useGetAllOrdersQuery("");
 
+  const handleRefetch = (email: string | undefined) => {
+    if (email) {
+      refetchSingleClientOrders();
+    } else {
+      refetch();
+    }
+  };
+
   const deleteOrder = (orderId: string) => {
     startLoading();
     axios
@@ -87,7 +103,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
         },
       })
       .then(() => {
-        refetch();
+        handleRefetch(email);
         messageApi.open({
           type: "success",
           content: "Order deleted successfully!",
@@ -120,7 +136,7 @@ const Order: React.FC<OrderProps> = ({ order }) => {
         }
       )
       .then((res) => {
-        refetch();
+        handleRefetch(email);
         messageApi.open({
           type: "success",
           content: res.data.message || "Order edited successfully",

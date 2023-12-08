@@ -85,3 +85,8 @@ body {
     padding: var(--padding);
     box-shadow: var(--box-shadow);
 }
+
+.margin-vertical {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
