@@ -14,7 +14,7 @@ class ProductController {
       const products = await ProductService.getAllProducts()
       res.status(201).json(products)
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -22,29 +22,29 @@ class ProductController {
     try {
       const product = await ProductService.createProduct(req.body)
       if (!product) {
-        throw new CustomError('Product was not created.');
+        throw new CustomError('Product was not created.')
       }
 
       res.status(201).json({ message: 'Product created successfully', product })
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
   static async deleteProduct(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.id) {
-        throw new CustomError('The id parameter is missing', 400);
+        throw new CustomError('The id parameter is missing', 400)
       } else {
         const result = await ProductService.deleteProduct(req.body.id)
         if (result.deletedCount !== 0) {
           res.status(200).json({ message: 'The product has been removed' })
         } else {
-          throw new CustomError('The product was not found', 404);
+          throw new CustomError('The product was not found', 404)
         }
       }
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -53,13 +53,13 @@ class ProductController {
       ensureIdExists(req)
       const product = await ProductService.getSingleProduct(req.params.id)
 
-      if(!product) {
-        throw new CustomError('The product was not found', 404);
+      if (!product) {
+        throw new CustomError('The product was not found', 404)
       }
-      
-      res.status(200).json(product);
+
+      res.status(200).json(product)
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -73,26 +73,29 @@ class ProductController {
       )
 
       if (!updatedProduct) {
-        throw new CustomError('The product was not found', 404);
+        throw new CustomError('The product was not found', 404)
       }
 
-      res.status(200).json(updatedProduct);
+      res.status(200).json(updatedProduct)
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
-  static async uploadImageToProduct(req: Request, res: Response): Promise<void> {
+  static async uploadImageToProduct(
+    req: Request,
+    res: Response,
+  ): Promise<void> {
     try {
       ensureIdExists(req)
 
       if (!req.file) {
-        throw new CustomError('Image is missing.', 400);
+        throw new CustomError('Image is missing.', 400)
       }
 
       const product = await ProductService.getSingleProduct(req.params.id)
       if (!product) {
-        throw new CustomError('The product was not found', 404);
+        throw new CustomError('The product was not found', 404)
       }
 
       const fileContent = req.file.buffer
@@ -118,14 +121,14 @@ class ProductController {
         product: updatedProduct,
       })
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
   static async deleteImageByURL(req: Request, res: Response): Promise<void> {
     try {
       if (!req.body.url) {
-        throw new CustomError('URL parameter is missing.', 400);
+        throw new CustomError('URL parameter is missing.', 400)
       }
 
       const s3StorageManager = S3StorageManager.getInstance()
@@ -135,12 +138,14 @@ class ProductController {
       )
 
       if (!deleteResult) {
-        throw new CustomError("Can't delete this image.", 500);
+        throw new CustomError("Can't delete this image.", 500)
       }
 
-      res.status(200).json({ message: 'Image deleted successfully', data: deleteResult })
+      res
+        .status(200)
+        .json({ message: 'Image deleted successfully', data: deleteResult })
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 }
