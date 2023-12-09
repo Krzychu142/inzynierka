@@ -8,8 +8,8 @@ jest.mock('../../app/services/Employee.service')
 jest.mock('../../app/utils/helpers/ErrorsHandlers')
 
 describe('EmployeeController.deleteEmployee', () => {
-  describe('given no email parameter in the request', () => {
-    it('should throw an error if the email parameter is missing', async () => {
+  describe('given no email parameter in the request The email parameter is missing with 400', () => {
+    it('should throw an error', async () => {
       const req = {
         body: {},
       } as unknown as Request
@@ -30,7 +30,7 @@ describe('EmployeeController.deleteEmployee', () => {
   })
 
   describe('given an email that does not correspond to any employee in the database', () => {
-    it('should throw an error if the employee is not found', async () => {
+    it('should throw an error Employee not found with 404', async () => {
       const req = {
         body: { email: 'test@example.com' },
       } as unknown as Request

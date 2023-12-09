@@ -185,13 +185,13 @@ class OrderController {
   static async getOrdersByClient(req: Request, res: Response): Promise<void> {
     try {
       if (!req.params.email) {
-        throw new Error('Client email is missign.')
+        throw new CustomError('Client email is missign.', 400)
       }
 
       const client = await ClientService.getClientByEmail(req.params.email)
 
       if (!client) {
-        throw new Error('User not found.')
+        throw new CustomError('User not found.', 404)
       }
 
       const orders = await OrderService.findOrdersByClient(client._id)
@@ -214,9 +214,9 @@ class OrderController {
     try {
       OrderController.validateOrderId(req)
 
-      const result = OrderService.deleteOrder(req.body.orderId)
+      const result = await OrderService.deleteOrder(req.body.orderId)
       if (!result) {
-        throw new Error("Can't delete this order")
+        throw new CustomError('Order not found', 404)
       }
 
       res.status(204).send()
@@ -237,13 +237,13 @@ class OrderController {
         !req.body.newStatus ||
         !OrderController.isValidOrderStatus(req.body.newStatus)
       ) {
-        throw new Error('Invalid or missing new status.')
+        throw new CustomError('Invalid or missing new status.', 400)
       }
 
       if (req.body.newStatus === OrderStatus.CANCELED) {
         const order = await OrderService.getSingleOrder(orderId, session)
         if (!order) {
-          throw new Error('Order not found.')
+          throw new CustomError('Order not found.', 404)
         }
 
         for (const item of order.products) {
