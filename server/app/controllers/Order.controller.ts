@@ -50,16 +50,16 @@ class OrderController {
       const { clientId, products, status } = req.body
 
       if (!clientId) {
-        throw new CustomError('Client email is missing.', 400);
+        throw new CustomError('Client email is missing.', 400)
       }
 
       if (!Array.isArray(products) || products.length === 0) {
-        throw new CustomError('Order must have at least one item.', 400);
+        throw new CustomError('Order must have at least one item.', 400)
       }
 
       const client = await ClientService.getSingleClient(clientId)
       if (!client) {
-        throw new CustomError('Client not found.', 404);
+        throw new CustomError('Client not found.', 404)
       }
 
       const orderProducts = []
@@ -68,15 +68,24 @@ class OrderController {
       for (const item of aggregatedProducts) {
         const product = await ProductService.getSingleProduct(item.productId)
         if (!product) {
-          throw new CustomError(`Product with id: ${item.productId} was not found.`, 404);
+          throw new CustomError(
+            `Product with id: ${item.productId} was not found.`,
+            404,
+          )
         }
 
         if (!product.isAvailable) {
-          throw new CustomError(`Product ${product.name} is not available.`, 400);
+          throw new CustomError(
+            `Product ${product.name} is not available.`,
+            400,
+          )
         }
 
         if (product.stockQuantity < item.quantity) {
-          throw new CustomError(`Insufficient stock for product ${product.name}.`, 400);
+          throw new CustomError(
+            `Insufficient stock for product ${product.name}.`,
+            400,
+          )
         }
 
         await ProductService.decrementProductStock(
@@ -117,7 +126,7 @@ class OrderController {
       res.status(201).json(order)
     } catch (error: unknown) {
       await session.abortTransaction()
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     } finally {
       await session.endSession()
     }
@@ -126,7 +135,7 @@ class OrderController {
   private static async getOrderData(orderId: string) {
     const orderData = await OrderService.getFullOrderDetails(orderId)
     if (!orderData) {
-      throw new CustomError('Order not found', 404);
+      throw new CustomError('Order not found', 404)
     }
     return orderData
   }
@@ -176,19 +185,19 @@ class OrderController {
   static async getOrdersByClient(req: Request, res: Response): Promise<void> {
     try {
       if (!req.params.email) {
-        throw new Error('Client email is missign.')
+        throw new CustomError('Client email is missign.', 400)
       }
 
       const client = await ClientService.getClientByEmail(req.params.email)
 
       if (!client) {
-        throw new Error('User not found.')
+        throw new CustomError('User not found.', 404)
       }
 
       const orders = await OrderService.findOrdersByClient(client._id)
       res.status(200).json(orders)
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -197,7 +206,7 @@ class OrderController {
       const orders = await OrderService.getAllOrders()
       res.status(200).json(orders)
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -205,14 +214,14 @@ class OrderController {
     try {
       OrderController.validateOrderId(req)
 
-      const result = OrderService.deleteOrder(req.body.orderId)
+      const result = await OrderService.deleteOrder(req.body.orderId)
       if (!result) {
-        throw new Error("Can't delete this order")
+        throw new CustomError('Order not found', 404)
       }
 
       res.status(204).send()
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 
@@ -228,13 +237,13 @@ class OrderController {
         !req.body.newStatus ||
         !OrderController.isValidOrderStatus(req.body.newStatus)
       ) {
-        throw new Error('Invalid or missing new status.')
+        throw new CustomError('Invalid or missing new status.', 400)
       }
 
       if (req.body.newStatus === OrderStatus.CANCELED) {
         const order = await OrderService.getSingleOrder(orderId, session)
         if (!order) {
-          throw new Error('Order not found.')
+          throw new CustomError('Order not found.', 404)
         }
 
         for (const item of order.products) {
@@ -260,7 +269,7 @@ class OrderController {
       res.status(200).json({ message: 'Order status updated successfully.' })
     } catch (error: unknown) {
       await session.abortTransaction()
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     } finally {
       await session.endSession()
     }
@@ -292,7 +301,7 @@ class OrderController {
 
       res.end(pdfBuffer, 'binary')
     } catch (error: unknown) {
-      ErrorsHandlers.handleCustomError(error, res);
+      ErrorsHandlers.handleCustomError(error, res)
     }
   }
 }

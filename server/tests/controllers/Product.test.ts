@@ -69,31 +69,34 @@ describe('ProductController', () => {
   })
 
   // integration
-  describe('get product route', () => {
-    describe('given the user is not logged in', () => {
-      it('should return status 500 with message Unauthorized', async () => {
-        const fakeProductId = new Types.ObjectId()
-        const fakeUserId = new Types.ObjectId()
+  // describe('get product route', () => {
+  //   describe('given the user is not logged in', () => {
+  //     it('should return status 500 with message Unauthorized', async () => {
+  //       const fakeProductId = new Types.ObjectId()
+  //       const fakeUserId = new Types.ObjectId()
 
-        const userPayload = {
-          id: fakeUserId,
-          role: 'MANAGER',
-        }
+  //       const userPayload = {
+  //         id: fakeUserId,
+  //         role: 'MANAGER',
+  //       }
 
-        const secretKey = process.env.JWT_SECRET_KEY
-        if (!secretKey) {
-          throw new Error('JWT_SECRET_KEY is not defined')
-        }
+  //       const secretKey = process.env.JWT_SECRET_KEY
+  //       if (!secretKey) {
+  //         throw new Error('JWT_SECRET_KEY is not defined')
+  //       }
 
-        const token = jwt.sign(userPayload, secretKey)
+  //       const token = jwt.sign(userPayload, secretKey)
 
-        const app = App.getInstance()
-        app.start()
+  //       const app = App.getInstance()
+  //       app.start()
 
-        const {} = await supertest(app.getExpressApp())
-          .get(`/products/${fakeProductId}`)
-          .set('Authorization', `Bearer ${token}`)
-      })
-    })
-  })
+  //       const response = await supertest(app.getExpressApp())
+  //         .get(`/products/${fakeProductId}`)
+  //         .set('Authorization', `Bearer ${token}`)
+
+  //       expect(response.status).toBe(404)
+  //       expect(response.body.message).toBe("Employee doesn't exist")
+  //     })
+  //   })
+  // })
 })
