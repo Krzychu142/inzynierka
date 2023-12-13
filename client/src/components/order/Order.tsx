@@ -240,8 +240,8 @@ const Order: React.FC<OrderProps> = ({ order }) => {
             <span>{dayjs(order.orderDate).format("MM/DD/YYYY")}</span>
           </div>
           {showClientInfo && (
-            <Row>
-              <Col span={4}>
+            <Row gutter={16}>
+              <Col>
                 <h4>Client:</h4>
                 <span className="block">
                   {order.client.name} {order.client.surname}
