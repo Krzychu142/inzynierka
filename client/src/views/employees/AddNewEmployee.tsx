@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./addNewEmployee.css";
 import {
   Button,
@@ -9,13 +9,13 @@ import {
   InputNumber,
   Row,
   Select,
+  message,
 } from "antd";
 import { Role } from "../../types/employee.interface";
 import axios from "axios";
 import useBaseURL from "../../customHooks/useBaseURL";
 import { useAppSelector } from "../../hooks";
 import { Store } from "antd/es/form/interface";
-import MessageDisplayer from "../../components/messageDisplayer/MessageDisplayer";
 import useGeneratePassword from "../../customHooks/useGeneratePassword";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
@@ -24,8 +24,6 @@ import { ContractType } from "../../types/contractType.enum";
 
 const AddNewEmployee = () => {
   const { id } = useParams();
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
   const [form] = Form.useForm();
   const baseUrl = useBaseURL();
   const token = useAppSelector((state) => state.auth.token);
@@ -37,16 +35,11 @@ const AddNewEmployee = () => {
       Authorization: `Bearer ${token}`,
     },
   };
-
-  const clearMessages = () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-  };
+  const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
     if (id) {
       startLoading();
-      clearMessages();
       axios
         .get(`${baseUrl}employees/${id}`, config)
         .then((res) => {
@@ -69,11 +62,13 @@ const AddNewEmployee = () => {
           });
         })
         .catch((err) => {
-          if (err.response.data.message) {
-            setErrorMessage(err.response.data.message);
-          } else {
-            setErrorMessage("Something went wrong!");
-          }
+          messageApi.open({
+            type: "error",
+            content:
+              err.response && err.response.data.message
+                ? err.response.data.message
+                : "Something goes wrong",
+          });
         })
         .finally(() => {
           stopLoading();
@@ -83,7 +78,6 @@ const AddNewEmployee = () => {
 
   const onFinish = (values: Store) => {
     startLoading();
-    clearMessages();
     if (!values.employedAt) {
       values.employedAt = new Date().toISOString();
     }
@@ -102,15 +96,20 @@ const AddNewEmployee = () => {
           naviagte("/employees");
         }
         if (res.status === 202) {
-          setSuccessMessage("Edited successfully");
+          messageApi.open({
+            type: "success",
+            content: res.data.message || "Employee edited successfully",
+          });
         }
       })
       .catch((err) => {
-        if (err.response.data.message) {
-          setErrorMessage(err.response.data.message);
-        } else {
-          setErrorMessage("Something went wrong!");
-        }
+        messageApi.open({
+          type: "error",
+          content:
+            err.response && err.response.data.message
+              ? err.response.data.message
+              : "Something goes wrong",
+        });
       })
       .finally(() => {
         stopLoading();
@@ -120,6 +119,7 @@ const AddNewEmployee = () => {
   return (
     <>
       {RenderSpinner()}
+      {contextHolder}
       <section className="add-new-employee">
         <Form
           labelCol={{ span: 24 }}
@@ -306,20 +306,6 @@ const AddNewEmployee = () => {
             </Button>
           </Form.Item>
         </Form>
-        {errorMessage && (
-          <MessageDisplayer
-            message={errorMessage}
-            type="error"
-            className="error margin-vertical"
-          />
-        )}
-        {successMessage && (
-          <MessageDisplayer
-            message={successMessage}
-            type="success"
-            className="success margin-vertical"
-          />
-        )}
       </section>
     </>
   );
