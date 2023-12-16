@@ -21,15 +21,15 @@ class ErrorsHandlers {
   static handleCustomError(error: unknown, res: Response): void {
     if (error instanceof MongoError && error.code === 11000) {
       res.status(409).json({
-        message: "Duplicate key error.",
+        message: 'Duplicate key error.',
         details: error.message,
-      });
+      })
     } else if (error instanceof CustomError) {
       res
         .status(error.getStatusCode())
-        .json(ErrorsHandlers.errorMessageHandler(error));
+        .json(ErrorsHandlers.errorMessageHandler(error))
     } else {
-      res.status(500).json(ErrorsHandlers.errorMessageHandler(error));
+      res.status(500).json(ErrorsHandlers.errorMessageHandler(error))
     }
   }
 }
