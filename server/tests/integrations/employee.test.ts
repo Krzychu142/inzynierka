@@ -2,21 +2,24 @@ import supertest from 'supertest'
 import App from '../../app/app'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
-import Employee from '../../app/models/employee.model'
-import IEmployee from '../../app/types/employee.interface'
+import Employee, { IEmployee } from '../../app/models/employee.model'
 import Crypt from '../../app/utils/helpers/Crypt'
 import TokenService from '../../app/services/Token.service'
+import { Role } from '../../app/types/role.enum'
 
-async function createTestEmployee(): Promise<IEmployee> {
+async function createTestEmployee(
+  role: Role,
+  randomEmail: string,
+): Promise<IEmployee> {
   const hashedPassword = await Crypt.hashPassword('test142@')
 
   const testEmployeeData = new Employee({
     name: 'Test',
     surname: 'User',
     employedAt: new Date(),
-    email: 'testuser@example.com',
+    email: randomEmail,
     password: hashedPassword,
-    role: 'manager',
+    role: role,
     salary: 5000,
     contractType: 'Employment Contract',
     address: 'Test Street 123',
@@ -32,33 +35,61 @@ async function createTestEmployee(): Promise<IEmployee> {
   return testEmployeeData
 }
 
-let testEmployee: IEmployee
-let token: string
 let mongoServer: MongoMemoryServer
+let appInstance = App.getInstance().getExpressApp()
+
+let testManagerEmployee: IEmployee
+let managerToken: string
+
+let testWarehouseEmployee: IEmployee
+let warehousemanToken: string
 
 beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create()
   const uri = mongoServer.getUri()
   await mongoose.connect(uri)
-  testEmployee = await createTestEmployee()
-  token = TokenService.generateToken(testEmployee)
+
+  testManagerEmployee = await createTestEmployee(
+    Role.MANAGER,
+    'test142@gmail.com',
+  )
+  managerToken = TokenService.generateToken(testManagerEmployee)
+
+  testWarehouseEmployee = await createTestEmployee(
+    Role.WAREHOUSEMAN,
+    'test162@gmail.com',
+  )
+  warehousemanToken = TokenService.generateToken(testWarehouseEmployee)
 })
 
 afterAll(async () => {
-  await Employee.deleteOne({ _id: testEmployee._id })
+  await Employee.deleteOne({ _id: testManagerEmployee._id })
+  await Employee.deleteOne({ _id: testWarehouseEmployee._id })
+
   await mongoose.disconnect()
   await mongoServer.stop()
 })
 
 describe('GET /employees/get', () => {
-  it('should return all employees for authorized user', async () => {
-    const appInstance = App.getInstance().getExpressApp()
+  describe('given token for an existing employee, with the role of manager', () => {
+    it('should return 201 all code and array with all employees', async () => {
+      const response = await supertest(appInstance)
+        .get('/employees/get')
+        .set('Authorization', `Bearer ${managerToken}`)
 
-    const response = await supertest(appInstance)
-      .get('/employees/get')
-      .set('Authorization', `Bearer ${token}`)
+      expect(response.status).toBe(201)
+      expect(response.body).toBeInstanceOf(Array)
+    })
+  })
 
-    expect(response.status).toBe(201)
-    expect(response.body).toBeInstanceOf(Array)
+  describe('given token with role warehouseman', () => {
+    it("should return 403 code and message 'You don't have permission to do this'", async () => {
+      const response = await supertest(appInstance)
+        .get('/employees/get')
+        .set('Authorization', `Bearer ${warehousemanToken}`)
+
+      expect(response.status).toBe(403)
+      expect(response.body.message).toBe("You don't have permission to do this")
+    })
   })
 })
