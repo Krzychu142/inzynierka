@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import IEmployee from '../types/employee.interface'
+import { IEmployee } from '../models/employee.model'
 
 class TokenService {
   static generateToken(user: IEmployee): string {
