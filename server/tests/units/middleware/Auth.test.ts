@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from 'express'
 import CustomError from '../../../app/utils/helpers/CustomError'
 import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
 
-jest.mock('../../app/utils/helpers/ErrorsHandlers')
+jest.mock('../../../app/utils/helpers/ErrorsHandlers')
 
 describe('checkIsEmployeeHaveCorrectPermission', () => {
   const mockResponse = () => {

@@ -2,7 +2,7 @@ import ProductController from '../../../app/controllers/Product.controller'
 import ProductService from '../../../app/services/Product.service'
 import { Request, Response } from 'express'
 
-jest.mock('../../app/services/Product.service')
+jest.mock('../../../app/services/Product.service')
 
 const mockProduct = {
   sku: 'ABC1334dd5',

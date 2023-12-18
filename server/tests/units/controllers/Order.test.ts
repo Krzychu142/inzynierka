@@ -4,8 +4,8 @@ import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
 import CustomError from '../../../app/utils/helpers/CustomError'
 import { Request, Response } from 'express'
 
-jest.mock('../../app/services/Order.service')
-jest.mock('../../app/utils/helpers/ErrorsHandlers')
+jest.mock('../../../app/services/Order.service')
+jest.mock('../../../app/utils/helpers/ErrorsHandlers')
 
 describe('OrderController.deleteOrder', () => {
   describe('given no orderId in the request', () => {
