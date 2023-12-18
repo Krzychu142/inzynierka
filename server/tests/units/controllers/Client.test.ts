@@ -1,7 +1,7 @@
-import ClientController from '../../app/controllers/Client.controller'
-import ClientService from '../../app/services/Client.service'
-import CustomError from '../../app/utils/helpers/CustomError'
-import ErrorsHandlers from '../../app/utils/helpers/ErrorsHandlers'
+import ClientController from '../../../app/controllers/Client.controller'
+import ClientService from '../../../app/services/Client.service'
+import CustomError from '../../../app/utils/helpers/CustomError'
+import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
 import { Request, Response } from 'express'
 
 jest.mock('../../app/services/Client.service')

@@ -1,7 +1,7 @@
-import OrderController from '../../app/controllers/Order.controller'
-import OrderService from '../../app/services/Order.service'
-import ErrorsHandlers from '../../app/utils/helpers/ErrorsHandlers'
-import CustomError from '../../app/utils/helpers/CustomError'
+import OrderController from '../../../app/controllers/Order.controller'
+import OrderService from '../../../app/services/Order.service'
+import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
+import CustomError from '../../../app/utils/helpers/CustomError'
 import { Request, Response } from 'express'
 
 jest.mock('../../app/services/Order.service')

@@ -82,7 +82,7 @@ describe('GET /employees/get', () => {
     })
   })
 
-  describe('given token with role warehouseman', () => {
+  describe('given token with the role warehouseman (do not have permission)', () => {
     it("should return 403 code and message 'You don't have permission to do this'", async () => {
       const response = await supertest(appInstance)
         .get('/employees/get')
@@ -90,6 +90,35 @@ describe('GET /employees/get', () => {
 
       expect(response.status).toBe(403)
       expect(response.body.message).toBe("You don't have permission to do this")
+    })
+  })
+})
+
+describe('GET /employees/:id', () => {
+  describe('given token with the role manager and _id of a existing employee', () => {
+    it('should return 200 code and employee with provided _id', async () => {
+      const response = await supertest(appInstance)
+        .get(`/employees/${testWarehouseEmployee._id}`)
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(200)
+      expect(response.body).toHaveProperty('_id')
+      expect(typeof response.body._id).toBe('string')
+      expect(response.body._id.toString()).toBe(
+        testWarehouseEmployee._id.toString(),
+      )
+    })
+  })
+
+  describe('given token with the role manager and _id of a non-existing employee', () => {
+    it("should return 404 code and message 'Employee doesn't exist'", async () => {
+      const randomMongoId = new mongoose.Types.ObjectId().toString()
+      const response = await supertest(appInstance)
+        .get(`/employees/${randomMongoId}`)
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(404)
+      expect(response.body.message).toBe("Employee doesn't exist")
     })
   })
 })
