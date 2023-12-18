@@ -50,13 +50,18 @@ class EmployeeController {
   static async editEmployee(req: Request, res: Response): Promise<void> {
     try {
       ensureIdExists(req)
-      if (!req.body) {
+      if (!req.body || Object.keys(req.body).length === 0) {
         throw new CustomError('Employee data is missing', 400)
       } else {
         const result = await EmployeeService.editEmployee(
           req.params.id,
           req.body,
         )
+
+        if (!result) {
+          throw new CustomError('Employee not found', 404)
+        }
+
         res.status(202).json(result)
       }
     } catch (error: unknown) {

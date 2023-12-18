@@ -1,10 +1,10 @@
-import AuthMiddleware from '../../app/middleware/Auth.middleware'
-import { Role } from '../../app/types/role.enum'
+import AuthMiddleware from '../../../app/middleware/Auth.middleware'
+import { Role } from '../../../app/types/role.enum'
 import { Request, Response, NextFunction } from 'express'
-import CustomError from '../../app/utils/helpers/CustomError'
-import ErrorsHandlers from '../../app/utils/helpers/ErrorsHandlers'
+import CustomError from '../../../app/utils/helpers/CustomError'
+import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
 
-jest.mock('../../app/utils/helpers/ErrorsHandlers')
+jest.mock('../../../app/utils/helpers/ErrorsHandlers')
 
 describe('checkIsEmployeeHaveCorrectPermission', () => {
   const mockResponse = () => {

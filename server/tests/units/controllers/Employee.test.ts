@@ -1,11 +1,11 @@
-import EmployeeController from '../../app/controllers/Employee.controller'
-import EmployeeService from '../../app/services/Employee.service'
-import CustomError from '../../app/utils/helpers/CustomError'
-import ErrorsHandlers from '../../app/utils/helpers/ErrorsHandlers'
+import EmployeeController from '../../../app/controllers/Employee.controller'
+import EmployeeService from '../../../app/services/Employee.service'
+import CustomError from '../../../app/utils/helpers/CustomError'
+import ErrorsHandlers from '../../../app/utils/helpers/ErrorsHandlers'
 import { Request, Response } from 'express'
 
-jest.mock('../../app/services/Employee.service')
-jest.mock('../../app/utils/helpers/ErrorsHandlers')
+jest.mock('../../../app/services/Employee.service')
+jest.mock('../../../app/utils/helpers/ErrorsHandlers')
 
 describe('EmployeeController.deleteEmployee', () => {
   describe('given no email parameter in the request The email parameter is missing with 400', () => {
