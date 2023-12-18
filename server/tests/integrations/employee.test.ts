@@ -122,3 +122,96 @@ describe('GET /employees/:id', () => {
     })
   })
 })
+
+describe('DELETE /employees/delete', () => {
+  describe('given token with the role manager and email of existing employee (on request.body)', () => {
+    it('should delete the employee and return 200 status', async () => {
+      const userForDelete = await createTestEmployee(
+        Role.CARTOPERATOR,
+        'marek155@gmail.com',
+      )
+
+      const response = await supertest(appInstance)
+        .delete('/employees/delete')
+        .send({ email: userForDelete.email })
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(200)
+      expect(response.body.message).toBe('Employee deleted successful')
+    })
+  })
+
+  describe('given token with the role manager and email of non-existing employee', () => {
+    it('should return 404 and message "Employee not found"', async () => {
+      const response = await supertest(appInstance)
+        .delete('/employees/delete')
+        .send({ email: 'random123xyz@email.com' })
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(404)
+      expect(response.body.message).toBe('Employee not found')
+    })
+  })
+
+  describe('given token with the role manager and do not provide email of employee to delete', () => {
+    it('should return 400 and message "The email parameter is missing"', async () => {
+      const response = await supertest(appInstance)
+        .delete('/employees/delete')
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(400)
+      expect(response.body.message).toBe('The email parameter is missing')
+    })
+  })
+})
+
+describe('PUT /employees/:id', () => {
+  describe('given a token with the role of manager, new data in the request body, and the _id of an existing employee in the parameters', () => {
+    it('should update the employee data and return 202 status', async () => {
+      const newEmployeeData = {
+        name: 'NewTest',
+        surname: 'UpdatedSurname',
+      }
+
+      const response = await supertest(appInstance)
+        .put(`/employees/${testWarehouseEmployee._id}`)
+        .send(newEmployeeData)
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(202)
+      expect(response.body).toHaveProperty('name', 'NewTest')
+      expect(response.body).toHaveProperty('surname', 'UpdatedSurname')
+    })
+  })
+
+  describe('given a token with the role of manager, no new data in the request body, and the _id of an existing employee in the parameters', () => {
+    it('should return a 400 status when employee data is missing', async () => {
+      const response = await supertest(appInstance)
+        .put(`/employees/${testWarehouseEmployee._id}`)
+        .send({})
+        .set('Authorization', `Bearer ${managerToken}`)
+
+      expect(response.status).toBe(400)
+      expect(response.body.message).toBe('Employee data is missing')
+    })
+  })
+
+    describe('given a token with the role of manager, and the _id of a non-existing employee in the parameters', () => {
+    it("should return a 404 status and message 'Employee not found'", async () => {
+      const nonExistingId = new mongoose.Types.ObjectId().toString();
+
+      const newEmployeeData = {
+        name: 'NewTest',
+        surname: 'UpdatedSurname',
+      };
+
+      const response = await supertest(appInstance)
+        .put(`/employees/${nonExistingId}`)
+        .send(newEmployeeData)
+        .set('Authorization', `Bearer ${managerToken}`);
+
+      expect(response.status).toBe(404);
+      expect(response.body.message).toBe('Employee not found');
+    });
+  });
+})
