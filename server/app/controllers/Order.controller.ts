@@ -44,7 +44,10 @@ class OrderController {
     return Array.from(productMap.values())
   }
 
-  static async createOrder(req: IRequestWithClientEmail, res: Response): Promise<void> {
+  static async createOrder(
+    req: IRequestWithClientEmail,
+    res: Response,
+  ): Promise<void> {
     const session = await mongoose.startSession()
     try {
       session.startTransaction()
@@ -64,7 +67,7 @@ class OrderController {
       }
 
       // it's for logger purpose
-      req.clientEmail = client.email; 
+      req.clientEmail = client.email
 
       const orderProducts = []
       const aggregatedProducts = OrderController.aggregateProducts(products)

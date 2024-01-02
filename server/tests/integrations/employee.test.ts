@@ -196,22 +196,22 @@ describe('PUT /employees/:id', () => {
     })
   })
 
-    describe('given a token with the role of manager, and the _id of a non-existing employee in the parameters', () => {
+  describe('given a token with the role of manager, and the _id of a non-existing employee in the parameters', () => {
     it("should return a 404 status and message 'Employee not found'", async () => {
-      const nonExistingId = new mongoose.Types.ObjectId().toString();
+      const nonExistingId = new mongoose.Types.ObjectId().toString()
 
       const newEmployeeData = {
         name: 'NewTest',
         surname: 'UpdatedSurname',
-      };
+      }
 
       const response = await supertest(appInstance)
         .put(`/employees/${nonExistingId}`)
         .send(newEmployeeData)
-        .set('Authorization', `Bearer ${managerToken}`);
+        .set('Authorization', `Bearer ${managerToken}`)
 
-      expect(response.status).toBe(404);
-      expect(response.body.message).toBe('Employee not found');
-    });
-  });
+      expect(response.status).toBe(404)
+      expect(response.body.message).toBe('Employee not found')
+    })
+  })
 })

@@ -1,7 +1,7 @@
-import { Request } from 'express';
+import { Request } from 'express'
 
 interface IRequestWithClientEmail extends Request {
-  clientEmail?: string;
+  clientEmail?: string
 }
 
 export default IRequestWithClientEmail
