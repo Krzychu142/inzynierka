@@ -12,6 +12,7 @@ import fs from 'fs'
 import Email from '../utils/email/Email'
 import { IOrder } from '../types/order.interface'
 import CustomError from '../utils/helpers/CustomError'
+import IRequestWithClientEmail from '../types/requestWithClientEmail.interface'
 
 interface IProductForOrder {
   productId: string
@@ -43,7 +44,7 @@ class OrderController {
     return Array.from(productMap.values())
   }
 
-  static async createOrder(req: Request, res: Response): Promise<void> {
+  static async createOrder(req: IRequestWithClientEmail, res: Response): Promise<void> {
     const session = await mongoose.startSession()
     try {
       session.startTransaction()
@@ -61,6 +62,9 @@ class OrderController {
       if (!client) {
         throw new CustomError('Client not found.', 404)
       }
+
+      // it's for logger purpose
+      req.clientEmail = client.email; 
 
       const orderProducts = []
       const aggregatedProducts = OrderController.aggregateProducts(products)
