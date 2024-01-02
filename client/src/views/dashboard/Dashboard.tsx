@@ -8,7 +8,7 @@ import { DownOutlined, UpOutlined, UserOutlined } from "@ant-design/icons";
 import { useGetAllOperationsQuery } from "../../features/operationsSlice";
 import LoadingSpinner from "../../components/loading/LoadingSpinner";
 import dayjs from "dayjs";
-import { ILastOperation } from "../../types/operation.interface";
+import { ILastOperation, Operation } from "../../types/operation.interface";
 import Chart from "../../components/chart/Chart";
 
 const Dashboard: React.FC = () => {
@@ -135,9 +135,15 @@ const Dashboard: React.FC = () => {
                               "DD-MM-YYYY HH:mm:ss"
                             )}`}
                           </span>
-                          {operation.nameOfOperation === "Added new client" && (
+                          {operation.nameOfOperation ===
+                            Operation.NEWCLIENT && (
                             <span className="operation-performed normal-text">
                               New client email:
+                            </span>
+                          )}
+                          {operation.nameOfOperation === Operation.NEWORDER && (
+                            <span className="operation-performed normal-text">
+                              Client email:
                             </span>
                           )}
                           <span className="operation-performed">
